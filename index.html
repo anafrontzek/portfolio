@@ -306,8 +306,8 @@ body.lock{overflow:hidden}
 <div id="project" aria-hidden="true"></div>
 <div id="lightbox"><img alt=""></div>
 
-<script src="data.js?v=5"></script>
-<script src="aspect.js?v=5"></script>
+<script src="data.js?v=6"></script>
+<script src="aspect.js?v=6"></script>
 <script>
 (function(){
 const W = window.WORKS.map((r,i)=>({slug:r[0],title:r[1],year:r[2],thumb:u(r[3]),vids:r[4]||[],imgs:(r[5]||[]).map(u),desc:r[6]||"",feat:!!r[7]}));
@@ -386,6 +386,7 @@ const P=$("#project");
 function openProject(slug){
   const i=W.findIndex(w=>w.slug===slug);if(i<0)return closeProject();
   const w=W[i],n=W[(i+1)%W.length];
+  const gal=w.vids.length?w.imgs:w.imgs.filter(x=>x!==w.thumb);
   const hv=w.vids.filter(v=>!(window.ASPECT[v]>100)), vv=w.vids.filter(v=>window.ASPECT[v]>100);
   const box=v=>`<div class="vbox" style="padding-bottom:${window.ASPECT[v]||56.25}%"><iframe loading="lazy" allowfullscreen allow="autoplay; fullscreen" title="${esc(w.title)}" src="${vsrc(v)}"></iframe></div>`;
   P.innerHTML=`
@@ -399,7 +400,7 @@ function openProject(slug){
    <div class="p-body">
      ${hv.length?`<div class="vids h">${hv.map(box).join("")}</div>`:""}
      ${vv.length?`<div class="vids v">${vv.map(box).join("")}</div>`:""}
-     ${w.imgs.length?`<div class="gallery">${w.imgs.map(s=>`<img loading="lazy" src="${s}" alt="">`).join("")}</div>`:""}
+     ${gal.length?`<div class="gallery">${gal.map(s=>`<img loading="lazy" src="${s}" alt="">`).join("")}</div>`:""}
    </div>
    <a class="next" href="#/trabalho/${n.slug}"><span class="mono mute">Próximo projeto →</span><div class="t">${esc(n.title)}</div></a>`;
   P.scrollTop=0;P.classList.add("open");P.setAttribute("aria-hidden","false");document.body.classList.add("lock");
