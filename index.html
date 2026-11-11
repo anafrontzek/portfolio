@@ -8,6 +8,7 @@
 <meta property="og:title" content="Ana Frontzek — Portfólio">
 <meta property="og:description" content="Direção, captação, edição, color grading e fotografia.">
 <meta property="og:image" content="https://cdn.myportfolio.com/a8a847a4-8a9b-4ee4-b11b-83ae48af938d/3baae95b-2791-4d73-b2ba-504fdff7c9e6_car_16x9.png?h=502f3f6ecaebf67708f129c145eacd76">
+<script>(function(){var u=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(u)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),saf=/^((?!chrome|chromium|android|crios|fxios|edg|opr).)*safari/i.test(u),v=document.createElement("video"),vp9=!!(v.canPlayType&&v.canPlayType('video/webm; codecs="vp9"'));document.documentElement.classList.add(ios||saf||!vp9?"apple":"pc")})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -31,6 +32,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* ---------- loader ---------- */
 #loader{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;justify-content:space-between;padding:var(--pad);transition:transform .9s cubic-bezier(.77,0,.18,1)}
 #loader.done{transform:translateY(-100%)}
+html.apple #loader{display:none}
+#introv{position:absolute;left:50%;top:50%;width:min(72vw,64vh*1.13,640px);aspect-ratio:960/848;transform:translate(-50%,-54%);pointer-events:none}
+#loader .lrow{display:flex;justify-content:space-between}
+nav .brand img{height:52px;width:auto;display:block;margin:-12px 0}
+@media(max-width:720px){nav .brand img{height:42px;margin:-10px 0}}
 #loader .count{font-weight:800;font-stretch:125%;font-size:clamp(80px,18vw,260px);line-height:.8;letter-spacing:-.04em}
 #loader .bar{height:2px;background:var(--line);margin-top:24px;position:relative;overflow:hidden}
 #loader .bar i{position:absolute;inset:0;background:var(--acc);transform-origin:left;transform:scaleX(0)}
@@ -200,11 +206,12 @@ body.lock{overflow:hidden}
 
 <div id="loader">
   <div class="mono"><span class="mute">Só um segundo</span> — Ana Frontzek ©2026</div>
-  <div><div class="count" id="count">000</div><div class="bar"><i id="barfill"></i></div></div>
+  <video id="introv" muted playsinline preload="auto" aria-hidden="true"><source src="logo-intro.webm?v=1" type="video/webm"></video>
+  <div><div class="lrow mono"><span class="mute">Carregando</span><span id="count">000</span></div><div class="bar"><i id="barfill"></i></div></div>
 </div>
 
 <nav>
-  <a href="#/" class="brand" data-go="top">ANA FRONTZEK®</a>
+  <a href="#/" class="brand" data-go="top" aria-label="Ana Frontzek — início"><img src="logo_1.png?v=1" alt="Frontzek" onerror="this.outerHTML='ANA FRONTZEK®'"></a>
   <div class="links mono">
     <span class="avail"><span class="dot"></span>Disponível para projetos</span>
     <a href="#/" data-go="trabalhos">Trabalhos</a>
@@ -306,8 +313,8 @@ body.lock{overflow:hidden}
 <div id="project" aria-hidden="true"></div>
 <div id="lightbox"><img alt=""></div>
 
-<script src="data.js?v=6"></script>
-<script src="aspect.js?v=6"></script>
+<script src="data.js?v=7"></script>
+<script src="aspect.js?v=7"></script>
 <script>
 (function(){
 const W = window.WORKS.map((r,i)=>({slug:r[0],title:r[1],year:r[2],thumb:u(r[3]),vids:r[4]||[],imgs:(r[5]||[]).map(u),desc:r[6]||"",feat:!!r[7]}));
@@ -429,10 +436,15 @@ document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
 /* fit hero name to width (whatever font loads) */
 function fit(){const h=document.querySelector('.hero h1');h.style.fontSize='100px';const sp=h.querySelectorAll('.line>span');let w=0;sp.forEach(x=>w=Math.max(w,x.scrollWidth));const avail=h.clientWidth-2*parseFloat(getComputedStyle(h).paddingLeft);h.style.fontSize=Math.min(320,100*avail/w*0.98)+'px';}
 fit();addEventListener('resize',fit);document.fonts&&document.fonts.ready.then(fit);
-/* loader */
-let c=0;const cnt=$("#count"),bar=$("#barfill");const t0=performance.now(),dur=1400;
-(function tick(t){c=Math.min(100,Math.round(((t-t0)/dur)**.7*100));cnt.textContent=String(c).padStart(3,"0");bar.style.transform=`scaleX(${c/100})`;
-  if(c<100)requestAnimationFrame(tick);else{ $("#loader").classList.add("done");document.body.classList.add("ready");route();}})(t0);
+/* loader: logo animado no PC; iPhone/Mac (Safari) entra direto */
+const done=()=>{if(done.x)return;done.x=1;$("#loader").classList.add("done");document.body.classList.add("ready");route();};
+const cnt=$("#count"),bar=$("#barfill"),iv=$("#introv");
+if(document.documentElement.classList.contains("apple")){done();}
+else{const t0=performance.now();let started=false;const pl=iv.play();if(pl&&pl.catch)pl.catch(()=>{});
+  (function tick(){const el=performance.now()-t0,d=iv.duration||3;if(iv.currentTime>0)started=true;
+    let pr=started?iv.currentTime/d:(el>1800?(el-1800)/700:0);pr=Math.min(1,pr);
+    cnt.textContent=String(Math.round(pr*100)).padStart(3,"0");bar.style.transform=`scaleX(${pr})`;
+    if(iv.ended||pr>=1||el>6000)setTimeout(done,350);else requestAnimationFrame(tick);})();}
 })();
 </script>
 </body>
