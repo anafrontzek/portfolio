@@ -14,7 +14,7 @@
 <style>
 :root{
   --bg:#0a0a0a; --bg2:#121212; --fg:#efece6; --mute:#8a877f; --line:#262624;
-  --acc:#ff4d1c; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --acc:#e10600; --mono:"IBM Plex Mono",ui-monospace,monospace;
   --sans:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
   --pad:clamp(16px,3vw,40px);
 }
@@ -125,11 +125,14 @@ section{padding:clamp(80px,12vw,160px) var(--pad) 0}
 .more{flex:none;width:clamp(180px,18vw,260px);aspect-ratio:16/9;border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;scroll-snap-align:start;transition:.3s}
 .more b{font-weight:800;font-stretch:125%;font-size:34px;letter-spacing:-.04em;line-height:1}
 .more:hover{border-color:var(--acc);color:var(--acc)}
+.older{display:flex;justify-content:center;padding-top:4px}
+.oldbtn{border:1px solid var(--line);border-radius:999px;padding:14px 26px;transition:.25s}
+.oldbtn:hover{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 @media(max-width:720px){.card{width:72vw}.more{width:46vw}.yr-head .arrows{display:none}}
 
 /* ---------- about ---------- */
 .about{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
-.about .big{grid-column:1/9;font-weight:500;font-stretch:100%;font-size:clamp(24px,3.4vw,50px);line-height:1.08;letter-spacing:-.025em}
+.about .big{grid-column:1/9;font-weight:500;font-stretch:100%;font-size:clamp(20px,2.6vw,38px);line-height:1.08;letter-spacing:-.025em}
 .about .big em{font-style:normal;color:var(--acc)}
 .about .side{grid-column:9/13;display:flex;flex-direction:column;gap:24px}
 .about .clients{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:15px}
@@ -250,7 +253,7 @@ body.lock{overflow:hidden}
   <section id="sobre">
     <div class="sec-head reveal"><h2>Sobre</h2><span class="mono mute">(Quem filma)</span></div>
     <div class="about">
-      <p class="big reveal">Sou a <em>Ana Frontzek</em> — dirijo, filmo, edito e faço a cor. Transformo lançamentos, corridas, encontros e campanhas em filmes com ritmo, identidade e aquele detalhe que faz voltar o vídeo.</p>
+      <p class="big reveal">Sou uma profissional criativa que transforma ideias em <em>projetos visuais com personalidade</em>. Gosto de explorar novas possibilidades, conectar conceito e forma e criar trabalhos que comuniquem com clareza e impacto. Cada projeto é uma oportunidade de entender uma necessidade, encontrar um caminho próprio e dar vida a algo que faça sentido para quem está do outro lado.</p>
       <div class="side reveal">
         <p class="mono mute">Marcas & projetos</p>
         <div class="clients">
@@ -342,13 +345,14 @@ $("#featured").innerHTML=W.filter(w=>w.feat).map((w,i)=>`
 const STEP=10;let FILTER="all";
 const ok=w=>FILTER==="all"||(FILTER==="video"?w.vids.length:w.imgs.length);
 const years=[...new Set(W.map(w=>w.year))].sort((a,b)=>b-a);
-const shown={};years.forEach(y=>shown[y]=STEP);
+const shown={};years.forEach(y=>shown[y]=STEP);let ALLY=false;const NY=2;
 const card=w=>`<article class="card" data-slug="${w.slug}"><div class="im"><img loading="lazy" draggable="false" src="${w.thumb}" alt="${esc(w.title)}"><span class="badge mono">${kind(w)}</span></div><div class="cap"><span class="mono mute">${pad(W.indexOf(w)+1)}</span><span class="t">${esc(w.title)}</span></div></article>`;
 function renderIndex(){
-  $("#index").innerHTML=years.map(y=>{const list=W.filter(w=>w.year===y&&ok(w));if(!list.length)return"";
+  const ys=ALLY?years:years.slice(0,NY),hid=years.slice(NY);
+  $("#index").innerHTML=ys.map(y=>{const list=W.filter(w=>w.year===y&&ok(w));if(!list.length)return"";
     const vis=list.slice(0,shown[y]),rest=list.length-vis.length;
     return `<div class="yr reveal in" data-y="${y}"><div class="yr-head"><span class="y">${y}</span><div class="meta"><span class="mono mute">${list.length} trabalhos</span><div class="arrows"><button data-dir="-1" aria-label="Anterior">←</button><button data-dir="1" aria-label="Próximo">→</button></div></div></div>
-     <div class="rail">${vis.map(card).join("")}${rest>0?`<button class="more" data-more="${y}"><b>+${Math.min(STEP,rest)}</b><span class="mono">Ver mais (${rest})</span></button>`:""}</div></div>`}).join("");
+     <div class="rail">${vis.map(card).join("")}${rest>0?`<button class="more" data-more="${y}"><b>+${Math.min(STEP,rest)}</b><span class="mono">Ver mais (${rest})</span></button>`:""}</div></div>`}).join("")+(hid.length?`<div class="older"><button class="oldbtn mono" data-older>${ALLY?"Ocultar anos anteriores ↑":"Ver anos anteriores ("+hid.join(" · ")+") ↓"}</button></div>`:"");
   document.querySelectorAll(".rail").forEach(setupRail);
 }
 function setupRail(r){
@@ -363,7 +367,7 @@ function setupRail(r){
   r.addEventListener("click",e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false}},true);
 }
 renderIndex();
-$("#index").addEventListener("click",e=>{const m=e.target.closest("[data-more]");if(!m)return;e.stopPropagation();
+$("#index").addEventListener("click",e=>{if(e.target.closest("[data-older]")){ALLY=!ALLY;renderIndex();if(!ALLY)$("#indice").scrollIntoView();return;}const m=e.target.closest("[data-more]");if(!m)return;e.stopPropagation();
   const y=m.dataset.more,r=m.closest(".yr").querySelector(".rail"),x=r.scrollLeft;shown[y]+=STEP;renderIndex();
   const nr=document.querySelector(`.yr[data-y="${y}"] .rail`);nr.style.scrollBehavior="auto";nr.scrollLeft=x;nr.style.scrollBehavior="";nr.scrollBy({left:nr.clientWidth*.6})});
 $("#filters").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
