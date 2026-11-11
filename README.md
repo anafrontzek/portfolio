@@ -6,6 +6,8 @@ Site estático (HTML/CSS/JS puro), pronto para o GitHub Pages.
 - `index.html` — layout, estilo e comportamento do site
 - `data.js` — **todos os trabalhos** (título, ano, capa, vídeos, fotos, descrição, destaque). É aqui que você edita.
 - `aspect.js` — proporção dos vídeos verticais/quadrados
+- `logo_1.png` — logo do menu · `logo-intro.webm` — animação da abertura (só aparece no PC; no iPhone/Mac o site abre direto)
+- Depois de editar o `data.js`, aumente o número em `data.js?v=7` no `index.html` (ex.: `?v=8`) para os visitantes verem a versão nova na hora.
 
 ## Como editar um trabalho
 Cada linha em `data.js` é:
