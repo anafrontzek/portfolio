@@ -234,6 +234,11 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
 #lightbox.on{display:flex}
 #lightbox img{max-height:92vh;max-width:100%;object-fit:contain}
 body.lock{overflow:hidden}
+/* proteção básica de imagens e vídeos */
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea{-webkit-user-select:text;user-select:text}
+img,video{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none}
+.portrait::after,.gallery-wrap::after{content:"";position:absolute;inset:0}
 </style>
 </head>
 <body>
@@ -317,7 +322,7 @@ body.lock{overflow:hidden}
 
   <section id="directors-cut">
     <div class="dc-head reveal"><h2>Director's<br>Cut<i>.</i></h2><span class="mono mute" style="text-align:right">(Melhores takes<br>2023 — 2026)</span></div>
-    <div class="dc reveal"><video id="dcv" muted loop playsinline preload="metadata" src="directors-cut.mp4?v=2"></video><span class="ui mono">● Director's cut — loop</span><button class="pp mono" id="dcpp">❚❚ Pausar</button></div>
+    <div class="dc reveal"><video id="dcv" muted loop playsinline preload="metadata" controlslist="nodownload noplaybackrate" disablepictureinpicture disableremoteplayback oncontextmenu="return false" src="directors-cut.mp4?v=2"></video><span class="ui mono">● Director's cut — loop</span><button class="pp mono" id="dcpp">❚❚ Pausar</button></div>
   </section>
 
   <section id="contato" class="contact">
@@ -491,6 +496,12 @@ $("#types").addEventListener("click",e=>{const b=e.target.closest("button");if(!
 function wmsg(){const d=new FormData(wf);const t=`Oi Ana! Vim pelo seu portfólio.\n\nNome: ${d.get("nome")||"—"}${d.get("marca")?"\nMarca/artista: "+d.get("marca"):""}\nTipo de projeto: ${wtipo}\n\n${d.get("ideia")||"(conte a ideia aqui)"}`;wpv.textContent=t;return t}
 wf.addEventListener("input",wmsg);wmsg();
 wf.addEventListener("submit",e=>{e.preventDefault();const a=document.createElement("a");a.href="https://wa.me/5511952412611?text="+encodeURIComponent(wmsg());a.target="_blank";a.rel="noopener";document.body.append(a);a.click();a.remove();});
+
+/* proteção: sem clique direito, arrastar, salvar página ou ver código pelo atalho */
+document.addEventListener("contextmenu",e=>{if(!e.target.closest("input,textarea"))e.preventDefault()});
+document.addEventListener("dragstart",e=>{if(e.target.closest("img,video,a"))e.preventDefault()});
+document.addEventListener("keydown",e=>{const k=(e.key||"").toLowerCase(),m=e.ctrlKey||e.metaKey;
+  if((m&&(k==="s"||k==="u"||k==="p"))||(m&&e.shiftKey&&(k==="i"||k==="j"||k==="c"))||(m&&e.altKey&&(k==="i"||k==="u"))||k==="f12")e.preventDefault()});
 
 /* reveal */
 const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}}),{threshold:.12});
