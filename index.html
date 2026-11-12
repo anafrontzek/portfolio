@@ -7,7 +7,7 @@
 <meta name="description" content="Portfólio de Ana Frontzek: direção, captação, edição, color grading e fotografia. Automotivo, moda, música e eventos.">
 <meta property="og:title" content="Ana Frontzek — Portfólio">
 <meta property="og:description" content="Direção, captação, edição, color grading e fotografia.">
-<meta property="og:image" content="https://cdn.myportfolio.com/a8a847a4-8a9b-4ee4-b11b-83ae48af938d/3baae95b-2791-4d73-b2ba-504fdff7c9e6_car_16x9.png?h=502f3f6ecaebf67708f129c145eacd76">
+<meta property="og:image" content="https://anafrontzek.com/imagens/og.jpg">
 <script>(function(){var u=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(u)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),saf=/^((?!chrome|chromium|android|crios|fxios|edg|opr).)*safari/i.test(u),v=document.createElement("video"),vp9=!!(v.canPlayType&&v.canPlayType('video/webm; codecs="vp9"'));document.documentElement.classList.add(ios||saf||!vp9?"apple":"pc")})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -362,7 +362,7 @@ img,video{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none}
 <script>
 (function(){
 const W = window.WORKS.map((r,i)=>({slug:r[0],title:r[1],year:r[2],thumb:u(r[3]),vids:r[4]||[],imgs:(r[5]||[]).map(u),desc:r[6]||"",feat:r[7]||0}));
-function u(s){return /^https?:/.test(s)?s:window.CDN+s}
+function u(s){return /^(https?:|imagens\/)/.test(s)?s:window.CDN+s}
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const kind=w=>w.vids.length&&w.imgs.length?"Foto + Vídeo":w.vids.length?"Vídeo":"Fotografia";
