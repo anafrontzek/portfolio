@@ -205,6 +205,10 @@ section{padding:clamp(80px,12vw,160px) var(--pad) 0}
 footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:60px var(--pad) 24px;border-top:1px solid var(--line);margin-top:clamp(80px,10vw,140px)}
 
 /* ---------- project view ---------- */
+/* correção: cards 3D do mostruário não podem passar por cima da página do trabalho (Safari/Mac, telas largas) */
+#home{position:relative;z-index:0}
+.stage{isolation:isolate;z-index:0}
+body.lock .stage{visibility:hidden}
 #project{position:fixed;inset:0;z-index:60;background:var(--bg);overflow-y:auto;transform:translateY(100%);transition:transform .8s cubic-bezier(.77,0,.18,1);visibility:hidden}
 #project.open{transform:none;visibility:visible}
 #project .bar{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:18px var(--pad);background:linear-gradient(var(--bg) 60%,transparent)}
