@@ -140,7 +140,10 @@ section{padding:clamp(80px,12vw,160px) var(--pad) 0}
 
 /* ---------- about ---------- */
 .about{display:grid;grid-template-columns:7fr 5fr;gap:clamp(24px,4vw,60px);align-items:end}
-.about .big{font-weight:500;font-stretch:100%;font-size:clamp(20px,2.6vw,38px);line-height:1.1;letter-spacing:-.025em}
+.about .big{font-weight:600;font-stretch:105%;font-size:clamp(26px,3.4vw,52px);line-height:1.04;letter-spacing:-.03em;max-width:20ch}
+.about .body{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,40px);margin-top:clamp(24px,3vw,40px);max-width:760px}
+.about .body p{font-size:clamp(15px,1.15vw,17px);line-height:1.6;color:#b9b6ae}
+@media(max-width:620px){.about .body{grid-template-columns:1fr}}
 .about .big em{font-style:normal;color:var(--acc)}
 .portrait{position:relative;aspect-ratio:4/5;overflow:hidden;margin:0}
 .portrait img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transition:filter .6s,transform 1.2s cubic-bezier(.2,.7,.1,1)}
@@ -292,7 +295,11 @@ body.lock{overflow:hidden}
     <div class="sec-head reveal"><h2>Sobre</h2><span class="mono mute">(Quem filma)</span></div>
     <div class="about">
       <div class="reveal">
-        <p class="big">Sou uma profissional criativa que transforma ideias em <em>projetos visuais com personalidade</em>. Gosto de explorar novas possibilidades, conectar conceito e forma e criar trabalhos que comuniquem com clareza e impacto. Cada projeto é uma oportunidade de entender uma necessidade, encontrar um caminho próprio e dar vida a algo que faça sentido para quem está do outro lado.</p>
+        <p class="big">Sou uma profissional criativa que transforma ideias em <em>projetos visuais com personalidade</em>.</p>
+        <div class="body">
+          <p>Gosto de explorar novas possibilidades, conectar conceito e forma e criar trabalhos que comuniquem com clareza e impacto.</p>
+          <p>Cada projeto é uma oportunidade de entender uma necessidade, encontrar um caminho próprio e dar vida a algo que faça sentido para quem está do outro lado.</p>
+        </div>
         <div class="stats">
           <div><b id="s-total">99</b><span class="mono mute">Projetos</span></div>
           <div><b id="s-video">55</b><span class="mono mute">Com vídeo</span></div>
@@ -310,7 +317,7 @@ body.lock{overflow:hidden}
 
   <section id="directors-cut">
     <div class="dc-head reveal"><h2>Director's<br>Cut<i>.</i></h2><span class="mono mute" style="text-align:right">(Melhores takes<br>2023 — 2026)</span></div>
-    <div class="dc reveal"><video id="dcv" muted loop playsinline preload="metadata" src="directors-cut.mp4?v=1"></video><span class="ui mono">● Director's cut — loop</span><button class="pp mono" id="dcpp">❚❚ Pausar</button></div>
+    <div class="dc reveal"><video id="dcv" muted loop playsinline preload="metadata" src="directors-cut.mp4?v=2"></video><span class="ui mono">● Director's cut — loop</span><button class="pp mono" id="dcpp">❚❚ Pausar</button></div>
   </section>
 
   <section id="contato" class="contact">
