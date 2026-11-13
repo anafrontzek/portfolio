@@ -154,7 +154,7 @@ const P = {
   horario: "9h às 18h",
   validade: "48 horas",
   numero: "003",
-  diaria: "1.500",                 // valor da diária (9h)
+  diaria: "2.000",                 // valor da diária (9h)
   horaExtra: "R$ 200 / hora",
   whatsapp: "5511952412611",
   email: "contatoanafrontzek@gmail.com",
@@ -238,6 +238,7 @@ const P = {
         <li>Diária de até 9 horas de captação</li>
         <li>Segunda câmera nas gravações do Wendell</li>
         <li>B-roll do evento e do deslocamento</li>
+        <li>Equipamento próprio completo incluso</li>
         <li>Alinhamento prévio com o filmmaker da equipe</li>
         <li>Material bruto entregue no mesmo dia</li>
       </ul>
@@ -245,7 +246,8 @@ const P = {
     </div>
     <div class="rv">
       <div class="table" id="extrasT"></div>
-      <p class="note">Valor para captação, usando o equipamento de vocês. Se preferirem, levo o meu kit (Sony A7 IV · 11mm, 35mm e 24-70mm) — é só avisar para combinarmos. Edição não inclusa; se quiserem, faço um orçamento à parte.</p>
+      <div class="card" style="margin-top:12px"><span class="mono">(Equipamento incluso)</span><h3>Kit completo,<br>pronto pra rodar.</h3><p>Sony A7 IV · lentes 11mm, 35mm e 24-70mm · gimbal DJI RS5 · tripé · filtros ND, Pro-Mist e CPL · microfone de lapela Hollyland Lark M1.</p></div>
+      <p class="note">Levo meu próprio equipamento para a Cam B — vocês não precisam separar nada. Edição não inclusa; se quiserem, faço um orçamento à parte.</p>
     </div>
   </div>
 </section>
@@ -266,7 +268,7 @@ const P = {
 <section class="wrap" id="condicoes">
   <div class="sec-head rv"><h2 class="xl">Condições</h2><span class="mono">(06)</span></div>
   <div class="grid3">
-    <div class="card rv"><span class="mono">(Pagamento)</span><h3>50% + 50%</h3><p>50% na confirmação para bloquear a data e 50% na entrega do material, via Pix, com nota fiscal.</p></div>
+    <div class="card rv"><span class="mono">(Pagamento)</span><h3>No dia da<br>captação</h3><p>Pagamento integral com nota fiscal no dia da gravação — ou ajustado de acordo com as condições de vocês.</p></div>
     <div class="card rv"><span class="mono">(Horário)</span><h3>9h às 18h</h3><p>Se o dia se estender, hora extra de <b data-k="horaExtra" style="font-weight:400"></b>, combinada na hora.</p></div>
     <div class="card rv"><span class="mono">(Uso)</span><h3>Material<br>de vocês</h3><p>Todo o bruto captado é entregue e liberado para uso no YouTube e nas redes do Wendell.</p></div>
   </div>
@@ -294,7 +296,7 @@ document.querySelectorAll('[data-k]').forEach(el=>el.textContent=P[el.dataset.k]
 const EXTRAS=[
   ["Diária (até 9h)","Segunda câmera + b-roll, 9h às 18h",`R$ ${P.diaria},00`],
   ["Hora extra","Se a gravação passar das 18h",P.horaExtra],
-  ["Kit próprio","Sony A7 IV + lentes, se precisarem de mais um corpo","a combinar"],
+  ["Equipamento","Kit próprio completo: câmera, lentes, gimbal, tripé, filtros e áudio","incluso"],
   ["Edição","Corte dos vídeos para YouTube ou redes","orçamento à parte"]
 ];
 $('#extrasT').innerHTML=EXTRAS.map(x=>`<div class="row"><b>${x[0]}</b><span>${x[1]}</span><em>${x[2]}</em></div>`).join('');
