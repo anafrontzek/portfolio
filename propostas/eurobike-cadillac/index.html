@@ -69,12 +69,17 @@ nav .close-link{color:var(--acc)}
 .hero .lede strong{color:var(--fg);font-weight:600}
 @media(max-width:720px){.hero .top{grid-template-columns:1fr 1fr}}
 
-.marquee{overflow:hidden;margin-top:clamp(24px,4vw,48px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}
-.marquee .track{display:flex;width:max-content;animation:scroll 40s linear infinite}
-.marquee span{font-weight:800;font-stretch:125%;text-transform:uppercase;letter-spacing:-.04em;font-size:clamp(26px,3.6vw,52px);line-height:1;white-space:nowrap;padding-right:.5em}
-.marquee span.o{color:transparent;-webkit-text-stroke:1px var(--fg)}
-.marquee span i{font-style:normal;color:var(--acc);display:inline-block;margin-left:.5em}
-@keyframes scroll{to{transform:translateX(-50%)}}
+/* placar giratório (igual à seção de marcas do portfólio) */
+.slot{padding:0 var(--pad);margin-top:clamp(28px,4.4vw,56px);font-weight:900;font-stretch:125%;font-size:clamp(26px,6.4vw,104px);line-height:.95;letter-spacing:-.05em;text-transform:uppercase}
+.slot .lead{display:block;color:var(--mute);font-weight:500;font-stretch:100%;font-size:clamp(16px,1.8vw,26px);letter-spacing:-.01em;text-transform:none;margin-bottom:10px}
+.slot .win{display:flex;align-items:center;gap:.25em;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:.08em 0;overflow:hidden}
+.slot .arrow{color:var(--acc);font-stretch:100%;flex:none}
+.slot .nm{white-space:nowrap}
+.slot .nm span.sc{color:var(--acc)}
+.slot .ix{margin-left:auto;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--mute);font-weight:400;align-self:flex-end;padding-bottom:.6em;flex:none}
+.bchips{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:18px;padding:0 var(--pad)}
+.bchips span{font-family:var(--mono);font-size:12px;text-transform:uppercase;color:#5f5d58;cursor:pointer;transition:color .2s}
+.bchips span.on,.bchips span:hover{color:var(--fg)}
 
 /* ---------- estrutura de seção ---------- */
 section{padding:clamp(80px,12vw,160px) var(--pad) 0}
@@ -186,7 +191,7 @@ section{padding:clamp(80px,12vw,160px) var(--pad) 0}
 footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:60px var(--pad) 24px;border-top:1px solid var(--line);margin-top:clamp(80px,10vw,140px)}
 footer a:hover{color:var(--fg)}
 
-@media print{nav,.marquee{display:none}.reveal{opacity:1;transform:none}.hero{min-height:auto}}
+@media print{nav{display:none}.reveal{opacity:1;transform:none}.hero{min-height:auto}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal,.hero h1 .line span{opacity:1;transform:none}}
 </style>
 </head>
@@ -217,7 +222,8 @@ footer a:hover{color:var(--fg)}
       <p class="lede">Proposta comercial de <strong>cobertura fotográfica</strong> para a <strong>concessionária Cadillac pela Eurobike</strong> — da ambientação aos convidados, dos carros aos detalhes da marca.</p>
       <span class="mono mute">Proposta comercial — Ana Frontzek ©2026</span>
     </div>
-    <div class="marquee" aria-hidden="true"><div class="track" id="mq"></div></div>
+    <div class="slot"><span class="lead">O que eu registro no evento</span><div class="win"><span class="arrow">→</span><span class="nm" id="bnm"></span><span class="ix" id="bix"></span></div></div>
+    <div class="bchips" id="bchips"></div>
   </header>
 
   <!-- ================= 01 ESCOPO ================= -->
@@ -346,15 +352,22 @@ footer a:hover{color:var(--fg)}
 (function(){
   /* ===== EDITAR: dados usados pelos scripts ===== */
   var EVENTO = new Date("2026-12-08T19:00:00-03:00");
-  var TAGS = ["Cobertura fotográfica","Ambientação","Convidados","Veículos","Detalhes","Experiência de marca"];
+  var TAGS = ["Ambientação","Convidados","Veículos","Detalhes","Institucional","Marca"];
   var MSG = "Oi Ana! Quero confirmar a proposta de cobertura fotográfica da Concessionária Cadillac pela Eurobike no dia 08/12, das 19h às 23h.";
 
   /* entrada */
   requestAnimationFrame(function(){ setTimeout(function(){ document.body.classList.add("ready") },60) });
 
-  /* faixa de tags */
-  var h = TAGS.map(function(t,i){ return '<span'+(i%2?' class="o"':'')+'>'+t+'<i>✱</i></span>' }).join("");
-  document.getElementById("mq").innerHTML = h + h;
+  /* placar giratório */
+  var pad=function(n){return String(n).padStart(2,"0")}, GL="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", bcur=0, btimer;
+  var bnm=document.getElementById("bnm"), bix=document.getElementById("bix"), bch=document.getElementById("bchips");
+  bch.innerHTML=TAGS.map(function(t,i){return '<span data-i="'+i+'">'+t+'</span>'}).join(" · ");
+  function bshow(i){bcur=i;var w=TAGS[i].toUpperCase();bix.textContent=pad(i+1)+" / "+pad(TAGS.length);
+    bch.querySelectorAll("span").forEach(function(s){s.classList.toggle("on",+s.dataset.i===i)});
+    var f=0;clearInterval(bnm._t);bnm._t=setInterval(function(){f++;bnm.innerHTML=w.split("").map(function(c,k){var ok=f>12*k/w.length+3;return c===" "?" ":'<span class="'+(ok?"":"sc")+'">'+(ok?c:GL[Math.random()*GL.length|0])+'</span>'}).join("");if(f>16)clearInterval(bnm._t)},45)}
+  function bauto(){clearInterval(btimer);btimer=setInterval(function(){bshow((bcur+1)%TAGS.length)},2200)}
+  bshow(0);bauto();
+  bch.addEventListener("mouseover",function(e){var s=e.target.closest("span[data-i]");if(s){bshow(+s.dataset.i);bauto()}});
 
   /* contagem até o evento */
   var d = Math.ceil((EVENTO - new Date())/864e5), cd = document.getElementById("countdown");
