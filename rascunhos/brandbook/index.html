@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brand Book — Ana Frontzek</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a; --bg2:#121212; --fg:#efece6; --mute:#8a877f; --soft:#b9b6ae; --line:#262624;
+  --acc:#e10600; --ok:#3ddc6a; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --pad:clamp(16px,3vw,40px);
+  --ease:cubic-bezier(.2,.7,.1,1); --ease-expo:cubic-bezier(.16,1,.3,1); --ease-curtain:cubic-bezier(.77,0,.18,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img,video{display:block;max-width:100%}
+::selection{background:var(--acc);color:#000}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.mute{color:var(--mute)}
+.acc{color:var(--acc)}
+.xl{font-weight:900;font-stretch:125%;text-transform:uppercase;letter-spacing:-.055em;line-height:.84}
+
+/* marca + nav */
+.brand{position:fixed;top:18px;left:var(--pad);z-index:51;mix-blend-mode:difference;display:flex;align-items:center;min-height:42px}
+.brand img{height:52px;width:auto;margin:-12px 0}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:flex-end;padding:14px var(--pad);pointer-events:none}
+nav .links{display:flex;gap:clamp(12px,1.8vw,26px);align-items:center;pointer-events:auto;background:rgba(10,10,10,.55);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:12px 20px}
+nav .links a{position:relative;color:var(--mute);transition:color .2s}
+nav .links a.on,nav .links a:hover{color:var(--fg)}
+nav .links a::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .35s}
+nav .links a:hover::after{transform:scaleX(1);transform-origin:left}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:8px;box-shadow:0 0 0 0 rgba(61,220,106,.6);animation:pulse 2s infinite}
+.dot.red{background:var(--acc);animation:blink 1s steps(2,start) infinite;box-shadow:none}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(61,220,106,0)}100%{box-shadow:0 0 0 0 rgba(61,220,106,0)}}
+@keyframes blink{to{visibility:hidden}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes scroll{to{transform:translateX(-50%)}}
+@media(max-width:1000px){nav .hide-m{display:none}}
+@media(max-width:720px){.brand img{height:42px;margin:-10px 0}.brand{top:14px}nav .links{padding:10px 14px;gap:14px}}
+
+/* capa */
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:120px var(--pad) 0;position:relative;overflow:hidden}
+.hero .top{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:clamp(20px,4vw,48px)}
+.hero h1{font-size:clamp(64px,19vw,340px);white-space:nowrap}
+.line{display:block;overflow:hidden;padding:.12em 0 .04em;margin-top:-.12em}
+.line>span{display:inline-block;transform:translateY(105%);transition:transform 1.1s var(--ease)}
+.ready .hero .line>span{transform:none}
+.ready .hero .line:nth-child(2)>span{transition-delay:.08s}
+.hero h1 em,h2 em{font-style:normal;color:var(--acc)}
+.hero .sub{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:clamp(18px,2.4vw,30px) 0 clamp(24px,3vw,40px);border-bottom:1px solid var(--line)}
+.hero .lede{max-width:46ch;font-size:clamp(17px,1.5vw,21px);color:#d8d5ce}
+@media(max-width:720px){.hero .top{grid-template-columns:1fr 1fr}}
+
+/* seções */
+section{padding:clamp(90px,12vw,170px) var(--pad) 0}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:clamp(28px,4vw,56px)}
+.sec-head h2{font-weight:800;font-stretch:115%;font-size:clamp(38px,6.4vw,96px);line-height:.9;letter-spacing:-.04em;text-transform:uppercase}
+.sec-head .mono{text-align:right}
+.intro{display:grid;grid-template-columns:7fr 5fr;gap:clamp(24px,4vw,60px);margin-bottom:clamp(36px,5vw,64px)}
+.big{font-weight:600;font-stretch:105%;font-size:clamp(24px,3vw,46px);line-height:1.06;letter-spacing:-.03em;max-width:24ch}
+.big em{font-style:normal;color:var(--acc)}
+.intro p.body{color:var(--soft);font-size:clamp(15px,1.2vw,17px);max-width:44ch;align-self:end}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .9s,transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media(max-width:860px){.intro{grid-template-columns:1fr}}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:22px;position:relative;overflow:hidden}
+.tag{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+.draft{color:var(--acc);border-color:rgba(225,6,0,.4)}
+
+/* 01 essência */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pillars b{display:block;font-weight:800;font-stretch:125%;text-transform:uppercase;font-size:clamp(28px,3vw,46px);line-height:.9;letter-spacing:-.05em;margin:18px 0 12px;transition:color .3s}
+.pillars .card:hover b{color:var(--acc)}
+.pillars p{color:var(--soft);font-size:15px}
+.services{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+@media(max-width:860px){.pillars{grid-template-columns:1fr}}
+
+/* 02 logo */
+.logo-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.lg{border-radius:16px;overflow:hidden;position:relative;min-height:260px;display:grid;place-items:center;border:1px solid var(--line)}
+.lg .cap{position:absolute;left:16px;bottom:14px}
+.lg img.mark{width:min(62%,340px)}
+.lg.dark{background:var(--bg);grid-column:span 3}
+.lg.light{background:var(--fg);grid-column:span 3;color:var(--bg)}
+.lg.light img.mark{filter:invert(1)}
+.lg.light .cap{color:#6b6860}
+.lg.onphoto{grid-column:span 2;background:#000}
+.lg.onphoto>img.bgp{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.lg.onphoto img.mark{position:relative;width:clamp(180px,17vw,300px);height:auto}
+.lg.intro-v{grid-column:span 4;background:#000;min-height:360px}
+.lg.intro-v video{width:min(70%,460px)}
+.lg.intro-v .rp{position:absolute;right:14px;bottom:12px}
+.lg.space{grid-column:span 3;background:var(--bg)}
+.space .box{position:relative;padding:44px;border:1px dashed rgba(225,6,0,.6)}
+.space .box img{width:220px}
+.space .box i{position:absolute;font-style:normal;font-family:var(--mono);font-size:11px;color:var(--acc)}
+.space .box i.t{top:14px;left:50%;transform:translateX(-50%)}
+.space .box i.l{left:10px;top:50%;transform:translateY(-50%) rotate(-90deg)}
+.space .box::before{content:"";position:absolute;inset:44px;border:1px solid rgba(225,6,0,.35)}
+.lg.min{grid-column:span 3;background:var(--bg);display:flex;align-items:flex-end;justify-content:center;gap:40px;padding-bottom:70px}
+.lg.min div{display:grid;gap:10px;justify-items:center}
+.donts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+.donts .card{min-height:180px;display:grid;place-items:center;padding:34px 22px 44px}
+.donts .card img{width:70%}
+.donts .x{position:absolute;top:12px;right:14px;color:var(--acc);font-size:18px}
+.donts .cap{position:absolute;left:16px;bottom:14px}
+@media(max-width:900px){.logo-grid{grid-template-columns:1fr 1fr}.lg.dark,.lg.light,.lg.onphoto,.lg.intro-v,.lg.space,.lg.min{grid-column:span 2}.donts{grid-template-columns:1fr 1fr}}
+
+/* 03 cores */
+.sw{display:grid;grid-template-columns:2fr 1fr 1fr 2fr 1fr 1.4fr 1fr;gap:12px}
+.s{border-radius:16px;min-height:300px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid var(--line);cursor:pointer;text-align:left;transition:transform .5s var(--ease-expo)}
+.s:hover{transform:translateY(-6px)}
+.s b{font-weight:800;font-stretch:118%;text-transform:uppercase;font-size:clamp(20px,1.8vw,28px);line-height:.95;letter-spacing:-.04em;display:block}
+.s .mono{display:block;margin-top:6px;opacity:.7}
+.s p{font-size:14px;opacity:.8;margin-top:10px}
+.s.dk{color:var(--fg)}.s.lt{color:var(--bg)}
+.ratio{display:flex;height:56px;border-radius:999px;overflow:hidden;margin-top:12px;border:1px solid var(--line)}
+.ratio span{display:flex;align-items:center;padding:0 14px;font-family:var(--mono);font-size:11px;white-space:nowrap;overflow:hidden}
+@media(max-width:1000px){.sw{grid-template-columns:repeat(2,1fr)}.s{min-height:180px}}
+
+/* 04 tipografia */
+.fonts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.fonts .card{min-height:360px;display:flex;flex-direction:column;justify-content:space-between}
+.fonts .aa{font-size:clamp(90px,10vw,170px);line-height:.85;letter-spacing:-.05em}
+.f1 .aa{font-weight:900;font-stretch:125%}
+.f2 .aa{font-weight:500;font-stretch:100%;letter-spacing:-.03em}
+.f3 .aa{font-family:var(--mono);font-weight:400;letter-spacing:-.04em}
+.fonts h3{font-weight:700;font-size:20px;letter-spacing:-.01em}
+.fonts ul{list-style:none;color:var(--soft);font-size:14px;margin-top:8px;display:grid;gap:4px}
+.scale{margin-top:12px;border-top:1px solid var(--line)}
+.scale div{display:grid;grid-template-columns:180px 1fr;gap:20px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line);overflow:hidden}
+.scale .t1{font-weight:900;font-stretch:125%;text-transform:uppercase;letter-spacing:-.055em;line-height:.84;font-size:clamp(48px,8vw,130px);white-space:nowrap}
+.scale .t2{font-weight:800;font-stretch:115%;text-transform:uppercase;letter-spacing:-.04em;line-height:.9;font-size:clamp(34px,5vw,80px)}
+.scale .t3{font-weight:600;font-stretch:105%;letter-spacing:-.03em;line-height:1.05;font-size:clamp(22px,2.6vw,40px)}
+.scale .t4{font-size:clamp(16px,1.4vw,19px);color:#d8d5ce;max-width:60ch}
+.scale .t4 strong{color:var(--fg)}
+@media(max-width:900px){.fonts{grid-template-columns:1fr}.scale div{grid-template-columns:1fr;gap:8px}}
+.tester{margin-top:12px}
+.tester .out{font-size:clamp(40px,7vw,120px);line-height:.9;text-transform:uppercase;outline:none;min-height:1em;word-break:break-word;padding:10px 0 24px;transition:color .3s}
+.tester .ctrl{display:flex;flex-wrap:wrap;gap:22px;align-items:center;border-top:1px solid var(--line);padding-top:16px}
+.tester label{display:flex;gap:10px;align-items:center}
+.tester input[type=range]{accent-color:var(--acc);width:160px}
+
+/* 05 elementos */
+.els{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.els .card{min-height:220px;display:flex;flex-direction:column;justify-content:space-between;gap:20px}
+.els .demo{flex:1;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px}
+.navpill{display:flex;gap:18px;align-items:center;background:rgba(10,10,10,.55);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:12px 18px}
+.navpill .r{color:var(--acc)}
+.btn{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:999px;padding:14px 22px;transition:background .25s,color .25s,border-color .25s,transform .25s}
+.btn:hover{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn.main{background:var(--fg);color:var(--bg);border-color:var(--fg);font-family:var(--sans);font-weight:700;font-size:15px;text-transform:none;letter-spacing:0}
+.btn.main:hover{background:var(--acc);border-color:var(--acc);color:#fff;transform:translateY(-2px)}
+.badge{background:rgba(10,10,10,.75);border:1px solid var(--line);padding:4px 9px;border-radius:999px}
+.bigstar{font-size:90px;color:var(--acc);display:inline-block;animation:spin 8s linear infinite;line-height:1}
+.num{font-weight:800;font-stretch:125%;font-size:64px;letter-spacing:-.05em;line-height:.9}
+.ttl{font-weight:900;font-stretch:125%;font-size:56px;letter-spacing:-.055em;text-transform:uppercase;line-height:.85}
+.ttl em{font-style:normal;color:var(--acc)}
+.arrow-ex{font-weight:900;font-stretch:125%;font-size:44px;letter-spacing:-.05em;text-transform:uppercase;display:flex;gap:.25em;align-items:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:4px 0;width:100%}
+.arrow-ex .a{color:var(--acc);font-stretch:100%}
+@media(max-width:900px){.els{grid-template-columns:1fr}}
+
+/* 06 movimento */
+.ease{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.ease .card{display:grid;gap:14px}
+.ease b{font-weight:800;font-stretch:118%;text-transform:uppercase;font-size:clamp(22px,2vw,30px);letter-spacing:-.04em;line-height:.95}
+.ease svg{width:100%;height:90px}
+.ease .track{position:relative;height:26px;border-top:1px solid var(--line)}
+.ease .ball{position:absolute;top:8px;left:0;width:12px;height:12px;border-radius:50%;background:var(--acc)}
+.ease .card:hover .ball{left:calc(100% - 12px)}
+.motion{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mv{min-height:330px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+.mv .stage{flex:1;display:grid;place-items:center;min-height:170px;position:relative;overflow:hidden;border-radius:10px;background:var(--bg)}
+.mv h3{font-weight:800;font-stretch:118%;text-transform:uppercase;font-size:24px;letter-spacing:-.04em;line-height:.95}
+.mv .meta{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.mv .spec{color:var(--mute);margin-top:6px}
+.mv .rp{flex:none}
+@media(max-width:1000px){.motion,.ease{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.motion,.ease{grid-template-columns:1fr}}
+/* demos */
+.d-line{font-weight:900;font-stretch:125%;text-transform:uppercase;letter-spacing:-.055em;line-height:.84;font-size:58px}
+.d-line .line>span{transform:translateY(105%)}
+.play .d-line .line>span{transform:none}
+.play .d-line .line:nth-child(2)>span{transition-delay:.08s}
+.d-line em{font-style:normal;color:var(--acc)}
+.d-block{display:grid;gap:8px;width:70%}
+.d-block i{display:block;height:16px;border-radius:4px;background:var(--line);opacity:0;transform:translateY(30px);transition:opacity .9s,transform .9s var(--ease)}
+.d-block i:nth-child(1){height:34px;background:var(--fg);width:70%}
+.d-block i:nth-child(2){transition-delay:.08s}.d-block i:nth-child(3){transition-delay:.16s;width:80%}
+.play .d-block i{opacity:1;transform:none}
+.d-slot{font-weight:900;font-stretch:125%;font-size:44px;letter-spacing:-.05em;text-transform:uppercase;display:flex;gap:.25em;align-items:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);width:88%;white-space:nowrap;overflow:hidden}
+.d-slot .a{color:var(--acc);font-stretch:100%}
+.d-slot .sc{color:var(--acc)}
+.d-glow{font-weight:900;font-stretch:125%;font-size:64px;letter-spacing:-.055em;text-transform:uppercase;line-height:.85;cursor:default;user-select:none}
+.d-glow .ch{display:inline-block;transition:color 1.4s ease-out}.d-glow .ch.on{color:var(--acc);transition:color .05s}
+.d-bw{width:62%;aspect-ratio:3/4;overflow:hidden}
+.d-bw img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transition:filter .45s,transform .8s var(--ease)}
+.d-bw:hover img,.play .d-bw img{filter:none;transform:scale(1.05)}
+.d-open{position:absolute;inset:0}
+.d-open img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transform:scale(1.12)}
+.play .d-open img{transform:scale(1);filter:grayscale(.15) contrast(1.05);transition:transform 2.6s var(--ease),filter 2.4s ease .6s}
+.d-open span{position:absolute;left:14px;bottom:10px;font-weight:900;font-stretch:125%;font-size:40px;letter-spacing:-.055em;text-transform:uppercase;line-height:.85}
+.d-marq{position:absolute;inset:auto 0 auto 0;top:50%;transform:translateY(-50%);overflow:hidden}
+.d-marq .tr{display:flex;gap:8px;width:max-content;animation:scroll 22s linear infinite}
+.d-marq:hover .tr{animation-play-state:paused}
+.d-marq img{width:130px;aspect-ratio:16/9;object-fit:cover;filter:grayscale(1);transition:filter .4s}
+.d-marq img:hover{filter:none}
+.d-ul{display:flex;gap:26px}
+.d-ul a{position:relative;font-family:var(--mono);font-size:14px;text-transform:uppercase}
+.d-ul a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .35s}
+.d-ul a:hover::after,.play .d-ul a:first-child::after{transform:scaleX(1);transform-origin:left}
+.d-curtain{position:absolute;inset:0;display:grid;place-items:center}
+.d-curtain .c{position:absolute;inset:0;background:var(--acc);transform:scaleY(0);transform-origin:bottom}
+.play .d-curtain .c{animation:curtain 1.6s var(--ease-curtain)}
+@keyframes curtain{0%{transform:scaleY(0);transform-origin:bottom}45%{transform:scaleY(1);transform-origin:bottom}55%{transform:scaleY(1);transform-origin:top}100%{transform:scaleY(0);transform-origin:top}}
+.d-curtain b{font-weight:900;font-stretch:125%;font-size:44px;letter-spacing:-.05em;text-transform:uppercase}
+.d-dots{display:flex;gap:30px;align-items:center}
+.d-dots .dot{width:12px;height:12px;margin:0}
+
+/* 07 fotografia */
+.photo{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.photo figure{aspect-ratio:2/3;overflow:hidden;position:relative;background:var(--bg2)}
+.photo figure:nth-child(even){margin-top:18%}
+.photo img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transition:filter .45s,transform .8s var(--ease)}
+.photo figure:hover img{filter:none;transform:scale(1.05)}
+.photo figcaption{position:absolute;left:10px;bottom:10px;background:rgba(10,10,10,.75);backdrop-filter:blur(6px);padding:4px 9px;border-radius:999px}
+.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:clamp(50px,7vw,90px);border-top:1px solid var(--line);padding-top:20px}
+.rules b{display:block;font-weight:700;font-size:18px;letter-spacing:-.01em;margin:8px 0 6px}
+.rules p{color:var(--soft);font-size:15px}
+@media(max-width:860px){.photo,.rules{grid-template-columns:1fr 1fr}}
+
+/* 08 layout */
+.cols{position:relative;height:280px;display:grid;grid-template-columns:repeat(12,1fr);gap:12px;border:1px solid var(--line);border-radius:16px;padding:0 var(--pad);overflow:hidden}
+.cols i{background:rgba(225,6,0,.08);border-left:1px solid rgba(225,6,0,.3);border-right:1px solid rgba(225,6,0,.3)}
+.cols .lab{position:absolute;inset:0;display:grid;grid-template-columns:7fr 5fr;gap:40px;padding:28px calc(var(--pad) + 6px);align-items:end}
+.cols .lab div{border-top:1px solid var(--fg);padding-top:10px}
+.spec-list{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:20px}
+.spec-list b{display:block;font-weight:800;font-stretch:125%;font-size:clamp(26px,2.6vw,40px);letter-spacing:-.05em;line-height:.9;margin-bottom:8px}
+@media(max-width:860px){.spec-list{grid-template-columns:1fr 1fr}.cols{height:200px}}
+
+/* 09 voz */
+.voice{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.voice h3{font-weight:800;font-stretch:118%;text-transform:uppercase;font-size:28px;letter-spacing:-.04em;margin-bottom:14px}
+.voice ul{list-style:none;display:grid}
+.voice li{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);font-size:clamp(16px,1.4vw,20px);font-weight:500}
+.voice .yes h3{color:var(--fg)}.voice .no h3{color:var(--mute)}
+.voice .no li{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--acc)}
+@media(max-width:860px){.voice{grid-template-columns:1fr}}
+
+/* 10 aplicações */
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.app .im{aspect-ratio:4/5;overflow:hidden;position:relative;background:var(--bg2)}
+.app img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transition:filter .45s,transform .8s var(--ease)}
+.app:hover img{filter:none;transform:scale(1.05)}
+.app .over{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:16px;background:linear-gradient(transparent 40%,rgba(10,10,10,.85))}
+.app .over b{font-weight:900;font-stretch:125%;font-size:clamp(30px,3.4vw,52px);text-transform:uppercase;letter-spacing:-.055em;line-height:.85}
+.app .over b em{font-style:normal;color:var(--acc)}
+.app .badge{align-self:flex-start}
+.app:hover .badge{background:var(--acc);border-color:var(--acc)}
+.app .cap{padding-top:12px;display:flex;justify-content:space-between;gap:10px}
+.app:hover .cap span:last-child{color:var(--acc)}
+@media(max-width:860px){.apps{grid-template-columns:1fr}}
+
+/* 11 tokens */
+pre{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:24px;overflow:auto;font-family:var(--mono);font-size:13px;line-height:1.7;color:var(--soft)}
+pre .k{color:var(--fg)}pre .v{color:var(--acc)}pre .c{color:#5f5d58}
+.copy{margin-top:12px}
+
+footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:60px var(--pad) 24px;border-top:1px solid var(--line);margin-top:clamp(90px,12vw,170px)}
+.end{padding-bottom:0}
+.end .cta{font-size:clamp(48px,11vw,200px);cursor:default;user-select:none;white-space:nowrap}
+.end .cta .ch{display:inline-block;transition:color 1.4s ease-out}.end .cta .ch.on{color:var(--acc);transition:color .05s}
+.end .cta .star{color:var(--acc);display:inline-block;animation:spin 8s linear infinite}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;z-index:95;background:var(--fg);color:var(--bg);border-radius:999px;padding:10px 18px;transition:.35s var(--ease);pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal,.line>span{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<a href="https://anafrontzek.com" class="brand" aria-label="Ana Frontzek"><img src="https://anafrontzek.com/logo_1.png?v=1" alt="Frontzek"></a>
+<nav>
+  <div class="links mono" id="toc">
+    <span class="hide-m" style="color:var(--fg)"><span class="dot red"></span>Brand book v1.0</span>
+    <a href="#essencia" class="hide-m">Essência</a>
+    <a href="#logo" class="hide-m">Logo</a>
+    <a href="#cores" class="hide-m">Cores</a>
+    <a href="#tipografia" class="hide-m">Tipo</a>
+    <a href="#movimento">Movimento</a>
+    <a href="#tokens" class="hide-m">Tokens</a>
+  </div>
+</nav>
+
+<main>
+<!-- ============ CAPA ============ -->
+<header class="hero" id="top">
+  <div class="top mono">
+    <p><span class="mute">(Marca)</span><br>Ana Frontzek</p>
+    <p><span class="mute">(Versão)</span><br>1.0 — Novembro 2026</p>
+    <p><span class="mute">(Aplica em)</span><br>Portfólio, propostas,<br>entregas e redes</p>
+    <p><span class="mute">(Status)</span><br><span class="acc">Rascunho p/ aprovação</span></p>
+  </div>
+  <h1 class="xl"><span class="line"><span>Brand</span></span><span class="line"><span>Book<em>.</em></span></span></h1>
+  <div class="sub">
+    <p class="lede">O sistema visual da marca Ana Frontzek: logo, cores, tipografia, elementos, movimento e fotografia. Tudo que já vive no portfólio e nas propostas, organizado pra ser usado de forma consistente.</p>
+    <span class="mono mute">Role ↓</span>
+  </div>
+</header>
+
+<!-- ============ 01 ESSÊNCIA ============ -->
+<section id="essencia">
+  <div class="sec-head reveal"><h2>Essência</h2><span class="mono mute">(01)</span></div>
+  <div class="intro reveal">
+    <p class="big">Uma profissional criativa que transforma ideias em <em>projetos visuais com personalidade</em>.</p>
+    <p class="body">Direção, captação, edição e color grading. Fotografia e vídeo para automotivo, moda e música. A marca fala como o trabalho: cinematográfica, direta e com contraste.</p>
+  </div>
+  <div class="pillars reveal">
+    <div class="card"><span class="mono mute">(A)</span><b>Cinema&shy;tográfica</b><p>Preto profundo, contraste alto, luz desenhada. Toda peça parece um frame.</p></div>
+    <div class="card"><span class="mono mute">(B)</span><b>Direta</b><p>Títulos curtos, em caixa-alta, sem enrolação. Fala como gente: "Bora fechar".</p></div>
+    <div class="card"><span class="mono mute">(C)</span><b>Precisa</b><p>Grid rígido, linhas de 1px, numeração e etiquetas técnicas — o lado "set de filmagem".</p></div>
+  </div>
+  <div class="services mono reveal">
+    <span class="tag">Direção</span><span class="tag">Roteiro</span><span class="tag">Captação</span><span class="tag">Edição</span><span class="tag">Color Grading</span><span class="tag">Fotografia</span><span class="tag">Aftermovies</span><span class="tag">Reels & Social</span><span class="tag">Fashion Film</span><span class="tag">Publicidade Automotiva</span><span class="tag">Backstage</span><span class="tag">Cobertura de Eventos</span>
+  </div>
+</section>
+
+<!-- ============ 02 LOGO ============ -->
+<section id="logo">
+  <div class="sec-head reveal"><h2>Logo</h2><span class="mono mute">(02)</span></div>
+  <div class="logo-grid reveal">
+    <div class="lg intro-v">
+      <video id="introV" muted playsinline preload="auto" src="https://anafrontzek.com/logo-intro.webm?v=1"></video>
+      <span class="cap mono mute">Assinatura animada — abertura do portfólio</span>
+      <button class="rp tag mono" data-replay-video>↻ Repetir</button>
+    </div>
+    <div class="lg onphoto"><img class="bgp" src="https://anafrontzek.com/imagens/lancamento-ferrari-12cilindri/foto04.webp" alt=""><img class="mark" src="https://anafrontzek.com/logo_1.png?v=1" alt="Logo sobre foto"><span class="cap mono">Sobre foto escura</span></div>
+    <div class="lg dark"><img class="mark" src="https://anafrontzek.com/logo_1.png?v=1" alt="Logo principal"><span class="cap mono mute">Principal — claro sobre preto</span></div>
+    <div class="lg light"><img class="mark" src="https://anafrontzek.com/logo_1.png?v=1" alt="Logo negativo"><span class="cap mono">Negativo — preto sobre papel</span></div>
+    <div class="lg space"><div class="box"><i class="t">X</i><i class="l">X</i><img src="https://anafrontzek.com/logo_1.png?v=1" alt=""></div><span class="cap mono mute">Área de proteção: X = altura da letra F</span></div>
+    <div class="lg min">
+      <div><img src="https://anafrontzek.com/logo_1.png?v=1" alt="" style="height:52px"><span class="mono mute">Web · 52px</span></div>
+      <div><img src="https://anafrontzek.com/logo_1.png?v=1" alt="" style="height:28px"><span class="mono mute">Mínimo · 28px</span></div>
+      <span class="cap mono mute">Tamanhos</span>
+    </div>
+  </div>
+  <div class="donts reveal">
+    <div class="card"><span class="x">✕</span><img src="https://anafrontzek.com/logo_1.png?v=1" alt="" style="transform:scaleX(1.5)"><span class="cap mono mute">Não distorcer</span></div>
+    <div class="card"><span class="x">✕</span><img src="https://anafrontzek.com/logo_1.png?v=1" alt="" style="filter:invert(16%) sepia(97%) saturate(7000%) hue-rotate(10deg)"><span class="cap mono mute">Não recolorir</span></div>
+    <div class="card"><span class="x">✕</span><img src="https://anafrontzek.com/logo_1.png?v=1" alt="" style="filter:drop-shadow(6px 6px 0 #e10600)"><span class="cap mono mute">Sem sombras/efeitos</span></div>
+    <div class="card" style="background:#8a877f"><span class="x">✕</span><img src="https://anafrontzek.com/logo_1.png?v=1" alt=""><span class="cap mono" style="color:#0a0a0a">Sem contraste</span></div>
+  </div>
+</section>
+
+<!-- ============ 03 CORES ============ -->
+<section id="cores">
+  <div class="sec-head reveal"><h2>Cores</h2><span class="mono mute">(03)<br>Clique pra copiar</span></div>
+  <div class="sw reveal" id="sw"></div>
+  <div class="ratio reveal" id="ratio" title="Proporção de uso"></div>
+  <p class="mono mute reveal" style="margin-top:10px">Proporção de uso — o vermelho é acento, nunca fundo de página.</p>
+</section>
+
+<!-- ============ 04 TIPOGRAFIA ============ -->
+<section id="tipografia">
+  <div class="sec-head reveal"><h2>Tipografia</h2><span class="mono mute">(04)</span></div>
+  <div class="fonts reveal">
+    <div class="card f1"><span class="aa">Aa</span><div><span class="mono mute">Display</span><h3>Archivo Expanded Black</h3><ul><li>Peso 900 · largura 125%</li><li>Caixa-alta · entreletra −5,5%</li><li>Entrelinha 0,84</li></ul></div></div>
+    <div class="card f2"><span class="aa">Aa</span><div><span class="mono mute">Texto</span><h3>Archivo</h3><ul><li>Pesos 400 · 500 · 600</li><li>Largura 100–115%</li><li>Entrelinha 1,45</li></ul></div></div>
+    <div class="card f3"><span class="aa">Aa</span><div><span class="mono mute">Etiquetas</span><h3>IBM Plex Mono</h3><ul><li>Peso 400 · 12px</li><li>Caixa-alta · entreletra +4%</li><li>Rótulos, números, legendas</li></ul></div></div>
+  </div>
+  <div class="scale reveal">
+    <div><span class="mono mute">H1 · Display<br>clamp 64→340px</span><span class="t1">Frontzek<span class="acc">.</span></span></div>
+    <div><span class="mono mute">H2 · Seção<br>clamp 38→96px</span><span class="t2">O que eu faço</span></div>
+    <div><span class="mono mute">Destaque<br>clamp 24→46px</span><span class="t3">Projetos visuais com <span class="acc">personalidade</span>.</span></div>
+    <div><span class="mono mute">Texto<br>17→21px</span><span class="t4">Cada projeto é uma oportunidade de entender uma necessidade, encontrar um caminho próprio e dar vida a algo que faça sentido para <strong>quem está do outro lado</strong>.</span></div>
+    <div><span class="mono mute">Etiqueta<br>12px mono</span><span class="mono">(01) Direção, captação, edição & color grading</span></div>
+  </div>
+  <div class="tester card reveal">
+    <span class="mono mute">Teste a fonte — clique e digite</span>
+    <div class="out" id="tOut" contenteditable="true" spellcheck="false">Bora fechar ✱</div>
+    <div class="ctrl mono">
+      <label>Peso <input type="range" id="tW" min="300" max="900" value="900"></label>
+      <label>Largura <input type="range" id="tS" min="62" max="125" value="125"></label>
+      <label>Entreletra <input type="range" id="tL" min="-8" max="4" value="-5.5" step=".5"></label>
+      <button class="tag" id="tC">Alternar vermelho</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 ELEMENTOS ============ -->
+<section id="elementos">
+  <div class="sec-head reveal"><h2>Elementos</h2><span class="mono mute">(05)</span></div>
+  <div class="els reveal">
+    <div class="card"><div class="demo"><div class="navpill mono"><span><span class="dot"></span>Disponível</span><span>Trabalhos</span><span class="r">Contato ↓</span></div></div><div><span class="mono mute">Menu em pílula</span><p class="mute" style="font-size:14px;margin-top:4px">Vidro fosco, borda 8% branca, sempre à direita.</p></div></div>
+    <div class="card"><div class="demo d-dots"><span><span class="dot"></span><span class="mono">Disponível</span></span><span><span class="dot red"></span><span class="mono">Rec</span></span></div><div><span class="mono mute">Indicadores</span><p class="mute" style="font-size:14px;margin-top:4px">Verde pulsando = disponível/pronto. Vermelho piscando = gravando/ao vivo.</p></div></div>
+    <div class="card"><div class="demo"><a class="btn main" href="#elementos">Confirmar pelo WhatsApp →</a><a class="btn mono" href="#elementos">Portfólio ↗</a></div><div><span class="mono mute">Botões</span><p class="mute" style="font-size:14px;margin-top:4px">Primário papel → vermelho no hover. Secundário contorno → papel.</p></div></div>
+    <div class="card"><div class="demo"><span class="ttl">Ana<br>Frontzek<em>.</em></span></div><div><span class="mono mute">Ponto final vermelho</span><p class="mute" style="font-size:14px;margin-top:4px">Assinatura dos títulos principais. Um por tela.</p></div></div>
+    <div class="card"><div class="demo"><span class="bigstar">✱</span></div><div><span class="mono mute">Asterisco ✱</span><p class="mute" style="font-size:14px;margin-top:4px">Separador e chamada final. Sempre vermelho, girando 8s.</p></div></div>
+    <div class="card"><div class="demo"><div class="arrow-ex"><span class="a">→</span>Cadillac</div></div><div><span class="mono mute">Seta + janela</span><p class="mute" style="font-size:14px;margin-top:4px">Placar entre duas linhas de 1px. Seta vermelha na largura normal.</p></div></div>
+    <div class="card"><div class="demo"><span class="mono mute">(01)</span><span class="mono">(Cliente)<br>Eurobike</span><span class="badge mono">Fotografia</span></div><div><span class="mono mute">Etiquetas e numeração</span><p class="mute" style="font-size:14px;margin-top:4px">Rótulo entre parênteses em cinza, valor embaixo. Badges em pílula sobre foto.</p></div></div>
+    <div class="card"><div class="demo"><span class="num">4h</span><span class="num acc">08.12</span></div><div><span class="mono mute">Números de destaque</span><p class="mute" style="font-size:14px;margin-top:4px">Archivo Expanded 800 com legenda mono embaixo. Viram vermelho no hover.</p></div></div>
+    <div class="card"><div class="demo" style="flex-direction:column;align-items:stretch;gap:0"><div style="border-top:1px solid var(--line);padding:12px 0" class="mono mute">Linha 1px · #262624</div><div style="border-top:1px solid var(--line);padding:12px 0" class="mono mute">Raio 16px nos cards · 999px nas pílulas</div><div style="border-top:1px solid var(--line)"></div></div><div><span class="mono mute">Linhas e cantos</span></div></div>
+  </div>
+</section>
+
+<!-- ============ 06 MOVIMENTO ============ -->
+<section id="movimento">
+  <div class="sec-head reveal"><h2>Movi&shy;mento</h2><span class="mono mute">(06)<br>Passe o mouse ou clique ↻</span></div>
+  <div class="intro reveal">
+    <p class="big">Tudo entra <em>como um corte de câmera</em>: rápido no começo, suave no fim. Nada quica, nada pisca à toa.</p>
+    <p class="body">Três curvas fazem todo o trabalho. Durações curtas (0,2–0,4s) para hover e cor; médias (0,8–1,2s) para entradas; longas (2,6s+) só na abertura.</p>
+  </div>
+  <div class="ease reveal">
+    <div class="card"><span class="mono mute">--ease · padrão</span><b>Saída suave</b><svg viewBox="0 0 100 50" preserveAspectRatio="none"><path d="M0 50 C20 15 10 0 100 0" fill="none" stroke="#e10600" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><span class="mono">cubic-bezier(.2,.7,.1,1)</span><div class="track"><span class="ball" style="transition:left .9s var(--ease)"></span></div></div>
+    <div class="card"><span class="mono mute">--ease-expo · cards</span><b>Expo out</b><svg viewBox="0 0 100 50" preserveAspectRatio="none"><path d="M0 50 C16 0 30 0 100 0" fill="none" stroke="#e10600" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><span class="mono">cubic-bezier(.16,1,.3,1)</span><div class="track"><span class="ball" style="transition:left .9s var(--ease-expo)"></span></div></div>
+    <div class="card"><span class="mono mute">--ease-curtain · transições</span><b>Cortina</b><svg viewBox="0 0 100 50" preserveAspectRatio="none"><path d="M0 50 C77 50 18 0 100 0" fill="none" stroke="#e10600" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><span class="mono">cubic-bezier(.77,0,.18,1)</span><div class="track"><span class="ball" style="transition:left .9s var(--ease-curtain)"></span></div></div>
+  </div>
+  <div class="motion reveal" id="motion">
+    <div class="card mv"><div class="stage"><div class="d-line"><span class="line"><span>Ana</span></span><span class="line"><span>Frontzek<em>.</em></span></span></div></div><div class="meta"><div><h3>Título sobe</h3><p class="spec mono">translateY 105% → 0 · 1,1s · --ease · +80ms por linha</p></div><button class="rp tag mono" data-replay>↻</button></div></div>
+    <div class="card mv"><div class="stage"><div class="d-block"><i></i><i></i><i></i></div></div><div class="meta"><div><h3>Revelar no scroll</h3><p class="spec mono">opacity 0→1 · y 30px→0 · 0,9s · --ease</p></div><button class="rp tag mono" data-replay>↻</button></div></div>
+    <div class="card mv"><div class="stage"><div class="d-slot"><span class="a">→</span><span class="nm" id="dSlot"></span></div></div><div class="meta"><div><h3>Placar giratório</h3><p class="spec mono">letras sorteadas em vermelho · 45ms/quadro · troca a cada 2,2s</p></div><button class="rp tag mono" data-replay>↻</button></div></div>
+    <div class="card mv"><div class="stage"><div class="d-glow" id="dGlow">Passe<br>aqui</div></div><div class="meta"><div><h3>Letras acendem</h3><p class="spec mono">hover: vermelho em 0,05s · apaga em 1,4s ease-out</p></div><button class="rp tag mono" data-replay>↻</button></div></div>
+    <div class="card mv"><div class="stage"><div class="d-bw"><img src="https://anafrontzek.com/imagens/cadillac-brasil/foto06.webp" alt=""></div></div><div class="meta"><div><h3>P&amp;B → cor</h3><p class="spec mono">grayscale 1→0 · 0,45s · zoom 1,05 em 0,8s</p></div><button class="rp tag mono" data-replay>↻</button></div></div>
+    <div class="card mv"><div class="stage"><div class="d-open"><img src="https://anafrontzek.com/imagens/cadillac-brasil/capa.webp" alt=""><span>Abertura<em class="acc" style="font-style:normal">.</em></span></div></div><div class="meta"><div><h3>Zoom de abertura</h3><p class="spec mono">escala 1,12→1 · 2,6s · P&amp;B → cor com 0,6s de atraso</p></div><button class="rp tag mono" data-replay>↻</button></div></div>
+    <div class="card mv"><div class="stage"><div class="d-marq"><div class="tr" id="dMarq"></div></div></div><div class="meta"><div><h3>Faixa infinita</h3><p class="spec mono">loop linear · 70s no site · pausa no hover</p></div></div></div>
+    <div class="card mv"><div class="stage"><div class="d-curtain"><b>Corte<span class="acc">.</span></b><span class="c"></span></div></div><div class="meta"><div><h3>Cortina</h3><p class="spec mono">scaleY 0→1→0 · 1,6s · --ease-curtain</p></div><button class="rp tag mono" data-replay>↻</button></div></div>
+    <div class="card mv"><div class="stage"><div style="display:grid;gap:34px;justify-items:center"><div class="d-ul"><a href="#movimento">Trabalhos</a><a href="#movimento">Sobre</a><a href="#movimento">Contato</a></div><div class="d-dots"><span class="dot"></span><span class="bigstar" style="font-size:44px">✱</span><span class="dot red"></span></div></div></div><div class="meta"><div><h3>Micro</h3><p class="spec mono">sublinhado 0,35s · pulso 2s · estrela 8s · rec 1s</p></div><button class="rp tag mono" data-replay>↻</button></div></div>
+  </div>
+</section>
+
+<!-- ============ 07 FOTOGRAFIA ============ -->
+<section id="fotografia">
+  <div class="sec-head reveal"><h2>Fotografia</h2><span class="mono mute">(07)</span></div>
+  <div class="photo reveal">
+    <figure><img src="https://anafrontzek.com/imagens/cadillac-brasil/foto05.webp" alt=""><figcaption class="mono">Ambiente</figcaption></figure>
+    <figure><img src="https://anafrontzek.com/imagens/cadillac-brasil/foto03.webp" alt=""><figcaption class="mono">Detalhe</figcaption></figure>
+    <figure><img src="https://anafrontzek.com/imagens/lancamento-ferrari-12cilindri/foto04.webp" alt=""><figcaption class="mono">Luz desenhada</figcaption></figure>
+    <figure><img src="https://anafrontzek.com/imagens/lancamento-ferrari-12cilindri/foto05.webp" alt=""><figcaption class="mono">Gente</figcaption></figure>
+  </div>
+  <div class="rules reveal">
+    <div><span class="mono acc">01</span><b>P&amp;B na vitrine</b><p>No site, as fotos aparecem em preto e branco e ganham cor ao interagir. A cor é recompensa.</p></div>
+    <div><span class="mono acc">02</span><b>Preto de verdade</b><p>Sombras profundas, contraste alto. A foto conversa com o fundo #0a0a0a.</p></div>
+    <div><span class="mono acc">03</span><b>Vermelho quando existe</b><p>Se a cena tem vermelho, ele é protagonista — é o mesmo vermelho da marca.</p></div>
+    <div><span class="mono acc">04</span><b>Detalhe e reflexo</b><p>Emblemas, rodas, superfícies molhadas, vidro. Fechar no que ninguém olha.</p></div>
+  </div>
+</section>
+
+<!-- ============ 08 LAYOUT ============ -->
+<section id="layout">
+  <div class="sec-head reveal"><h2>Layout</h2><span class="mono mute">(08)</span></div>
+  <div class="cols reveal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <div class="lab mono"><div>7 colunas — título / texto</div><div>5 colunas — foto / ação</div></div>
+  </div>
+  <div class="spec-list reveal">
+    <div><b>16→40px</b><span class="mono mute">Margem lateral (3vw)</span></div>
+    <div><b>12px</b><span class="mono mute">Espaço entre cards e fotos</span></div>
+    <div><b>90→170px</b><span class="mono mute">Respiro entre seções</span></div>
+    <div><b>7 / 5</b><span class="mono mute">Divisão assimétrica padrão</span></div>
+  </div>
+</section>
+
+<!-- ============ 09 VOZ ============ -->
+<section id="voz">
+  <div class="sec-head reveal"><h2>Tom de voz</h2><span class="mono mute">(09)</span></div>
+  <div class="voice reveal">
+    <div class="card yes"><h3>Assim ✓</h3><ul><li>Bora fechar ✱<span class="mono mute">CTA</span></li><li>Valeu demais<span class="mono mute">Entrega</span></li><li>O que eu faço<span class="mono mute">Seção</span></li><li>Quem filma<span class="mono mute">Etiqueta</span></li><li>Faltam 26 dias<span class="mono mute">Status</span></li></ul></div>
+    <div class="card no"><h3>Não assim ✕</h3><ul><li>Entre em contato conosco<span class="mono">CTA</span></li><li>Agradecemos a preferência<span class="mono">Entrega</span></li><li>Nossos serviços<span class="mono">Seção</span></li><li>Equipe especializada<span class="mono">Etiqueta</span></li><li>Clique aqui para saber mais!!!<span class="mono">Status</span></li></ul></div>
+  </div>
+  <p class="mono mute reveal" style="margin-top:14px">Primeira pessoa, português do dia a dia, frases curtas. Títulos em caixa-alta com no máximo 3 palavras.</p>
+</section>
+
+<!-- ============ 10 APLICAÇÕES ============ -->
+<section id="aplicacoes">
+  <div class="sec-head reveal"><h2>Aplicações</h2><span class="mono mute">(10)</span></div>
+  <div class="apps reveal">
+    <a class="app" href="https://anafrontzek.com" target="_blank" rel="noopener"><div class="im"><img src="https://anafrontzek.com/imagens/lancamento-ferrari-12cilindri/foto04.webp" alt=""><div class="over"><span class="badge mono">No ar</span><b>Portfólio<em>.</em></b></div></div><div class="cap mono"><span class="mute">01</span><span>anafrontzek.com ↗</span></div></a>
+    <a class="app" href="https://anafrontzek.com/propostas/eurobike-cadillac/" target="_blank" rel="noopener"><div class="im"><img src="https://anafrontzek.com/imagens/cadillac-brasil/foto04.webp" alt=""><div class="over"><span class="badge mono">No ar</span><b>Proposta<em>.</em></b></div></div><div class="cap mono"><span class="mute">02</span><span>/propostas/… ↗</span></div></a>
+    <div class="app"><div class="im"><img src="https://anafrontzek.com/imagens/cadillac-brasil/foto03.webp" alt=""><div class="over"><span class="badge mono">Em aprovação</span><b>Entrega<em>.</em></b></div></div><div class="cap mono"><span class="mute">03</span><span>/entregas/…</span></div></div>
+  </div>
+</section>
+
+<!-- ============ 11 TOKENS ============ -->
+<section id="tokens">
+  <div class="sec-head reveal"><h2>Tokens</h2><span class="mono mute">(11)<br>Pra colar em qualquer página</span></div>
+<pre class="reveal" id="code"><span class="k">:root</span>{
+  <span class="c">/* cores */</span>
+  --bg:<span class="v">#0a0a0a</span>; --bg2:<span class="v">#121212</span>; --line:<span class="v">#262624</span>;
+  --fg:<span class="v">#efece6</span>; --soft:<span class="v">#b9b6ae</span>; --mute:<span class="v">#8a877f</span>;
+  --acc:<span class="v">#e10600</span>; --ok:<span class="v">#3ddc6a</span>;
+  <span class="c">/* tipo */</span>
+  --sans:<span class="v">"Archivo"</span>, system-ui, sans-serif;
+  --mono:<span class="v">"IBM Plex Mono"</span>, ui-monospace, monospace;
+  <span class="c">/* espaço */</span>
+  --pad:<span class="v">clamp(16px,3vw,40px)</span>;
+  <span class="c">/* movimento */</span>
+  --ease:<span class="v">cubic-bezier(.2,.7,.1,1)</span>;
+  --ease-expo:<span class="v">cubic-bezier(.16,1,.3,1)</span>;
+  --ease-curtain:<span class="v">cubic-bezier(.77,0,.18,1)</span>;
+}
+<span class="k">.xl</span>{font-weight:<span class="v">900</span>;font-stretch:<span class="v">125%</span>;text-transform:<span class="v">uppercase</span>;letter-spacing:<span class="v">-.055em</span>;line-height:<span class="v">.84</span>}
+<span class="k">.mono</span>{font-family:var(--mono);font-size:<span class="v">12px</span>;letter-spacing:<span class="v">.04em</span>;text-transform:<span class="v">uppercase</span>}
+<span class="c">/* fontes: https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&amp;family=IBM+Plex+Mono:wght@400;500 */</span></pre>
+  <button class="tag mono copy" id="copyCode">Copiar tokens</button>
+</section>
+
+<section class="end" id="fim">
+  <h2 class="cta xl" id="cta">Ana<br>Frontzek <span class="star">✱</span></h2>
+</section>
+</main>
+
+<footer class="mono mute">
+  <span>Ana Frontzek — Fotografia | Direção Criativa | Audiovisual</span>
+  <span>Brand book v1.0 — 2026</span>
+  <a href="#top">Voltar ao topo ↑</a>
+</footer>
+<div class="toast mono" id="toast"></div>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s) };
+  function toast(t){ var el=$("#toast"); el.textContent=t; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(function(){ el.classList.remove("show") },1800) }
+  function copy(t){ (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ toast("Copiado: "+(t.length>30?"tokens":t)) }, function(){ toast(t) }) }
+  requestAnimationFrame(function(){ setTimeout(function(){ document.body.classList.add("ready") },60) });
+
+  /* cores */
+  var C = [
+    ["Preto set","#0a0a0a","Fundo de tudo.","dk",62],
+    ["Grafite","#121212","Cards e áreas.","dk",14],
+    ["Linha","#262624","Divisórias 1px.","dk",4],
+    ["Papel","#efece6","Texto e títulos. Nunca branco puro.","lt",14],
+    ["Cinza","#8a877f","Rótulos e apoio.","lt",3],
+    ["Vermelho REC","#e10600","Acento: ponto, seta, ✱, hover.","dk",2.5],
+    ["Verde","#3ddc6a","Só status 'disponível'.","lt",.5]
+  ];
+  $("#sw").innerHTML = C.map(function(c){ return '<button class="s '+c[3]+'" style="background:'+c[1]+'" data-hex="'+c[1]+'"><span class="mono">'+(c[3]==="lt"?"":"")+'</span><span><b>'+c[0]+'</b><span class="mono">'+c[1]+'</span><p>'+c[2]+'</p></span></button>' }).join("");
+  $("#sw").addEventListener("click", function(e){ var b=e.target.closest("[data-hex]"); if(b) copy(b.dataset.hex) });
+  $("#ratio").innerHTML = C.map(function(c){ return '<span style="flex:'+c[4]+';background:'+c[1]+';color:'+(c[3]==="lt"?"#0a0a0a":"#efece6")+'">'+(c[4]>=10?c[4]+'%':'')+'</span>' }).join("");
+
+  /* testador de fonte */
+  var tOut=$("#tOut");
+  function tUpd(){ tOut.style.fontWeight=$("#tW").value; tOut.style.fontStretch=$("#tS").value+"%"; tOut.style.letterSpacing=($("#tL").value/100)+"em" }
+  ["#tW","#tS","#tL"].forEach(function(s){ $(s).addEventListener("input",tUpd) }); tUpd();
+  $("#tC").addEventListener("click", function(){ tOut.style.color = tOut.style.color ? "" : "var(--acc)" });
+
+  /* vídeo do logo */
+  var v=$("#introV");
+  new IntersectionObserver(function(es){ es.forEach(function(x){ if(x.isIntersecting){ v.currentTime=0; var p=v.play(); if(p&&p.catch)p.catch(function(){}) } }) },{threshold:.5}).observe(v);
+  document.querySelector("[data-replay-video]").addEventListener("click", function(){ v.currentTime=0; v.play() });
+
+  /* placar */
+  var W=["Cadillac","Ferrari","Eurobike","NASCAR","Porsche Cup","CD Projekt Red"], GL="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", bi=0, slot=$("#dSlot");
+  function bshow(i){ var w=W[i].toUpperCase(), f=0; clearInterval(slot._t); slot._t=setInterval(function(){ f++; slot.innerHTML=w.split("").map(function(c,k){ var ok=f>12*k/w.length+3; return c===" "?" ":'<span class="'+(ok?"":"sc")+'">'+(ok?c:GL[Math.random()*GL.length|0])+'</span>' }).join(""); if(f>16)clearInterval(slot._t) },45) }
+  bshow(0); setInterval(function(){ bi=(bi+1)%W.length; bshow(bi) },2200);
+
+  /* letras acendem */
+  function glowify(el){
+    [].slice.call(el.childNodes).forEach(function(n){ if(n.nodeType===3){ var fr=document.createDocumentFragment(); n.textContent.split("").forEach(function(c){ if(c.trim()){ var s=document.createElement("span"); s.className="ch"; s.textContent=c; fr.appendChild(s) } else fr.appendChild(document.createTextNode(c)) }); el.replaceChild(fr,n) } });
+    el.addEventListener("mouseover", function(e){ var c=e.target.closest(".ch"); if(!c)return; c.classList.add("on"); clearTimeout(c._t); c._t=setTimeout(function(){ c.classList.remove("on") },220) });
+  }
+  glowify($("#dGlow")); glowify($("#cta"));
+  function sweep(el){ el.querySelectorAll(".ch").forEach(function(c,k){ setTimeout(function(){ c.classList.add("on"); setTimeout(function(){ c.classList.remove("on") },200) },k*70) }) }
+
+  /* faixa */
+  var imgs=["cadillac-brasil/foto01","cadillac-brasil/foto02","lancamento-ferrari-12cilindri/foto02","cadillac-brasil/foto05","lancamento-ferrari-12cilindri/foto04","bmw-m2cs-eurobike-magazine/foto04"];
+  var strip=imgs.map(function(p){ return '<img src="https://anafrontzek.com/imagens/'+p+'.webp" alt="">' }).join("");
+  $("#dMarq").innerHTML=strip+strip;
+
+  /* tocar demos ao aparecer + botão repetir */
+  function play(card){ card.classList.remove("play"); void card.offsetWidth; requestAnimationFrame(function(){ card.classList.add("play") }); var g=card.querySelector(".d-glow"); if(g) sweep(g); var s=card.querySelector(".d-slot"); if(s){ bi=(bi+1)%W.length; bshow(bi) } }
+  document.querySelectorAll("#motion .mv").forEach(function(card){
+    var b=card.querySelector("[data-replay]"); if(b) b.addEventListener("click", function(){ play(card) });
+  });
+  var mo=new IntersectionObserver(function(es){ es.forEach(function(x){ if(x.isIntersecting){ play(x.target); mo.unobserve(x.target) } }) },{threshold:.5});
+  document.querySelectorAll("#motion .mv").forEach(function(c){ mo.observe(c) });
+
+  /* revelar */
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target) } }) },{threshold:.08});
+  document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el) });
+
+  /* menu ativo */
+  var links=[].slice.call(document.querySelectorAll("#toc a"));
+  var so=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){ a.classList.toggle("on", a.getAttribute("href")==="#"+e.target.id) }) } }) },{rootMargin:"-45% 0px -50% 0px"});
+  document.querySelectorAll("section[id]").forEach(function(s){ so.observe(s) });
+
+  $("#copyCode").addEventListener("click", function(){ copy($("#code").textContent) });
+})();
+</script>
+</body>
+</html>
