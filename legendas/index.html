@@ -45,6 +45,7 @@ header h1 span{font-family:"Instrument Serif";font-style:italic;font-weight:400;
 #frame{position:relative;height:100%;max-width:100%;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:#000}
 #frame{touch-action:none;user-select:none;-webkit-user-select:none}
 #frame video,#frame canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+#prevStatus{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.6);padding:4px 9px;border-radius:8px;font-size:12px;display:none;pointer-events:none;color:#ddd}
 #gestInfo{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);padding:5px 10px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none}
 #frame canvas{pointer-events:none}
 #transport{display:flex;align-items:center;gap:10px;padding:4px 14px 6px;flex:none}
@@ -115,7 +116,7 @@ h3:first-child{margin-top:4px}
 </div>
 
 <div id="editor">
-  <div id="stage"><div id="frame"><video id="video" playsinline webkit-playsinline preload="auto"></video><canvas id="overlay"></canvas><div id="gestInfo"></div></div></div>
+  <div id="stage"><div id="frame"><video id="video" playsinline webkit-playsinline preload="auto"></video><canvas id="overlay"></canvas><div id="gestInfo"></div><div id="prevStatus"></div></div></div>
   <div id="transport">
     <button id="playBtn" aria-label="Play">▶</button>
     <input type="range" id="seek" min="0" max="1000" value="0" step="1">
@@ -199,7 +200,7 @@ h3:first-child{margin-top:4px}
     <div class="pane" id="p-exp">
       <h3>Qualidade</h3>
       <div class="row"><label>Resolução</label><select id="e_res"></select></div>
-      <div class="row"><label>FPS</label><select id="e_fps"><option value="auto">Original</option><option>24</option><option>25</option><option>30</option><option>50</option><option>60</option></select></div>
+      <div class="row"><label>FPS</label><select id="e_fps" onchange="try{localStorage.setItem('lg_fpsPicked','true')}catch(e){}"><option value="auto">Original</option><option>24</option><option>25</option><option>30</option><option>50</option><option>60</option></select></div>
       <div class="row"><label>Bitrate</label><select id="e_br"><option value="max">Máximo (50 Mbps)</option><option value="high" selected>Alto (~30 Mbps)</option><option value="med">Médio (~15 Mbps)</option></select></div>
       <div class="btnrow"><button class="primary big" id="expBtn">Exportar vídeo</button></div>
       <div id="expDone" style="display:none">
@@ -302,7 +303,7 @@ function styleToUI(){
   for(const [id,k,kind,fn] of BIND){ const el=$(id); if(kind==="bool") el.checked=!!style[k]; else el.value=style[k]; if(VALID[id]&&fn) $(VALID[id]).textContent=fn(style[k]); }
   for(const [id,k] of SEGS){ for(const b of $(id).children) b.classList.toggle("on", b.dataset.v===style[k]); }
 }
-function onStyleChange(){ store.set("style", style); captionsDirty=true; ensureFonts().then(()=>{ captionsDirty=true; }); }
+function onStyleChange(){ store.set("style", style); captionsDirty=true; lastSig=""; ensureFonts().then(()=>{ captionsDirty=true; }); }
 for(const [id,k,kind,fn] of BIND){
   const el=$(id);
   el.addEventListener(el.type==="range"?"input":"change", ()=>{ style[k] = kind==="bool" ? el.checked : kind==="num" ? +el.value : el.value; if(VALID[id]&&fn) $(VALID[id]).textContent=fn(style[k]); onStyleChange(); });
@@ -349,22 +350,25 @@ function loadVideo(f){
   fileObj=f; decodedAudio=null; words=[]; captionsDirty=true; exportBlob=null; $("#expDone").style.display="none";
   if(srcURL) URL.revokeObjectURL(srcURL);
   srcURL=URL.createObjectURL(f); video.src=srcURL; video.load();
+  stopPreviewJob(); if(previewURL){ URL.revokeObjectURL(previewURL); previewURL=null; } movieCache=null; setPrevStatus("");
   video.onloadedmetadata=()=>{
+    video.onloadedmetadata=null;
     duration=video.duration; trimIn=0; trimOut=duration; vW=video.videoWidth; vH=video.videoHeight;
     $("#frame").style.aspectRatio = vW+"/"+vH;
     $("#empty").style.display="none"; $("#editor").style.display="flex"; $("#newBtn").style.display="";
     setupRes();
     sizeOverlay(); renderWords(); updateTrimUI(); makeThumbs(); estimateFps();
     video.currentTime=0.01;
+    setTimeout(makePreview,300);
   };
   video.onerror=()=>toast("Esse vídeo não abriu no navegador");
 }
-function sizeOverlay(){ const r=$("#frame").getBoundingClientRect(); const dpr=Math.min(devicePixelRatio||1,2.5); overlay.width=Math.round(r.width*dpr); overlay.height=Math.round(r.height*dpr); }
+function sizeOverlay(){ const r=$("#frame").getBoundingClientRect(); const dpr=Math.min(devicePixelRatio||1,2); overlay.width=Math.round(r.width*dpr); overlay.height=Math.round(r.height*dpr); }
 addEventListener("resize", ()=>{ if(duration) { sizeOverlay(); drawTrim(); } });
 function estimateFps(){
   if(!("requestVideoFrameCallback" in HTMLVideoElement.prototype)) return;
   let last=null, deltas=[];
-  const cb=(now,md)=>{ if(last!=null){ const d=md.mediaTime-last; if(d>0.005&&d<0.1) deltas.push(d); } last=md.mediaTime; if(deltas.length<40 && !video.paused) video.requestVideoFrameCallback(cb); else if(deltas.length>=10){ deltas.sort((a,b)=>a-b); const med=deltas[deltas.length>>1]; const f=1/med; const std=[23.976,24,25,29.97,30,50,59.94,60,120]; estFps=std.reduce((a,b)=>Math.abs(b-f)<Math.abs(a-f)?b:a); const opt=$("#e_fps option[value=auto]"); opt.textContent="Original ("+(Math.round(estFps*100)/100)+")"; } };
+  const cb=(now,md)=>{ if(last!=null){ const d=md.mediaTime-last; if(d>0.005&&d<0.1) deltas.push(d); } last=md.mediaTime; if(deltas.length<40 && !video.paused) video.requestVideoFrameCallback(cb); else if(deltas.length>=10 && !previewURL && !movieCache){ deltas.sort((a,b)=>a-b); const med=deltas[deltas.length>>1]; const f=1/med; const std=[23.976,24,25,29.97,30,50,59.94,60,120]; estFps=std.reduce((a,b)=>Math.abs(b-f)<Math.abs(a-f)?b:a); const opt=$("#e_fps option[value=auto]"); opt.textContent="Original ("+(Math.round(estFps*100)/100)+")"; } };
   video.addEventListener("play", ()=>{ last=null; deltas=[]; video.requestVideoFrameCallback(cb); }, {once:false});
 }
 
@@ -850,45 +854,65 @@ function layoutCaption(ctx, c, W, H){
   return items;
 }
 const layoutCache=new Map();
-function drawCaptions(ctx, t, W, H){
+function makeSprite(it, H){
+  const S=style, st=it.st, base=S.size/1000*H;
+  const glow = st.hl&&S.hGlow>0 ? st.size*0.5*S.hGlow/100 : 0;
+  const sh = S.shadow>0 ? base*0.5*S.shadow/100 + base*0.06*S.shadow/100 : 0;
+  const sw = S.stroke>0 ? base*S.stroke/100*2 : 0;
+  const pad=Math.ceil(Math.max(glow*2, sh*2, sw)+st.size*0.25+4);
+  const asc=st.size*1.1;
+  const cv=document.createElement("canvas"); cv.width=Math.ceil(it.width+2*pad+st.size*0.3); cv.height=Math.ceil(st.size*1.5+2*pad);
+  const ctx=cv.getContext("2d"); ctx.textBaseline="alphabetic"; ctx.textAlign="left"; ctx.font=st.font;
+  const x=pad, y=pad+asc;
+  if(glow){ ctx.shadowColor=st.color; ctx.shadowBlur=glow; ctx.fillStyle=st.color; drawText(ctx,st,x,y); ctx.shadowBlur=st.size*0.18*S.hGlow/100; drawText(ctx,st,x,y); }
+  if(sw){ ctx.lineJoin="round"; ctx.lineWidth=sw; ctx.strokeStyle=S.strokeColor; ctx.shadowColor="transparent"; ctx._stroke=true; ctx.fillStyle="rgba(0,0,0,0)"; drawText(ctx,st,x,y); ctx._stroke=false; }
+  if(S.shadow>0){ ctx.shadowColor=`rgba(0,0,0,${0.25+0.5*S.shadow/100})`; ctx.shadowBlur=base*0.5*S.shadow/100; ctx.shadowOffsetY=base*0.06*S.shadow/100; } else ctx.shadowColor="transparent";
+  ctx.fillStyle=st.color; drawText(ctx,st,x,y);
+  it.sprite=cv; it.ox=pad; it.oy=asc+pad;
+}
+function captionState(t){
   if(captionsDirty){ buildCaptions(); layoutCache.clear(); }
-  const c=captions.find(c=>t>=c.start&&t<c.end); if(!c) return;
-  const key=c.start+"|"+W+"x"+H;
-  let items=layoutCache.get(key); if(!items){ items=layoutCaption(ctx,c,W,H); layoutCache.set(key,items); }
-  const S=style, fade=Math.max(0.001,S.fade/1000), base=S.size/1000*H;
-  ctx.textBaseline="alphabetic"; ctx.textAlign="left";
+  return captions.find(c=>t>=c.start&&t<c.end)||null;
+}
+function wordAnim(c, w, t, base){
+  const S=style, fade=Math.max(0.001,S.fade/1000);
+  let a=1, sc=1, dy=0;
+  if(S.anim==="reveal" && t<w.start) return null;
+  const k = S.anim==="phrase" ? clamp((t-c.start)/fade,0,1) : clamp((t-w.start)/fade,0,1);
+  const e=1-Math.pow(1-k,3);
+  if(S.anim==="karaoke"){
+    if(t<w.start) a=S.dim/100; else a=S.dim/100+(1-S.dim/100)*e;
+    if(S.enter==="pop" && t>=w.start) sc=1+0.12*(1-e);
+  } else {
+    if(S.enter==="fade") a=e; else if(S.enter==="pop"){ a=Math.min(1,e*2); sc=0.75+0.25*e+0.08*Math.sin(e*Math.PI); } else if(S.enter==="rise"){ a=e; dy=(1-e)*base*0.45; }
+  }
+  if(a<=0.001) return null;
+  return {a,sc,dy};
+}
+function drawCaptions(ctx, t, W, H){
+  const c=captionState(t); if(!c) return;
+  const key=c.start+"|"+Math.round(W)+"x"+Math.round(H);
+  let items=layoutCache.get(key);
+  if(!items){ items=layoutCaption(ctx,c,W,H); for(const it of items) makeSprite(it,H); layoutCache.set(key,items); if(layoutCache.size>40) layoutCache.delete(layoutCache.keys().next().value); }
+  const base=style.size/1000*H;
   for(const it of items){
-    const w=it.w, st=it.st;
-    let a=1, sc=1, dy=0;
-    if(S.anim==="reveal"){ if(t<w.start) continue; }
-    const k = S.anim==="phrase" ? clamp((t-c.start)/fade,0,1) : clamp((t-w.start)/fade,0,1);
-    const e=1-Math.pow(1-k,3);
-    let color=st.color;
-    if(S.anim==="karaoke"){
-      if(t<w.start){ a=S.dim/100; color = st.hl ? st.color : S.color; }
-      else { a = S.dim/100 + (1-S.dim/100)*e; }
-      if(S.enter==="pop" && t>=w.start) sc=1+0.12*(1-e);
-    } else {
-      if(S.enter==="fade") a=e; else if(S.enter==="pop"){ a=Math.min(1,e*2); sc=0.75+0.25*e + 0.08*Math.sin(e*Math.PI); } else if(S.enter==="rise"){ a=e; dy=(1-e)*base*0.45; }
-    }
-    if(a<=0.001) continue;
-    ctx.save(); ctx.globalAlpha=a; ctx.font=st.font;
-    const cx=it.x+it.width/2, cy=it.y-st.size*0.35;
-    if(sc!==1){ ctx.translate(cx,cy); ctx.scale(sc,sc); ctx.translate(-cx,-cy); }
-    // glow for highlight
-    if(st.hl && S.hGlow>0){ ctx.shadowColor=st.color; ctx.shadowBlur=st.size*0.5*S.hGlow/100; ctx.fillStyle=st.color; drawText(ctx,st,it.x,it.y+dy); ctx.shadowBlur=st.size*0.18*S.hGlow/100; drawText(ctx,st,it.x,it.y+dy); }
-    if(S.stroke>0){ ctx.lineJoin="round"; ctx.lineWidth=base*S.stroke/100*2; ctx.strokeStyle=S.strokeColor; ctx.shadowColor="transparent"; ctx._stroke=true; ctx.fillStyle="rgba(0,0,0,0)"; drawText(ctx,st,it.x,it.y+dy); ctx._stroke=false; }
-    if(S.shadow>0){ ctx.shadowColor=`rgba(0,0,0,${0.25+0.5*S.shadow/100})`; ctx.shadowBlur=base*0.5*S.shadow/100; ctx.shadowOffsetY=base*0.06*S.shadow/100; }
-    else ctx.shadowColor="transparent";
-    ctx.fillStyle=color; drawText(ctx,st,it.x,it.y+dy);
+    const an=wordAnim(c,it.w,t,base); if(!an) continue;
+    ctx.save(); ctx.globalAlpha=an.a;
+    if(an.sc!==1){ const cx=it.x+it.width/2, cy=it.y-it.st.size*0.35; ctx.translate(cx,cy); ctx.scale(an.sc,an.sc); ctx.translate(-cx,-cy); }
+    ctx.drawImage(it.sprite, it.x-it.ox, it.y+an.dy-it.oy);
     ctx.restore();
   }
 }
+let lastSig="";
 function drawOverlay(t){
-  const W=overlay.width, H=overlay.height; octx.clearRect(0,0,W,H);
-  if(!words.length) return;
-  // map video coordinate space into the contained box
+  const W=overlay.width, H=overlay.height;
+  if(!words.length){ if(lastSig){ octx.clearRect(0,0,W,H); lastSig=""; } return; }
   const r=Math.min(W/vW,H/vH), dw=vW*r, dh=vH*r;
+  // skip the redraw when nothing on screen would change
+  const wasDirty=captionsDirty; const c=captionState(t); let sig=W+"x"+H+"|";
+  if(c){ const base=style.size/1000*dh; sig+=c.start+":"+c.words.map(w=>{ const a=wordAnim(c,w,t,base); return a?(a.a.toFixed(2)+a.sc.toFixed(2)+a.dy.toFixed(0)):"-"; }).join(","); }
+  if(!wasDirty && sig===lastSig) return; lastSig=sig;
+  octx.clearRect(0,0,W,H);
   octx.save(); octx.translate((W-dw)/2,(H-dh)/2);
   drawCaptions(octx,t,dw,dh);
   octx.restore();
@@ -917,8 +941,8 @@ function makeTarget(){
   };
   return {target:new Mp4Muxer.StreamTarget({onData:write, chunked:true, chunkSize:8*1048576}), blob:()=>new Blob(parts.map(p=>p.data),{type:"video/mp4"})};
 }
-async function pickVideoEncoderConfig(W,H,fps){
-  const bitrate=pickBitrate(W,H,fps);
+async function pickVideoEncoderConfig(W,H,fps,br){
+  const bitrate=br||pickBitrate(W,H,fps);
   for(const codec of ["avc1.640034","avc1.640033","avc1.640032","avc1.640028","avc1.4d0034","avc1.4d0028","avc1.42003e"]){
     for(const hw of ["prefer-hardware","no-preference"]){
       const cfg={codec,width:W,height:H,bitrate,framerate:fps,avc:{format:"avc"},bitrateMode:"variable",hardwareAcceleration:hw,latencyMode:"quality"};
@@ -928,7 +952,7 @@ async function pickVideoEncoderConfig(W,H,fps){
   return null;
 }
 // ---- AAC audio for the output: passthrough, encode, or record ----
-async function prepareAudio(t0,t1){
+async function prepareAudio(t0,t1,opt){ opt=opt||{};
   let M=null; try{ M=await parseMovie(fileObj); }catch(e){}
   const T=M&&M.audio;
   // 1) source already AAC: copy the packets, no re-encoding
@@ -939,7 +963,7 @@ async function prepareAudio(t0,t1){
       return {rate:T.rate, ch:T.channels, asc:T.asc, method:"áudio original", packets:data.map((d,k)=>({data:d, ts:Math.max(0,Math.round((T.pts(idx[k])-t0)*1e6)), dur:Math.round(dur*1e6)})), offset:first-t0}; }
   }
   // decoded PCM (also covers camera files with uncompressed audio)
-  progress(0,"Preparando o áudio…");
+  if(!opt.quiet) progress(0,"Preparando o áudio…");
   const ab=await getDecodedAudio(); const sr=ab.sampleRate, ch=Math.min(2,ab.numberOfChannels);
   // 2) WebCodecs AAC encoder
   if("AudioEncoder" in window){
@@ -957,7 +981,7 @@ async function prepareAudio(t0,t1){
     }
   }
   // 3) record the PCM through MediaRecorder (real time) and lift the AAC packets out
-  if(window.MediaRecorder && MediaRecorder.isTypeSupported("audio/mp4")){
+  if(!opt.noRecord && window.MediaRecorder && MediaRecorder.isTypeSupported("audio/mp4")){
     busy(true,"Preparando o áudio…","Gravando o som do trecho (leva o tempo do vídeo).",true);
     const AC=window.AudioContext||window.webkitAudioContext; const ac=new AC({sampleRate:sr});
     const src=ac.createBufferSource(); src.buffer=ab; const dest=ac.createMediaStreamDestination(); src.connect(dest);
@@ -984,61 +1008,107 @@ function drawFrame(cx, src, W, H, rot, sw, sh){
 }
 
 // ---- engine A: decode with VideoDecoder (fast, frame accurate) ----
-async function exportDecoder(){
-  if(!("VideoDecoder" in window)||!("VideoEncoder" in window)) return false;
-  let M; try{ M=await parseMovie(fileObj); }catch(e){ return false; }
-  const V=M.video; if(!V||!V.codec) return false;
+// generic transcode used by the export (with captions) and by the light preview (without)
+async function transcode(o){
+  // o: {W,H,fps,t0,t1,captions,bitrate,gopSec,audio,onProgress,isCancelled}
+  if(!("VideoDecoder" in window)||!("VideoEncoder" in window)) return null;
+  let M; try{ M=await parseMovie(fileObj); }catch(e){ return null; }
+  const V=M.video; if(!V||!V.codec) return null;
   const dcfg={codec:V.codec,codedWidth:V.width,codedHeight:V.height,description:V.desc,hardwareAcceleration:"prefer-hardware"};
   let dok=false; try{ dok=(await VideoDecoder.isConfigSupported(dcfg)).supported; }catch(e){}
   if(!dok){ delete dcfg.hardwareAcceleration; try{ dok=(await VideoDecoder.isConfigSupported(dcfg)).supported; }catch(e){} }
-  if(!dok){ console.warn("decoder unsupported",V.codec); return false; }
-  const fps=fpsChoice(V.fps); const [W,H]=outSize(); const vcfg=await pickVideoEncoderConfig(W,H,fps); if(!vcfg) return false;
-  busy(true,"Preparando o áudio…","",true);
-  const A=await prepareAudio(trimIn,trimOut); if(busyCancelled) return false;
+  if(!dok){ console.warn("decoder unsupported",V.codec); return null; }
+  const fps=o.fps||V.fps, W=o.W, H=o.H;
+  const vcfg=await pickVideoEncoderConfig(W,H,fps,o.bitrate); if(!vcfg) return null;
+  const A=o.audio;
   const {target,blob}=makeTarget();
   const muxer=new Mp4Muxer.Muxer({target, video:{codec:"avc",width:W,height:H,frameRate:fps}, audio:A?{codec:"aac",sampleRate:A.rate,numberOfChannels:A.ch}:undefined, fastStart:false, firstTimestampBehavior:"offset"});
   let err=null;
   const venc=new VideoEncoder({output:(c,m)=>muxer.addVideoChunk(c,m), error:e=>err=e}); venc.configure(vcfg);
   const cv=document.createElement("canvas"); cv.width=W; cv.height=H; const cx=cv.getContext("2d",{alpha:false});
   const rot=((V.rot||0)+360)%360===0?0:V.rot;
-  // which samples: from the keyframe before trimIn to past trimOut (decode order)
-  let k0=0; for(let i=0;i<V.n;i++){ if(V.key[i] && V.pts(i)<=trimIn+1e-3) k0=i; if(V.dts[i]/V.ts>trimIn+2) break; }
-  let k1=V.n; for(let i=k0;i<V.n;i++){ if((V.dts[i]-V.shift)/V.ts>trimOut+1){ k1=i; break; } }
-  const fdur=1/fps, nOut=Math.max(1,Math.round((trimOut-trimIn)*fps)); let outIdx=0; const gop=Math.round(fps*2); const tStart=performance.now();
-  // CFR output: each source frame covers [pts, nextPts); emit output frames whose time falls inside
+  const t0=o.t0, t1=o.t1;
+  let k0=0; for(let i=0;i<V.n;i++){ if(V.key[i] && V.pts(i)<=t0+1e-3) k0=i; if(V.dts[i]/V.ts>t0+2) break; }
+  let k1=V.n; for(let i=k0;i<V.n;i++){ if((V.dts[i]-V.shift)/V.ts>t1+1){ k1=i; break; } }
+  const fdur=1/fps, nOut=Math.max(1,Math.round((t1-t0)*fps)); let outIdx=0; const gop=Math.max(1,Math.round(fps*(o.gopSec||2)));
   let pending=null;
   const emitUpTo=(frame, until)=>{
-    while(outIdx<nOut){ const t=trimIn+outIdx*fdur; if(t>=until) break;
-      drawFrame(cx,frame,W,H,rot); drawCaptions(cx,t,W,H);
+    while(outIdx<nOut){ const t=t0+outIdx*fdur; if(t>=until) break;
+      drawFrame(cx,frame,W,H,rot); if(o.captions) drawCaptions(cx,t,W,H);
       const vf=new VideoFrame(cv,{timestamp:Math.round(outIdx*fdur*1e6),duration:Math.round(fdur*1e6)});
       venc.encode(vf,{keyFrame:outIdx%gop===0}); vf.close(); outIdx++; }
   };
   const dec=new VideoDecoder({output:f=>{
       const t=f.timestamp/1e6;
-      if(pending){ if(t>trimIn) emitUpTo(pending.frame,t); pending.frame.close(); }
-      pending={frame:f,t};
-      if(outIdx%5===0){ const el=(performance.now()-tStart)/1000; progress(outIdx/nOut, `Quadro ${outIdx} de ${nOut} · falta ~${Math.ceil(el/Math.max(1,outIdx)*(nOut-outIdx))}s`); }
+      if(pending){ if(t>t0) emitUpTo(pending,t); pending.close(); }
+      pending=f;
+      if(o.onProgress) o.onProgress(outIdx,nOut);
     }, error:e=>err=e});
   dec.configure(dcfg);
-  busy(true,"Renderizando vídeo…","Deixe a tela ligada",true);
   const BATCH=24;
   for(let i=k0;i<k1;i+=BATCH){
-    if(busyCancelled||err) break;
+    if(o.isCancelled()||err) break;
     const j=Math.min(k1,i+BATCH); const data=await readSamples(fileObj,V,i,j);
     for(let k=i;k<j;k++){ dec.decode(new EncodedVideoChunk({type:V.key[k]?"key":"delta",timestamp:Math.round(V.pts(k)*1e6),data:data[k-i]})); }
-    while((dec.decodeQueueSize>6||venc.encodeQueueSize>6) && !err) await sleep(4);
+    while((dec.decodeQueueSize>6||venc.encodeQueueSize>6) && !err) await sleep(2);
     if(outIdx>=nOut) break;
   }
-  if(!err && !busyCancelled){ await dec.flush(); if(pending){ emitUpTo(pending.frame,Infinity); pending.frame.close(); pending=null; } }
+  const cancelled=o.isCancelled();
+  if(!err && !cancelled){ await dec.flush(); if(pending){ emitUpTo(pending,Infinity); } }
+  if(pending){ try{ pending.close(); }catch(e){} pending=null; }
   try{ dec.close(); }catch(e){}
-  if(err||busyCancelled){ try{ venc.close(); }catch(e){} if(err) throw err; return false; }
+  if(err||cancelled){ try{ venc.close(); }catch(e){} if(err) throw err; return null; }
   await venc.flush(); venc.close();
   if(outIdx<nOut*0.9) throw new Error("poucos quadros decodificados ("+outIdx+"/"+nOut+")");
   if(A) for(const p of A.packets) muxer.addAudioChunkRaw(p.data,"key",p.ts,p.dur,{decoderConfig:{codec:"mp4a.40.2",sampleRate:A.rate,numberOfChannels:A.ch,description:A.asc}});
   muxer.finalize();
-  exportBlob=blob(); exportBlob._method="rápido · "+(A?A.method:"sem áudio"); exportBlob._fps=fps;
+  const out=blob(); out._fps=fps; out._audio=A?A.method:"sem áudio";
+  return out;
+}
+async function exportDecoder(){
+  let M; try{ M=await parseMovie(fileObj); }catch(e){ return false; }
+  if(!M.video||!M.video.codec||!("VideoDecoder" in window)) return false;
+  const fps=fpsChoice(M.video.fps); const [W,H]=outSize();
+  busy(true,"Preparando o áudio…","",true);
+  const A=await prepareAudio(trimIn,trimOut); if(busyCancelled) return false;
+  busy(true,"Renderizando vídeo…","Deixe a tela ligada",true);
+  const tStart=performance.now();
+  const b=await transcode({W,H,fps,t0:trimIn,t1:trimOut,captions:true,audio:A,isCancelled:()=>busyCancelled,
+    onProgress:(i,n)=>{ if(i%5===0){ const el=(performance.now()-tStart)/1000; progress(i/n,`Quadro ${i} de ${n} · falta ~${Math.ceil(el/Math.max(1,i)*(n-i))}s`); } }});
+  if(!b) return false;
+  exportBlob=b; exportBlob._method="rápido · "+b._audio;
   return true;
 }
+// ---- light preview: a small, easy-to-play copy of the video for the editor ----
+let previewURL=null, previewJob=null;
+async function makePreview(){
+  const myFile=fileObj; const job={cancel:false}; previewJob=job;
+  try{
+    if(!("VideoDecoder" in window)||!("VideoEncoder" in window)) return;
+    const M=await parseMovie(myFile); const V=M.video; if(!V||!V.codec) return;
+    estFps=V.fps; const opt=$("#e_fps option[value=auto]"); opt.textContent="Original ("+(Math.round(V.fps*100)/100)+")";
+    if(V.fps>31 && !store.get("fpsPicked",false)) $("#e_fps").value="30";
+    const heavy = Math.min(vW,vH)>720 || V.fps>31 || myFile.size/duration>12e6/8*1.5;
+    if(!heavy) return;
+    const k=540/Math.min(vW,vH); let W=Math.round(vW*k), H=Math.round(vH*k); W-=W%2; H-=H%2;
+    const fps=Math.min(30,V.fps);
+    setPrevStatus("Preparando prévia leve…");
+    const A=await prepareAudio(0,duration,{noRecord:true,quiet:true});
+    if(!A){ setPrevStatus(""); return; }
+    const b=await transcode({W,H,fps,t0:0,t1:duration,captions:false,bitrate:2.5e6,gopSec:0.5,audio:A,
+      isCancelled:()=>job.cancel||fileObj!==myFile, onProgress:(i,n)=>{ if(i%15===0) setPrevStatus("Preparando prévia leve… "+Math.round(i/n*100)+"%"); }});
+    if(!b||job.cancel||fileObj!==myFile){ setPrevStatus(""); return; }
+    if(previewURL) URL.revokeObjectURL(previewURL);
+    previewURL=URL.createObjectURL(b);
+    const t=video.currentTime, playing=!video.paused;
+    video.pause(); video.src=previewURL;
+    video.addEventListener("loadedmetadata",()=>{ video.currentTime=Math.min(t,video.duration-0.05); if(playing) video.play(); },{once:true});
+    setPrevStatus("Prévia leve ativada", 2500);
+  }catch(e){ console.warn("preview failed",e); setPrevStatus(""); }
+  finally{ if(previewJob===job) previewJob=null; }
+}
+function setPrevStatus(t,hideAfter){ const el=$("#prevStatus"); el.textContent=t; el.style.display=t?"block":"none"; clearTimeout(el._t); if(hideAfter) el._t=setTimeout(()=>el.style.display="none",hideAfter); }
+async function stopPreviewJob(){ if(previewJob){ previewJob.cancel=true; for(let i=0;i<100&&previewJob;i++) await sleep(50); } }
 function fpsChoice(src){ const v=$("#e_fps").value; return v==="auto" ? (src||estFps) : +v; }
 
 // ---- engine B: play the video and grab every presented frame ----
@@ -1083,7 +1153,7 @@ async function exportPlayback(){
 async function exportVideo(){
   if(!fileObj) return;
   if(!words.length){ toast("Gere as legendas antes de exportar"); }
-  video.pause(); await ensureFonts(); buildCaptions(); layoutCache.clear();
+  video.pause(); await stopPreviewJob(); await ensureFonts(); buildCaptions(); layoutCache.clear();
   exportBlob=null; $("#expDone").style.display="none";
   const prevCrash=store.get("crash",null);
   const engines=[["exp-dec",exportDecoder],["exp-play",exportPlayback],["exp-rec",exportRecorder]].filter(([k])=>!(prevCrash&&prevCrash===k));
