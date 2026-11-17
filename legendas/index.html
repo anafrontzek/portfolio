@@ -107,7 +107,7 @@ h3:first-child{margin-top:4px}
 </header>
 
 <div id="empty">
-  <p>Escolha um vídeo do celular. Ele fica só no seu aparelho: só o áudio vai para a transcrição.</p>
+  <p>Escolha um vídeo do celular. Tudo roda no seu aparelho: a legenda é gerada de graça, sem cadastro.</p>
   <button class="primary big" id="pickBtn">Escolher vídeo</button>
   <input type="file" id="file" accept="video/*" hidden>
 </div>
@@ -416,14 +416,30 @@ async function makeThumbs(){
 }
 function drawTrim(){ const cv=$("#thumbs"); const r=cv.getBoundingClientRect(); if(!r.width) return; cv.width=r.width*2; cv.height=r.height*2; const cx=cv.getContext("2d"); if(thumbCanvas){ const n=Math.ceil(cv.width/(cv.height*vW/vH)); const tw=cv.width/n; for(let i=0;i<n;i++){ const sx=Math.floor(i/n*thumbCanvas.width/60)*60; cx.drawImage(thumbCanvas,sx,0,60,thumbCanvas.height,i*tw,0,tw,cv.height); } } updateTrimUI(); }
 
-// ---------- API key ----------
+// ---------- transcription settings ----------
+const PROVIDERS={
+  local:{name:"No celular",desc:"Grátis e sem cadastro. Roda no próprio iPhone: na 1ª vez baixa o modelo (uma vez só) e é mais lento."},
+  groq:{name:"Groq",desc:"Grátis com cadastro (sem cartão). Mais preciso e rápido. Crie a chave em console.groq.com → API Keys."},
+  openai:{name:"OpenAI",desc:"Pago (~US$ 0,006/min). Chave em platform.openai.com."}
+};
+const LANGS={pt:"portuguese",en:"english",es:"spanish"};
 function askKey(then){
-  const k=store.get("key","");
-  modal(`<h2>Chave da OpenAI</h2><p class="hint">Usada só para transcrever o áudio (modelo Whisper, cerca de US$ 0,006 por minuto). Fica salva apenas neste celular. Crie em platform.openai.com → API keys.</p><input id="kIn" type="password" autocomplete="off" placeholder="sk-..." value="${k.replace(/"/g,"&quot;")}"><div class="row"><label>Idioma do vídeo</label><select id="kLang"><option value="pt">Português</option><option value="en">Inglês</option><option value="es">Espanhol</option><option value="">Detectar</option></select></div><div class="btnrow"><button id="mNo">Fechar</button><button class="primary" id="mYes">Salvar</button></div>`);
-  $("#kLang").value=store.get("lang","pt");
+  const prov=store.get("prov","local");
+  modal(`<h2>Transcrição</h2>
+  <div class="row"><label>Serviço</label><div class="seg" id="kProv"><button data-v="local">No celular</button><button data-v="groq">Groq</button><button data-v="openai">OpenAI</button></div></div>
+  <p class="hint" id="kDesc"></p>
+  <div id="kKeyRow"><input id="kIn" type="password" autocomplete="off" placeholder="Cole a chave aqui"></div>
+  <div class="row" id="kModelRow"><label>Modelo</label><select id="kModel"><option value="base">Rápido (download ~80 MB)</option><option value="small">Preciso (download ~250 MB)</option></select></div>
+  <div class="row"><label>Idioma do vídeo</label><select id="kLang"><option value="pt">Português</option><option value="en">Inglês</option><option value="es">Espanhol</option><option value="">Detectar</option></select></div>
+  <div class="btnrow"><button id="mNo">Fechar</button><button class="primary" id="mYes">Salvar</button></div>`);
+  let cur=prov;
+  const paint=()=>{ for(const b of $("#kProv").children) b.classList.toggle("on",b.dataset.v===cur); $("#kDesc").textContent=PROVIDERS[cur].desc; $("#kKeyRow").style.display=cur==="local"?"none":""; $("#kModelRow").style.display=cur==="local"?"":"none"; $("#kIn").value=store.get("key_"+cur, cur==="openai"?store.get("key",""):""); $("#kIn").placeholder=cur==="groq"?"gsk_...":"sk-..."; };
+  $("#kProv").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; store.set("key_"+cur,$("#kIn").value.trim()); cur=b.dataset.v; paint(); };
+  $("#kLang").value=store.get("lang","pt"); $("#kModel").value=store.get("localModel","small"); paint();
   $("#mNo").onclick=closeModal;
-  $("#mYes").onclick=()=>{ store.set("key",$("#kIn").value.trim()); store.set("lang",$("#kLang").value); closeModal(); if(then && store.get("key","")) then(); };
+  $("#mYes").onclick=()=>{ if(cur!=="local") store.set("key_"+cur,$("#kIn").value.trim()); store.set("prov",cur); store.set("lang",$("#kLang").value); store.set("localModel",$("#kModel").value); closeModal(); if(then && ready()) then(); };
 }
+function ready(){ const p=store.get("prov","local"); return p==="local" || !!store.get("key_"+p, p==="openai"?store.get("key",""):""); }
 $("#keyBtn").onclick=()=>askKey();
 
 // ---------- audio extraction ----------
@@ -437,12 +453,14 @@ async function getDecodedAudio(){
   }finally{ try{ ac.close(); }catch(e){} }
   return decodedAudio;
 }
-async function audioToWav16k(ab, t0, t1){
+async function to16k(ab, t0, t1){
   const sr=16000, len=Math.max(1,Math.ceil((t1-t0)*sr));
   const OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   const oc=new OAC(1,len,sr); const s=oc.createBufferSource(); s.buffer=ab; s.connect(oc.destination); s.start(0,t0,t1-t0);
-  const out=await oc.startRendering(); const d=out.getChannelData(0);
-  const wav=new ArrayBuffer(44+d.length*2), v=new DataView(wav);
+  const out=await oc.startRendering(); return out.getChannelData(0);
+}
+function wavFrom16k(d){
+  const sr=16000, wav=new ArrayBuffer(44+d.length*2), v=new DataView(wav);
   const ws=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i,s.charCodeAt(i)); };
   ws(0,"RIFF"); v.setUint32(4,36+d.length*2,true); ws(8,"WAVE"); ws(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true); ws(36,"data"); v.setUint32(40,d.length*2,true);
   for(let i=0;i<d.length;i++) v.setInt16(44+i*2, clamp(d[i],-1,1)*32767, true);
@@ -464,34 +482,97 @@ async function recordAudioRealtime(t0,t1){
   return {blob:new Blob(chunks,{type}), name:"audio."+ext};
 }
 
+// ---------- on-device whisper (transformers.js in a worker) ----------
+const TJS="https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2";
+let asrWorker=null;
+function getWorker(){
+  if(asrWorker) return asrWorker;
+  const code=`
+    import { pipeline, env } from "${TJS}";
+    env.allowLocalModels=false;
+    let asr=null, cur=null;
+    self.onmessage=async e=>{
+      const {audio,model,lang}=e.data;
+      try{
+        if(!asr||cur!==model){
+          asr=await pipeline("automatic-speech-recognition", model, {dtype:"q8", device:"wasm", progress_callback:p=>self.postMessage({type:"dl",p})});
+          cur=model;
+        }
+        self.postMessage({type:"run"});
+        const opts={task:"transcribe", return_timestamps:"word", chunk_length_s:30, stride_length_s:5};
+        if(lang) opts.language=lang;
+        const out=await asr(audio, opts);
+        self.postMessage({type:"done", out});
+      }catch(err){ self.postMessage({type:"err", msg:String(err&&err.message||err)}); }
+    };`;
+  asrWorker=new Worker(URL.createObjectURL(new Blob([code],{type:"text/javascript"})),{type:"module"});
+  return asrWorker;
+}
+function transcribeLocal(pcm){
+  return new Promise((res,rej)=>{
+    const w=getWorker(); const files={}; let running=false, t0=0, iv=null;
+    const dur=pcm.length/16000;
+    w.onmessage=e=>{
+      const m=e.data;
+      if(m.type==="dl"){ const p=m.p; if(p.status==="progress"&&p.total){ files[p.file]=[p.loaded,p.total]; let a=0,b=0; for(const k in files){ a+=files[k][0]; b+=files[k][1]; } progress(a/b*0.9, `Baixando o modelo (só na 1ª vez): ${(a/1048576).toFixed(0)} de ${(b/1048576).toFixed(0)} MB`); } else if(p.status==="ready"){ progress(.92,"Carregando o modelo…"); } }
+      else if(m.type==="run"){ running=true; t0=performance.now(); busy(true,"Reconhecendo as falas…","Roda no seu celular. Mantenha a tela ligada."); const guess=dur*1.2+5; iv=setInterval(()=>{ const el=(performance.now()-t0)/1000; progress(Math.min(.95,el/guess)); },300); }
+      else if(m.type==="done"){ clearInterval(iv); res(m.out); }
+      else if(m.type==="err"){ clearInterval(iv); rej(new Error(m.msg)); }
+    };
+    w.onerror=e=>{ clearInterval(iv); rej(new Error(e.message||"Falha ao iniciar o reconhecimento")); };
+    const model=store.get("localModel","small")==="small"?"onnx-community/whisper-small_timestamped":"onnx-community/whisper-base_timestamped";
+    w.postMessage({audio:pcm, model, lang:LANGS[store.get("lang","pt")]||null});
+  });
+}
+function localToVerbose(out){
+  const chunks=(out&&out.chunks)||[];
+  const ws=[]; for(const c of chunks){ const t=(c.text||"").trim(); if(!t) continue; const [s,e]=c.timestamp||[0,0]; ws.push({word:t,start:s||0,end:(e==null?(s||0)+0.3:e)}); }
+  return {text:out.text||"", words:ws, segments:[]};
+}
+
 // ---------- transcription ----------
-$("#genBtn").onclick=()=>{ if(!fileObj) return; if(!store.get("key","")) askKey(generate); else generate(); };
+$("#genBtn").onclick=()=>{ if(!fileObj) return; if(!ready()) askKey(generate); else generate(); };
 async function generate(){
-  const t0=trimIn, t1=trimOut;
+  const t0=trimIn, t1=trimOut, prov=store.get("prov","local");
   busy(true,"Extraindo áudio…","");
-  let audio, name="audio.wav";
+  let pcm=null, audio=null, name="audio.wav";
   try{
     const ab=await getDecodedAudio();
     progress(.3,"Convertendo…");
-    audio=await audioToWav16k(ab,t0,t1);
+    pcm=await to16k(ab,t0,t1);
+    audio=wavFrom16k(pcm);
   }catch(e){
     console.warn("decode failed, realtime fallback", e);
     busy(true,"Capturando áudio…","Seu navegador não abriu o áudio direto; vou tocar o trecho em silêncio para capturar.", true);
-    try{ const r=await recordAudioRealtime(t0,t1); audio=r.blob; name=r.name; }catch(e2){ busy(false); toast("Não consegui extrair o áudio: "+e2.message,5000); return; }
+    try{
+      const r=await recordAudioRealtime(t0,t1); audio=r.blob; name=r.name;
+      if(prov==="local"){ const AC=window.AudioContext||window.webkitAudioContext; const ac=new AC(); const b=await ac.decodeAudioData(await r.blob.arrayBuffer()); pcm=await to16k(b,0,b.duration); audio=wavFrom16k(pcm); name="audio.wav"; ac.close(); }
+    }catch(e2){ busy(false); toast("Não consegui extrair o áudio: "+e2.message,5000); return; }
   }
-  if(audio.size>24.5*1024*1024){ busy(false); toast("Trecho longo demais para uma transcrição (máx. ~12 min). Corte o vídeo em partes.",6000); return; }
-  busy(true,"Transcrevendo…","Enviando o áudio para o Whisper"); progress(.55);
-  const fd=new FormData(); fd.append("file",audio,name); fd.append("model","whisper-1"); fd.append("response_format","verbose_json");
-  fd.append("timestamp_granularities[]","word"); fd.append("timestamp_granularities[]","segment");
-  const lang=store.get("lang","pt"); if(lang) fd.append("language",lang);
-  const voc=$("#vocab").value.trim(); if(voc) fd.append("prompt",voc);
   let j;
   try{
-    const r=await fetch("https://api.openai.com/v1/audio/transcriptions",{method:"POST",headers:{Authorization:"Bearer "+store.get("key","")},body:fd});
-    j=await r.json(); if(!r.ok) throw new Error(j.error&&j.error.message||("HTTP "+r.status));
-  }catch(e){ busy(false); modal(`<h2>Erro na transcrição</h2><p class="hint">${String(e.message).replace(/</g,"&lt;")}</p><div class="btnrow"><button id="mNo">Fechar</button><button class="primary" id="mYes">Ver chave</button></div>`); $("#mNo").onclick=closeModal; $("#mYes").onclick=()=>askKey(); return; }
-  progress(.95);
+    if(prov==="local"){
+      busy(true,"Preparando o reconhecimento…","");
+      j=localToVerbose(await transcribeLocal(pcm));
+    } else {
+      if(audio.size>24.5*1024*1024){ busy(false); toast("Trecho longo demais (máx. ~12 min). Corte o vídeo em partes.",6000); return; }
+      busy(true,"Transcrevendo…","Enviando o áudio"); progress(.55);
+      const fd=new FormData(); fd.append("file",audio,name);
+      fd.append("model", prov==="groq"?"whisper-large-v3-turbo":"whisper-1"); fd.append("response_format","verbose_json");
+      fd.append("timestamp_granularities[]","word"); fd.append("timestamp_granularities[]","segment");
+      const lang=store.get("lang","pt"); if(lang) fd.append("language",lang);
+      const voc=$("#vocab").value.trim(); if(voc) fd.append("prompt",voc);
+      const url= prov==="groq" ? "https://api.groq.com/openai/v1/audio/transcriptions" : "https://api.openai.com/v1/audio/transcriptions";
+      const key=store.get("key_"+prov, prov==="openai"?store.get("key",""):"");
+      const r=await fetch(url,{method:"POST",headers:{Authorization:"Bearer "+key},body:fd});
+      j=await r.json(); if(!r.ok) throw new Error(j.error&&j.error.message||("HTTP "+r.status));
+    }
+  }catch(e){ busy(false); modal(`<h2>Erro na transcrição</h2><p class="hint">${String(e.message).replace(/</g,"&lt;")}</p><div class="btnrow"><button id="mNo">Fechar</button><button class="primary" id="mYes">Configurações</button></div>`); $("#mNo").onclick=closeModal; $("#mYes").onclick=()=>askKey(); return; }
+  progress(.97);
   words = alignWords(j).map(w=>({text:w.text,start:+(w.start+t0).toFixed(3),end:+(w.end+t0).toFixed(3),hl:false,brk:false}));
+  // vocabulary fix-ups for on-device mode: replace case-insensitive matches with the user's spelling
+  const voc=$("#vocab").value.split(",").map(s=>s.trim()).filter(Boolean);
+  if(voc.length){ for(const w of words){ const core=w.text.replace(/[.,!?;:…]+$/,""); const tail=w.text.slice(core.length); const hit=voc.find(v=>!v.includes(" ")&&norm(v)===norm(core)); if(hit) w.text=hit+tail; } }
   captionsDirty=true; renderWords(); busy(false);
   toast(words.length ? words.length+" palavras reconhecidas" : "Nenhuma fala encontrada");
 }
