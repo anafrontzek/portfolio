@@ -191,7 +191,7 @@ h3:first-child{margin-top:4px}
     <!-- EXPORTAR -->
     <div class="pane" id="p-exp">
       <h3>Qualidade</h3>
-      <div class="row"><label>Resolução</label><span class="val" id="resVal" style="min-width:auto"></span></div>
+      <div class="row"><label>Resolução</label><select id="e_res"></select></div>
       <div class="row"><label>FPS</label><select id="e_fps"><option value="auto">Original</option><option>24</option><option>25</option><option>30</option><option>50</option><option>60</option></select></div>
       <div class="row"><label>Bitrate</label><select id="e_br"><option value="max">Máximo (50 Mbps)</option><option value="high" selected>Alto (~30 Mbps)</option><option value="med">Médio (~15 Mbps)</option></select></div>
       <div class="btnrow"><button class="primary big" id="expBtn">Exportar vídeo</button></div>
@@ -346,7 +346,7 @@ function loadVideo(f){
     duration=video.duration; trimIn=0; trimOut=duration; vW=video.videoWidth; vH=video.videoHeight;
     $("#frame").style.aspectRatio = vW+"/"+vH;
     $("#empty").style.display="none"; $("#editor").style.display="flex"; $("#newBtn").style.display="";
-    $("#resVal").textContent = vW+" × "+vH;
+    setupRes();
     sizeOverlay(); renderWords(); updateTrimUI(); makeThumbs(); estimateFps();
     video.currentTime=0.01;
   };
@@ -443,13 +443,96 @@ function ready(){ const p=store.get("prov","local"); return p==="local" || !!sto
 $("#keyBtn").onclick=()=>askKey();
 
 // ---------- audio extraction ----------
+// ---------- light MP4/MOV audio demuxer (reads only the bytes it needs) ----------
+async function readBytes(file, pos, len){ return new Uint8Array(await file.slice(pos, pos+len).arrayBuffer()); }
+function u32(b,o){ return ((b[o]<<24)>>>0)+(b[o+1]<<16)+(b[o+2]<<8)+b[o+3]; }
+function u64(b,o){ return u32(b,o)*4294967296+u32(b,o+4); }
+function boxes(b, start, end){ // iterate child boxes in a buffer
+  const out=[]; let p=start;
+  while(p+8<=end){ let size=u32(b,p); const type=String.fromCharCode(b[p+4],b[p+5],b[p+6],b[p+7]); let hdr=8;
+    if(size===1){ size=u64(b,p+8); hdr=16; } else if(size===0){ size=end-p; }
+    if(size<hdr||p+size>end) break; out.push({type,start:p,data:p+hdr,end:p+size}); p+=size; }
+  return out;
+}
+const kid=(b,box,type)=>boxes(b,box.data,box.end).find(x=>x.type===type);
+async function findMoov(file){
+  let pos=0; const size=file.size;
+  while(pos+8<=size){
+    const h=await readBytes(file,pos,16); let bs=u32(h,0); const type=String.fromCharCode(h[4],h[5],h[6],h[7]);
+    if(bs===1) bs=u64(h,8); else if(bs===0) bs=size-pos;
+    if(bs<8) throw new Error("MP4 inválido");
+    if(type==="moov"){ if(bs>200*1048576) throw new Error("moov grande demais"); return await readBytes(file,pos,bs); }
+    pos+=bs;
+  }
+  throw new Error("moov não encontrado");
+}
+function readEsdsASC(b, esds){ // find DecoderSpecificInfo (tag 0x05)
+  let p=esds.data+4;
+  const len=()=>{ let l=0; for(let i=0;i<4;i++){ const c=b[p++]; l=(l<<7)|(c&0x7f); if(!(c&0x80)) break; } return l; };
+  while(p<esds.end){ const tag=b[p++]; const l=len();
+    if(tag===0x03){ p+=2; const fl=b[p++]; if(fl&0x80) p+=2; if(fl&0x40) p+=1+b[p]; if(fl&0x20) p+=2; continue; }
+    if(tag===0x04){ p+=13; continue; }
+    if(tag===0x05){ return b.slice(p,p+l); }
+    p+=l; }
+  return null;
+}
+async function extractAudioAdts(file){
+  const b=await findMoov(file); const moov={data:8,end:b.length};
+  for(const trak of boxes(b,moov.data,moov.end).filter(x=>x.type==="trak")){
+    const mdia=kid(b,trak,"mdia"); if(!mdia) continue;
+    const hdlr=kid(b,mdia,"hdlr"); if(!hdlr) continue;
+    if(String.fromCharCode(...b.slice(hdlr.data+8,hdlr.data+12))!=="soun") continue;
+    const mdhd=kid(b,mdia,"mdhd"); const v=b[mdhd.data]; const timescale=v===1?u32(b,mdhd.data+20):u32(b,mdhd.data+12);
+    const stbl=kid(b,kid(b,mdia,"minf"),"stbl");
+    const stsd=kid(b,stbl,"stsd"); const entry=boxes(b,stsd.data+8,stsd.end)[0];
+    if(!entry || entry.type!=="mp4a") throw new Error("áudio não é AAC ("+(entry&&entry.type)+")");
+    // mp4a sample entry: 8 reserved/dref, then version(2). QuickTime v1/v2 have extra fields.
+    const ver=(b[entry.data+8]<<8)|b[entry.data+9]; let childStart=entry.data+28; if(ver===1) childStart+=16; else if(ver===2) childStart+=36;
+    let esds=boxes(b,childStart,entry.end).find(x=>x.type==="esds");
+    if(!esds){ const wave=boxes(b,childStart,entry.end).find(x=>x.type==="wave"); if(wave) esds=boxes(b,wave.data,wave.end).find(x=>x.type==="esds"); }
+    if(!esds) throw new Error("esds não encontrado");
+    const asc=readEsdsASC(b,esds); if(!asc||asc.length<2) throw new Error("config AAC ausente");
+    const aot=asc[0]>>3, sfi=((asc[0]&7)<<1)|(asc[1]>>7), chc=(asc[1]>>3)&15;
+    // sample table
+    const stsz=kid(b,stbl,"stsz"); const fixed=u32(b,stsz.data+4), n=u32(b,stsz.data+8);
+    const sizes=new Uint32Array(n); for(let i=0;i<n;i++) sizes[i]= fixed || u32(b,stsz.data+12+i*4);
+    let offs=[]; const stco=kid(b,stbl,"stco"), co64=kid(b,stbl,"co64");
+    if(stco){ const c=u32(b,stco.data+4); for(let i=0;i<c;i++) offs.push(u32(b,stco.data+8+i*4)); }
+    else { const c=u32(b,co64.data+4); for(let i=0;i<c;i++) offs.push(u64(b,co64.data+8+i*8)); }
+    const stsc=kid(b,stbl,"stsc"); const sc=u32(b,stsc.data+4); const scE=[]; for(let i=0;i<sc;i++){ const o=stsc.data+8+i*12; scE.push([u32(b,o),u32(b,o+4)]); }
+    // edit list: skip priming
+    let skip=0; const edts=kid(b,trak,"edts"); if(edts){ const elst=kid(b,edts,"elst"); if(elst){ const ev=b[elst.data]; const cnt=u32(b,elst.data+4); if(cnt){ const mt= ev===1? u64(b,elst.data+16) : u32(b,elst.data+12); if(mt!==0xffffffff && mt<timescale*2) skip=mt/timescale; } } }
+    // chunks -> sample ranges
+    const parts=[]; let si=0;
+    const profile=Math.max(0,aot-1)&3;
+    const adts=len=>{ const L=len+7; return new Uint8Array([0xFF,0xF1,(profile<<6)|(sfi<<2)|((chc>>2)&1),((chc&3)<<6)|((L>>11)&3),(L>>3)&0xff,((L&7)<<5)|0x1f,0xFC]); };
+    for(let ci=0;ci<offs.length && si<n;ci++){
+      let e=scE.length-1; while(e>0 && scE[e][0]>ci+1) e--; const per=scE[e][1];
+      let total=0; for(let k=0;k<per&&si+k<n;k++) total+=sizes[si+k];
+      const chunk=await readBytes(file,offs[ci],total);
+      let p=0; for(let k=0;k<per&&si<n;k++,si++){ const s=sizes[si]; parts.push(adts(s), chunk.subarray(p,p+s)); p+=s; }
+    }
+    return {blob:new Blob(parts,{type:"audio/aac"}), skip, rate:[96000,88200,64000,48000,44100,32000,24000,22050,16000,12000,11025,8000,7350][sfi]||48000};
+  }
+  throw new Error("sem faixa de áudio");
+}
 async function getDecodedAudio(){
   if(decodedAudio) return decodedAudio;
   const AC=window.AudioContext||window.webkitAudioContext;
   let ac; try{ ac=new AC({sampleRate:48000}); }catch(e){ ac=new AC(); }
+  const dec=buf=>new Promise((res,rej)=>{ const p=ac.decodeAudioData(buf,res,rej); if(p&&p.then) p.then(res,rej); });
   try{
-    const buf=await fileObj.arrayBuffer();
-    decodedAudio = await new Promise((res,rej)=>{ const p=ac.decodeAudioData(buf,res,rej); if(p&&p.then) p.then(res,rej); });
+    let ab=null;
+    try{
+      const x=await extractAudioAdts(fileObj);
+      ab=await dec(await x.blob.arrayBuffer());
+      if(x.skip>0){ const s=Math.round(x.skip*ab.sampleRate); if(s<ab.length){ const o=ac.createBuffer(ab.numberOfChannels,ab.length-s,ab.sampleRate); for(let c=0;c<ab.numberOfChannels;c++) o.copyToChannel(ab.getChannelData(c).subarray(s),c); ab=o; } }
+    }catch(e){
+      console.warn("demux failed:",e.message);
+      if(fileObj.size>150*1048576) throw e; // never load a huge file whole: let the caller use the light fallback
+      ab=await dec(await fileObj.arrayBuffer());
+    }
+    decodedAudio=ab;
   }finally{ try{ ac.close(); }catch(e){} }
   return decodedAudio;
 }
@@ -516,11 +599,12 @@ function transcribeLocal(pcm){
       const m=e.data;
       if(m.type==="dl"){ const p=m.p; if(p.status==="progress"&&p.total){ files[p.file]=[p.loaded,p.total]; let a=0,b=0; for(const k in files){ a+=files[k][0]; b+=files[k][1]; } progress(a/b*0.9, `Baixando o modelo (só na 1ª vez): ${(a/1048576).toFixed(0)} de ${(b/1048576).toFixed(0)} MB`); } else if(p.status==="ready"){ progress(.92,"Carregando o modelo…"); } }
       else if(m.type==="run"){ running=true; t0=performance.now(); busy(true,"Reconhecendo as falas…","Roda no seu celular. Mantenha a tela ligada."); const guess=dur*1.2+5; iv=setInterval(()=>{ const el=(performance.now()-t0)/1000; progress(Math.min(.95,el/guess)); },300); }
-      else if(m.type==="done"){ clearInterval(iv); res(m.out); }
-      else if(m.type==="err"){ clearInterval(iv); rej(new Error(m.msg)); }
+      else if(m.type==="done"){ clearInterval(iv); store.set("crash",null); res(m.out); }
+      else if(m.type==="err"){ clearInterval(iv); store.set("crash",null); rej(new Error(m.msg)); }
     };
     w.onerror=e=>{ clearInterval(iv); rej(new Error(e.message||"Falha ao iniciar o reconhecimento")); };
     const model=store.get("localModel","small")==="small"?"onnx-community/whisper-small_timestamped":"onnx-community/whisper-base_timestamped";
+    store.set("crash","asr:"+store.get("localModel","small"));
     w.postMessage({audio:pcm, model, lang:LANGS[store.get("lang","pt")]||null});
   });
 }
@@ -740,6 +824,17 @@ function drawOverlay(t){
 }
 
 // ---------- export ----------
+function outSize(){
+  const sel=$("#e_res").value; let W=vW, H=vH;
+  if(sel==="1080" && Math.min(vW,vH)>1080){ const k=1080/Math.min(vW,vH); W=Math.round(vW*k); H=Math.round(vH*k); }
+  return [W-(W%2), H-(H%2)];
+}
+function setupRes(){
+  const sel=$("#e_res"); sel.innerHTML=""; const big=Math.min(vW,vH)>1080;
+  const o1=document.createElement("option"); o1.value="orig"; o1.textContent="Original ("+vW+"×"+vH+")"; sel.appendChild(o1);
+  if(big){ const k=1080/Math.min(vW,vH); const o2=document.createElement("option"); o2.value="1080"; o2.textContent=Math.round(vW*k)+"×"+Math.round(vH*k)+" (máx. do Instagram)"; sel.appendChild(o2); sel.value= store.get("res","1080"); }
+  sel.onchange=()=>store.set("res",sel.value);
+}
 $("#expBtn").onclick=()=>exportVideo();
 function pickBitrate(W,H,fps){ const m=$("#e_br").value; const px=W*H*fps; if(m==="max") return 50e6; if(m==="med") return clamp(px*0.12,6e6,20e6); return clamp(px*0.5,12e6,40e6); }
 async function exportVideo(){
@@ -749,12 +844,14 @@ async function exportVideo(){
   const fps = $("#e_fps").value==="auto" ? estFps : +$("#e_fps").value;
   exportBlob=null; $("#expDone").style.display="none";
   let ok=false;
-  try{ ok = await exportWebCodecs(fps); }catch(e){ console.warn("WebCodecs export failed",e); ok=false; if(busyCancelled){ busy(false); return; } }
+  const prevCrash=store.get("crash",null);
+  store.set("crash","exp");
+  try{ ok = (prevCrash==="exp-fast") ? false : await exportWebCodecs(fps); }catch(e){ console.warn("WebCodecs export failed",e); ok=false; if(busyCancelled){ busy(false); return; } }
   if(!ok && !busyCancelled){ try{ ok = await exportRecorder(fps); }catch(e){ console.error(e); busy(false); toast("Falha ao exportar: "+e.message,6000); return; } }
-  busy(false);
+  busy(false); store.set("crash",null);
   if(ok && exportBlob){
     $("#expDone").style.display="block";
-    $("#expInfo").textContent = `Pronto: ${vW}×${vH}, ${(Math.round(fps*100)/100)} fps, ${(exportBlob.size/1048576).toFixed(1)} MB (${exportBlob._method}).`;
+    const [oW,oH]=outSize(); $("#expInfo").textContent = `Pronto: ${oW}×${oH}, ${(Math.round(fps*100)/100)} fps, ${(exportBlob.size/1048576).toFixed(1)} MB (${exportBlob._method}).`;
     toast("Vídeo pronto! Toque em “Salvar no celular”.",4000);
   }
 }
@@ -768,7 +865,7 @@ async function seekTo(v,t){
 }
 async function exportWebCodecs(fps){
   if(!("VideoEncoder" in window) || !("AudioEncoder" in window) || !window.Mp4Muxer) return false;
-  const W=vW%2?vW-1:vW, H=vH%2?vH-1:vH; const bitrate=pickBitrate(W,H,fps);
+  const [W,H]=outSize(); const bitrate=pickBitrate(W,H,fps);
   const codecs=["avc1.640034","avc1.640033","avc1.640032","avc1.640028","avc1.4d0033","avc1.4d0028","avc1.42003e"];
   let vcfg=null;
   for(const codec of codecs){ const cfg={codec,width:W,height:H,bitrate,framerate:fps,avc:{format:"avc"},bitrateMode:"variable"}; try{ const s=await VideoEncoder.isConfigSupported(cfg); if(s.supported){ vcfg=cfg; break; } }catch(e){} }
@@ -782,9 +879,15 @@ async function exportWebCodecs(fps){
   try{ const s=await AudioEncoder.isConfigSupported(acfg); if(!s.supported){ acfg.bitrate=192000; const s2=await AudioEncoder.isConfigSupported(acfg); if(!s2.supported) return false; } }catch(e){ return false; }
   if(acfg.sampleRate!==sr) return false;
 
-  const {Muxer,ArrayBufferTarget}=Mp4Muxer;
-  const target=new ArrayBufferTarget();
-  const muxer=new Muxer({target, video:{codec:"avc",width:W,height:H,frameRate:fps}, audio:{codec:opus?"opus":"aac",sampleRate:sr,numberOfChannels:ch}, fastStart:"in-memory", firstTimestampBehavior:"offset"});
+  const {Muxer,StreamTarget}=Mp4Muxer;
+  const parts=[]; let outLen=0;
+  const write=(data,pos)=>{ // append, or patch bytes already written
+    if(pos===outLen){ parts.push({pos,data:data.slice()}); outLen+=data.length; return; }
+    for(const p of parts){ const a=Math.max(pos,p.pos), z=Math.min(pos+data.length,p.pos+p.data.length); if(a<z) p.data.set(data.subarray(a-pos,z-pos),a-p.pos); }
+    if(pos+data.length>outLen){ const tail=data.subarray(outLen-pos); parts.push({pos:outLen,data:tail.slice()}); outLen+=tail.length; }
+  };
+  const target=new StreamTarget({onData:write, chunked:true, chunkSize:8*1048576});
+  const muxer=new Muxer({target, video:{codec:"avc",width:W,height:H,frameRate:fps}, audio:{codec:opus?"opus":"aac",sampleRate:sr,numberOfChannels:ch}, fastStart:false, firstTimestampBehavior:"offset"});
   let encErr=null;
   const venc=new VideoEncoder({output:(chunk,meta)=>muxer.addVideoChunk(chunk,meta), error:e=>encErr=e});
   venc.configure(vcfg);
@@ -824,14 +927,14 @@ async function exportWebCodecs(fps){
   }
   await venc.flush(); muxer.finalize();
   v.removeAttribute("src"); v.load();
-  exportBlob=new Blob([target.buffer],{type:"video/mp4"}); exportBlob._method=opus?"H.264 + Opus (teste)":"H.264 + AAC";
+  exportBlob=new Blob(parts.map(p=>p.data),{type:"video/mp4"}); exportBlob._method=opus?"H.264 + Opus (teste)":"H.264 + AAC";
   return true;
 }
 let mediaSrcNode=null, mediaAC=null;
 async function exportRecorder(fps){
   if(!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) throw new Error("Este navegador não suporta exportação");
   busy(true,"Gravando vídeo…","Modo compatível: leva o mesmo tempo do vídeo. Não saia da tela.",true);
-  const W=vW%2?vW-1:vW, H=vH%2?vH-1:vH;
+  const [W,H]=outSize();
   const cv=document.createElement("canvas"); cv.width=W; cv.height=H; const cx=cv.getContext("2d",{alpha:false});
   const v=document.createElement("video"); v.src=srcURL; v.playsInline=true; v.preload="auto";
   await new Promise(r=>{ v.onloadeddata=r; setTimeout(r,5000); });
@@ -872,10 +975,19 @@ $("#saveBtn").onclick=async()=>{
 
 // ---------- init ----------
 fillFontSelects(); styleToUI(); renderPresets();
+(function crashCheck(){
+  const c=store.get("crash",null); if(!c) return;
+  if(c==="asr:small"){ store.set("localModel","base"); store.set("crash",null);
+    modal(`<h2>O celular não aguentou o modelo preciso</h2><p class="hint">Mudei para o modelo <b>Rápido</b> (mais leve). Se quiser mais precisão sem pesar o celular, use a opção Groq no ⚙︎ (grátis com cadastro).</p><div class="btnrow"><button class="primary" id="mNo">Ok</button></div>`); $("#mNo").onclick=closeModal; }
+  else if(c==="asr:base"){ store.set("crash",null);
+    modal(`<h2>O reconhecimento no celular travou</h2><p class="hint">Tente um trecho mais curto, ou use a opção Groq no ⚙︎ (grátis com cadastro, roda nos servidores deles).</p><div class="btnrow"><button class="primary" id="mNo">Ok</button></div>`); $("#mNo").onclick=closeModal; }
+  else if(c==="exp"){ store.set("crash","exp-fast"); store.set("res","1080");
+    modal(`<h2>A exportação travou</h2><p class="hint">Na próxima vez vou exportar em 1080p no modo compatível, que usa menos memória.</p><div class="btnrow"><button class="primary" id="mNo">Ok</button></div>`); $("#mNo").onclick=closeModal; }
+})();
 loadSavedFonts().then(()=>{ fillFontSelects(); styleToUI(); });
 ensureFonts();
 // expose for testing
-window.__lg={get words(){return words;},set words(v){words=v;captionsDirty=true;renderWords();},alignWords,exportVideo,get blob(){return exportBlob;},style:()=>style};
+window.__lg={audio:async()=>{ decodedAudio=null; const a=await getDecodedAudio(); return {sr:a.sampleRate,ch:a.numberOfChannels,dur:a.duration,rms:Math.sqrt(a.getChannelData(0).reduce((s,x)=>s+x*x,0)/a.length)}; },extract:()=>extractAudioAdts(fileObj).then(x=>({size:x.blob.size,skip:x.skip,rate:x.rate})),get words(){return words;},set words(v){words=v;captionsDirty=true;renderWords();},alignWords,exportVideo,get blob(){return exportBlob;},style:()=>style};
 </script>
 </body>
 </html>
