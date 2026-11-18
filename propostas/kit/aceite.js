@@ -4,7 +4,8 @@
 
    Na proposta:
      <section class="wrap" id="aceite"></section>
-     <script>window.ACEITE = { proposta:"004", cliente:"…", trabalho:"…", valor:2000, dias:1 }</script>
+     <script>window.ACEITE = { proposta:"004", cliente:"…", trabalho:"…", valor:2000, dias:1, tipo:"cliente" }</script>
+     tipo: "cliente" (no dia, 1 semana +5%) ou "produtora" (+ 30 dias +10%, 60 dias +15%)
      <script src="../kit/config.js"></script>
      <script src="../kit/aceite.js"></script>
    ========================================================================== */
@@ -21,9 +22,11 @@
       { id: '30',     nome: '30 dias',  sub: 'Faturado para 30 dias',                   dias: 30, taxa: 10 },
       { id: '60',     nome: '60 dias',  sub: 'Faturado para 60 dias',                   dias: 60, taxa: 15 }
     ],
+    tipo: 'cliente',         // 'cliente' = só no dia e 1 semana · 'produtora' = também 30 e 60 dias
     whatsapp: '5511952412611',
     numero: '(11) 95241-2611'
   }, window.ACEITE || {});
+  if (!(window.ACEITE && window.ACEITE.prazos) && C.tipo !== 'produtora') C.prazos = C.prazos.filter(p => p.dias <= 7);
 
   const root = document.getElementById('aceite');
   if (!root) return;
