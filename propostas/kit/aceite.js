@@ -34,6 +34,7 @@
   /* ---------- estilo (usa as variáveis da identidade, com reserva) ---------- */
   const css = `
   #aceite{--a-bg2:var(--bg2,#121212);--a-line:var(--line,#262624);--a-fg:var(--fg,#EFECE6);--a-soft:var(--soft,#B5B2AA);--a-mute:var(--mute,#8A877F);--a-acc:var(--acc,#E10600);--a-ok:var(--ok,#3DDC6A);--a-mono:var(--mono,'IBM Plex Mono',monospace)}
+  #aceite .ac-dot{color:var(--a-acc)}
   #aceite .ac-grid{display:grid;grid-template-columns:7fr 5fr;gap:12px;align-items:start}
   #aceite .ac-box{background:var(--a-bg2);border:1px solid var(--a-line);border-radius:14px;padding:26px}
   #aceite .ac-lbl{font-family:var(--a-mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--a-mute);display:block;margin-bottom:14px}
@@ -116,7 +117,7 @@
 
   /* ---------- layout ---------- */
   root.innerHTML = `
-    <div class="sec-head rv in"><h2 class="xl">Fechar<span class="dot">.</span></h2><span class="mono">Proposta Nº ${esc(C.proposta)}</span></div>
+    <div class="sec-head rv in"><h2 class="xl">Fechar<span class="ac-dot">.</span></h2><span class="mono">Proposta Nº ${esc(C.proposta)}</span></div>
     <div id="acMain">
       <div class="ac-grid">
         <div class="ac-box">
@@ -239,7 +240,7 @@
     const dados = {
       resposta, proposta: C.proposta, cliente: C.cliente ? `${C.cliente} · ${nome}` : nome, trabalho: C.trabalho,
       datas: resposta === 'aceite' ? S.sel : [], prazo: p.nome, valor_base: C.valor, acrescimo_pct: p.taxa,
-      valor_final: final(), cai_em: resposta === 'aceite' ? caiEm() : '', contato, motivo: $('acObs').value.trim(),
+      travado, valor_final: final(), cai_em: resposta === 'aceite' ? caiEm() : '', contato, motivo: $('acObs').value.trim(),
       site: $('acSite').value
     };
     const btn = $(resposta === 'aceite' ? 'acSim' : 'acNao'); const txt = btn.textContent;
@@ -266,7 +267,7 @@
     const sim = d.resposta === 'aceite';
     $('acMain').innerHTML = `<div class="ac-box ac-done">
       <span class="ac-lbl" style="color:${sim ? 'var(--a-ok)' : 'var(--a-mute)'}">${sim ? '● Proposta aceita' : '○ Resposta enviada'}</span>
-      <h3>${sim ? 'Fechado<span class="dot">.</span>' : 'Valeu pelo<br>retorno<span class="dot">.</span>'}</h3>
+      <h3>${sim ? 'Fechado<span class="ac-dot">.</span>' : 'Valeu pelo<br>retorno<span class="ac-dot">.</span>'}</h3>
       <p>${sim
         ? `Reservei ${d.datas.map(br).join(', ')} na minha agenda. Pagamento ${esc(d.prazo.toLowerCase())}: <b style="color:var(--a-fg)">R$ ${brl(d.valor_final)}</b>${d.cai_em ? ' até ' + br(d.cai_em) : ''}, com nota fiscal. Te chamo pra alinhar os detalhes.`
         : 'Recebi sua resposta. Se mudar alguma coisa ou quiser ajustar a proposta, é só me chamar.'}</p>
