@@ -16,10 +16,10 @@
     datas: [],               // datas já combinadas: mostra travadas, sem escolher
     semDomingo: false,
     prazos: [
-      { id: 'dia',    nome: 'No dia',         sub: 'Pix ou transferência no dia da captação', dias: 0,  taxa: 0 },
-      { id: 'semana', nome: 'Em até 7 dias',  sub: 'Até uma semana depois da captação',       dias: 7,  taxa: 0 },
-      { id: '30',     nome: '30 dias',        sub: 'Faturado para 30 dias',                   dias: 30, taxa: 5 },
-      { id: '60',     nome: '60 dias',        sub: 'Faturado para 60 dias',                   dias: 60, taxa: 10 }
+      { id: 'dia',    nome: 'No dia',   sub: 'Pix ou transferência no dia da captação', dias: 0,  taxa: 0 },
+      { id: 'semana', nome: '1 semana', sub: 'Até 7 dias depois da captação',           dias: 7,  taxa: 5 },
+      { id: '30',     nome: '30 dias',  sub: 'Faturado para 30 dias',                   dias: 30, taxa: 10 },
+      { id: '60',     nome: '60 dias',  sub: 'Faturado para 60 dias',                   dias: 60, taxa: 15 }
     ],
     whatsapp: '5511952412611',
     numero: '(11) 95241-2611'
