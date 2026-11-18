@@ -249,9 +249,9 @@ body.lock .stage{visibility:hidden}
 .gx-nav button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--fg);font-size:18px;cursor:pointer;transition:border-color .2s}
 .gx-nav button:hover{border-color:var(--fg)}
 @media(max-width:720px){.gx-track{height:62vh;padding:0 7vw;gap:10px}.gx-s{width:86vw}.gx-ov{left:calc(7vw + 14px);right:calc(7vw + 14px);bottom:14px}.gx-ov b{font-size:22px}.gx-nav{display:none}.gx-strip img{height:52px;width:78px}}
-.pc{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);border-top:1px solid var(--line)}
-.pc .p-head{display:flex;flex-direction:column;gap:20px;padding:36px var(--pad) 36px;border-right:1px solid var(--line);position:sticky;top:0;align-self:start}
-.pc .p-head h1{font-size:clamp(24px,2vw,32px);line-height:1;letter-spacing:-.02em;overflow-wrap:break-word}
+.pc{display:grid;grid-template-columns:minmax(200px,250px) minmax(0,1fr);border-top:1px solid var(--line)}
+.pc .p-head{display:flex;flex-direction:column;gap:18px;padding:32px 24px 32px var(--pad);border-right:1px solid var(--line);position:sticky;top:0;align-self:start}
+.pc .p-head h1{font-size:clamp(18px,1.3vw,22px);line-height:1.05;letter-spacing:-.01em;overflow-wrap:break-word}
 .pc .p-meta,.pc .p-desc{margin-top:0}
 .pc .p-desc{font-size:15px;line-height:1.55;color:var(--mute)}
 .pc .p-body{padding:28px var(--pad) 0}
@@ -518,7 +518,7 @@ function openProject(slug){
    <div class="p-body">
      ${hv.length?`<div class="vids h">${hv.map(box).join("")}</div>`:""}
      ${vv.length?`<div class="vids v">${vv.map(box).join("")}</div>`:""}
-     ${gal.length?`<div class="gx" data-n="${gal.length}"><div class="gx-view"><div class="gx-track">${gal.map((s,k)=>`<div class="gx-s${k?"":" on"}"><img ${k<3?"":'loading="lazy" '}src="${s}" alt="${esc(w.title)} — foto ${k+1}"></div>`).join("")}</div><div class="gx-ov"><span class="mono mute">${pad(1)} — ${pad(gal.length)}</span><b>${esc(w.title)}</b></div><span class="gx-hint mono mute">← arraste para o lado →</span></div><div class="gx-prog"><i style="width:${100/gal.length}%"></i></div><div class="gx-foot"><span class="gx-cnt mono">${pad(1)} / ${pad(gal.length)}</span><div class="gx-strip">${gal.map((s,k)=>`<img loading="lazy" src="${s}" alt="" data-k="${k}"${k?"":' class="on"'}>`).join("")}</div><div class="gx-nav"><button type="button" data-gx="-1" aria-label="Foto anterior">‹</button><button type="button" data-gx="1" aria-label="Próxima foto">›</button></div></div></div>`:""}
+     ${gal.length?`<div class="gx" data-n="${gal.length}"><div class="gx-view"><div class="gx-track">${gal.map((s,k)=>`<div class="gx-s${k?"":" on"}"><img ${k<3?"":'loading="lazy" '}src="${s}" alt="${esc(w.title)} — foto ${k+1}"></div>`).join("")}</div><div class="gx-ov"><span class="mono mute">${pad(1)} — ${pad(gal.length)}</span><b>${esc(w.title)}</b></div></div><div class="gx-prog"><i style="width:${100/gal.length}%"></i></div><div class="gx-foot"><span class="gx-cnt mono">${pad(1)} / ${pad(gal.length)}</span><div class="gx-strip">${gal.map((s,k)=>`<img loading="lazy" src="${s}" alt="" data-k="${k}"${k?"":' class="on"'}>`).join("")}</div><div class="gx-nav"><button type="button" data-gx="-1" aria-label="Foto anterior">‹</button><button type="button" data-gx="1" aria-label="Próxima foto">›</button></div></div></div>`:""}
    </div>${gal.length?'</div>':''}
    <a class="next" href="#/trabalho/${n.slug}"><span class="mono mute">Próximo projeto →</span><div class="t">${esc(n.title)}</div></a>`;
   gxInit();P.scrollTop=0;P.classList.add("open");P.setAttribute("aria-hidden","false");document.body.classList.add("lock");
