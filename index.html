@@ -227,6 +227,28 @@ body.lock .stage{visibility:hidden}
 .vids.v{grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),360px));justify-content:center}
 .vbox{position:relative;width:100%;background:var(--bg2)}
 .vbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.gx{position:relative;margin:0 calc(-1*var(--pad));user-select:none}
+.gx-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:min(76vh,860px);padding:0 12vw;scroll-behavior:smooth;overscroll-behavior-x:contain}
+.gx-track::-webkit-scrollbar{display:none}
+.gx-s{flex:none;width:76vw;height:100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;opacity:.22;transition:opacity .45s}
+.gx-s.on{opacity:1}
+.gx-s img{max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in;background:var(--bg2)}
+.gx-view{position:relative}
+.gx-ov{position:absolute;left:calc(12vw + 24px);right:calc(12vw + 24px);bottom:24px;pointer-events:none;text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.gx-ov b{display:block;font-weight:900;font-stretch:125%;font-size:clamp(26px,3.6vw,56px);line-height:.92;letter-spacing:-.01em;text-transform:uppercase;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gx-prog{height:2px;background:var(--line);margin:22px var(--pad) 0;position:relative}
+.gx-prog i{position:absolute;left:0;top:0;bottom:0;background:var(--acc);transition:width .35s}
+.gx-foot{display:flex;align-items:center;gap:20px;padding:14px var(--pad) 4px}
+.gx-cnt{flex:none;min-width:64px}
+.gx-strip{display:flex;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth}
+.gx-strip::-webkit-scrollbar{display:none}
+.gx-strip img{height:64px;width:96px;object-fit:cover;flex:none;opacity:.4;filter:grayscale(1);cursor:pointer;transition:opacity .3s,filter .3s}
+.gx-strip img:hover{opacity:.8}
+.gx-strip img.on{opacity:1;filter:none}
+.gx-nav{display:flex;gap:10px;flex:none}
+.gx-nav button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--fg);font-size:18px;cursor:pointer;transition:border-color .2s}
+.gx-nav button:hover{border-color:var(--fg)}
+@media(max-width:720px){.gx-track{height:62vh;padding:0 7vw;gap:10px}.gx-s{width:86vw}.gx-ov{left:calc(7vw + 14px);right:calc(7vw + 14px);bottom:14px}.gx-ov b{font-size:22px}.gx-nav{display:none}.gx-strip img{height:52px;width:78px}}
 .gallery{columns:2 360px;column-gap:20px}
 .gallery img{width:100%;margin-bottom:20px;break-inside:avoid;background:var(--bg2);cursor:zoom-in}
 .more-link{display:inline-flex;gap:10px;border-bottom:1px solid currentColor;padding-bottom:3px}
@@ -474,15 +496,22 @@ function openProject(slug){
      <div class="p-meta mono"><span class="mute">Ano</span><span>${w.year}</span><span class="mute">Tipo</span><span>${kind(w)}</span><span class="mute">Tags</span><span>${tags(w).join(" · ")}</span></div>
      <div class="p-desc">${w.desc?esc(w.desc):`<span class="mute">${kind(w)} — ${w.year}</span>`}</div>
    </div>
-   ${!w.vids.length?`<div class="p-cover"><img src="${w.thumb}" alt=""></div>`:""}
+   ${!w.vids.length&&!gal.length?`<div class="p-cover"><img src="${w.thumb}" alt=""></div>`:""}
    <div class="p-body">
      ${hv.length?`<div class="vids h">${hv.map(box).join("")}</div>`:""}
      ${vv.length?`<div class="vids v">${vv.map(box).join("")}</div>`:""}
-     ${gal.length?`<div class="gallery">${gal.map(s=>`<img loading="lazy" src="${s}" alt="">`).join("")}</div>`:""}
+     ${gal.length?`<div class="gx" data-n="${gal.length}"><div class="gx-view"><div class="gx-track">${gal.map((s,k)=>`<div class="gx-s${k?"":" on"}"><img ${k<3?"":'loading="lazy" '}src="${s}" alt="${esc(w.title)} — foto ${k+1}"></div>`).join("")}</div><div class="gx-ov"><span class="mono mute">${pad(1)} — ${pad(gal.length)}</span><b>${esc(w.title)}</b></div></div><div class="gx-prog"><i style="width:${100/gal.length}%"></i></div><div class="gx-foot"><span class="gx-cnt mono">${pad(1)} / ${pad(gal.length)}</span><div class="gx-strip">${gal.map((s,k)=>`<img loading="lazy" src="${s}" alt="" data-k="${k}"${k?"":' class="on"'}>`).join("")}</div><div class="gx-nav"><button type="button" data-gx="-1" aria-label="Foto anterior">‹</button><button type="button" data-gx="1" aria-label="Próxima foto">›</button></div></div></div>`:""}
    </div>
    <a class="next" href="#/trabalho/${n.slug}"><span class="mono mute">Próximo projeto →</span><div class="t">${esc(n.title)}</div></a>`;
-  P.scrollTop=0;P.classList.add("open");P.setAttribute("aria-hidden","false");document.body.classList.add("lock");
+  gxInit();P.scrollTop=0;P.classList.add("open");P.setAttribute("aria-hidden","false");document.body.classList.add("lock");
   document.title=w.title+" — Ana Frontzek";
+}
+function gxInit(){const g=P.querySelector(".gx");if(!g)return;const tr=g.querySelector(".gx-track"),sl=[...tr.children],th=[...g.querySelectorAll(".gx-strip img")],st=g.querySelector(".gx-strip"),n=sl.length,cnt=g.querySelector(".gx-cnt"),ov=g.querySelector(".gx-ov span"),pr=g.querySelector(".gx-prog i");let cur=0;
+ const go=k=>{k=Math.max(0,Math.min(n-1,k));const s=sl[k];tr.scrollTo({left:s.offsetLeft-(tr.clientWidth-s.clientWidth)/2})};
+ const set=k=>{if(k===cur)return;sl[cur].classList.remove("on");th[cur].classList.remove("on");cur=k;sl[k].classList.add("on");th[k].classList.add("on");cnt.textContent=pad(k+1)+" / "+pad(n);ov.textContent=pad(k+1)+" — "+pad(n);pr.style.width=((k+1)/n*100)+"%";const t=th[k];st.scrollTo({left:t.offsetLeft-st.offsetLeft-(st.clientWidth-t.clientWidth)/2});const nx=sl[k+1]&&sl[k+1].querySelector("img");if(nx)nx.loading="eager"};
+ let raf;tr.addEventListener("scroll",()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{const c=tr.scrollLeft+tr.clientWidth/2;let b=0,bd=1e9;sl.forEach((s,i)=>{const d=Math.abs(s.offsetLeft+s.clientWidth/2-c);if(d<bd){bd=d;b=i}});set(b)})},{passive:true});
+ g.addEventListener("click",e=>{const b=e.target.closest("[data-gx]");if(b){go(cur+ +b.dataset.gx);return}const t=e.target.closest(".gx-strip img");if(t){go(+t.dataset.k);return}const im=e.target.closest(".gx-s img");if(im){const k=sl.indexOf(im.parentNode);if(k!==cur){go(k);return}$("#lightbox img").src=im.src;$("#lightbox").classList.add("on")}});
+ g._go=d=>go(cur+d);
 }
 function closeProject(){P.classList.remove("open");P.setAttribute("aria-hidden","true");document.body.classList.remove("lock");document.title="Ana Frontzek — Direção, Captação & Edição";setTimeout(()=>{if(!P.classList.contains("open"))P.innerHTML=""},800)}
 function route(){const m=location.hash.match(/^#\/trabalho\/(.+)$/);m?openProject(decodeURIComponent(m[1])):closeProject()}
@@ -492,7 +521,7 @@ P.addEventListener("click",e=>{
   const im=e.target.closest(".gallery img");if(im){$("#lightbox img").src=im.src;$("#lightbox").classList.add("on")}
 });
 $("#lightbox").addEventListener("click",()=>$("#lightbox").classList.remove("on"));
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){if($("#lightbox").classList.contains("on"))$("#lightbox").classList.remove("on");else if(P.classList.contains("open")){history.pushState(null,"","#/");route();}}});
+document.addEventListener("keydown",e=>{if((e.key==="ArrowRight"||e.key==="ArrowLeft")&&P.classList.contains("open")&&!$("#lightbox").classList.contains("on")){const g=P.querySelector(".gx");if(g&&g._go){e.preventDefault();g._go(e.key==="ArrowRight"?1:-1)}}if(e.key==="Escape"){if($("#lightbox").classList.contains("on"))$("#lightbox").classList.remove("on");else if(P.classList.contains("open")){history.pushState(null,"","#/");route();}}});
 
 /* contato -> WhatsApp com mensagem pronta */
 const wf=$("#wform"),wpv=$("#wpv");let wtipo="Publicidade automotiva";
