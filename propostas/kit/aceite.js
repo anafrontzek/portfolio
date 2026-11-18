@@ -5,8 +5,8 @@
    Na proposta:
      <section class="wrap" id="aceite"></section>
      <script>window.ACEITE = { proposta:"004", cliente:"…", trabalho:"…", valor:2000, dias:1 }</script>
-     <script src="../_kit/config.js"></script>
-     <script src="../_kit/aceite.js"></script>
+     <script src="../kit/config.js"></script>
+     <script src="../kit/aceite.js"></script>
    ========================================================================== */
 (function () {
   const C = Object.assign({
