@@ -56,7 +56,7 @@
   #aceite .ac-week span{font-family:var(--a-mono);font-size:10px;color:var(--a-mute);text-align:center;padding:4px 0}
   #aceite .ac-day{all:unset;box-sizing:border-box;aspect-ratio:1;border-radius:10px;display:grid;place-items:center;font-size:14px;font-weight:600;cursor:pointer;border:1px solid var(--a-line);transition:background .2s,border-color .2s,color .2s}
   #aceite .ac-day:hover{border-color:var(--a-fg)}
-  #aceite .ac-day.x{cursor:default;color:#4a4945;border-color:transparent;text-decoration:line-through}
+  #aceite .ac-day.x{cursor:default;color:#6b6a65;border-color:transparent;text-decoration:line-through;background:repeating-linear-gradient(135deg,#141413 0 5px,#1d1d1c 5px 10px)}
   #aceite .ac-day.past{cursor:default;color:#3a3936;border-color:transparent}
   #aceite .ac-day.on{background:var(--a-fg);color:#0A0A0A;border-color:var(--a-fg)}
   #aceite .ac-day.lock{background:var(--a-acc);color:#fff;border-color:var(--a-acc);cursor:default}
@@ -131,7 +131,7 @@
           <div class="ac-cal-h"><button class="ac-nav" id="acPrev" aria-label="Mês anterior">←</button><b id="acMes"></b><button class="ac-nav" id="acNext" aria-label="Próximo mês">→</button></div>
           <div class="ac-week">${['S','T','Q','Q','S','S','D'].map(d => `<span>${d}</span>`).join('')}</div>
           <div class="ac-days" id="acDays"></div>
-          <div class="ac-leg"><span><i style="background:var(--a-fg)"></i>Escolhida</span><span><i></i>Livre</span><span><i style="border-color:transparent;background:#1a1a19"></i>Ocupada</span></div>
+          <div class="ac-leg"><span><i style="background:var(--a-fg)"></i>Escolhida</span><span><i></i>Livre</span><span><i style="border-color:transparent;background:repeating-linear-gradient(135deg,#141413 0 2px,#2a2a28 2px 4px)"></i>Ocupada</span></div>
           <div class="ac-status" id="acStatus">Carregando a agenda…</div>
         </div>
       </div>
