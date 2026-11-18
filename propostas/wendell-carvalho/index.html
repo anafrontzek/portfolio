@@ -274,21 +274,19 @@ const P = {
   </div>
 </section>
 
-<section class="wrap cta" id="fechar">
-  <span class="mono" style="color:var(--acc)">(07) · próximo passo</span>
-  <h2 class="xl rv" style="margin-top:20px">Bora<br>fechar <span class="ast">*</span></h2>
-  <p class="rv" style="font-size:20px;max-width:40ch;margin-top:30px;color:var(--soft)">Confirmando, eu já bloqueio a segunda na agenda e falo com o <span data-k="parceiro"></span> para alinhar os planos.</p>
-  <div class="acts rv">
-    <a class="btn" id="waBtn" target="_blank" rel="noopener">Confirmar pelo WhatsApp →</a>
-    <a class="btn ghost" id="mailBtn">E-mail ↗</a>
-  </div>
-  <p class="mono" id="contactLine" style="margin-bottom:60px"></p>
-  <footer class="mono">
+<section class="wrap" id="fechar" style="padding-bottom:40px">
+  <div id="aceite"></div>
+  <footer class="mono" style="margin-top:80px">
     <span>Ana Frontzek — Direção · Captação · Edição</span>
     <span>Proposta Nº <b data-k="numero" style="font-weight:400"></b> · válida por <b data-k="validade" style="font-weight:400"></b></span>
     <a href="#topo" style="text-decoration:none">Voltar ao topo ↑</a>
   </footer>
 </section>
+<script>
+window.ACEITE = { proposta: "003", cliente: "Equipe Wendell Carvalho", trabalho: "Diária 2ª câmera + b-roll · Wendell Carvalho", valor: 2000, dias: 1 };
+</script>
+<script src="../kit/config.js?v=2"></script>
+<script src="../kit/aceite.js?v=2"></script>
 
 <script>
 const $=s=>document.querySelector(s);
@@ -302,10 +300,10 @@ const EXTRAS=[
 $('#extrasT').innerHTML=EXTRAS.map(x=>`<div class="row"><b>${x[0]}</b><span>${x[1]}</span><em>${x[2]}</em></div>`).join('');
 const wa=t=>`https://wa.me/${P.whatsapp}?text=${encodeURIComponent(t)}`;
 const msg=`Oi, Ana! Vi a proposta ${P.numero} e quero confirmar a diária de 2ª câmera com o Wendell na segunda, 16/11, das 9h às 18h.`;
-$('#waBtn').href=wa(msg);$('#waPlan').href=wa(msg);
-$('#mailBtn').href=`mailto:${P.email}?subject=${encodeURIComponent('Proposta '+P.numero+' — Diária 16/11 · Wendell Carvalho')}`;
+$('#waPlan').href='#fechar';$('#waPlan').removeAttribute('target');
+
 $('#portLink').href=P.portfolio;$('#igLink').href='https://instagram.com/'+P.instagram;
-$('#contactLine').textContent=`${P.email} · (11) 95241-2611 · @${P.instagram} · ${P.portfolio.replace('https://','')}`;
+
 
 /* timecode na CAM B */
 let f=0;const tc=$('#tc');setInterval(()=>{f++;const s=Math.floor(f/24),p=n=>String(n).padStart(2,'0');tc.textContent=`00:${p(Math.floor(s/60))}:${p(s%60)}:${p(f%24)}`},1000/24);
