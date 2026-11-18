@@ -361,8 +361,8 @@ img,video{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none}
 <div id="project" aria-hidden="true"></div>
 <div id="lightbox"><img alt=""></div>
 
-<script src="data.js?v=9"></script>
-<script src="aspect.js?v=9"></script>
+<script src="data.js?v=11"></script>
+<script src="aspect.js?v=10"></script>
 <script>
 (function(){
 const W = window.WORKS.map((r,i)=>({slug:r[0],title:r[1],year:r[2],thumb:u(r[3]),vids:r[4]||[],imgs:(r[5]||[]).map(u),desc:r[6]||"",feat:r[7]||0}));
@@ -374,7 +374,7 @@ function tags(w){const t=[],T=w.title.toLowerCase();
   [["aftermovie","Aftermovie"],["reels","Reels"],["fashion film","Fashion Film"],["backstage","Backstage"],["publicidade","Publicidade"],["teaser","Teaser"],["short film","Short Film"],["postcards","Postcards"],["expedição","Expedição"]].forEach(([k,v])=>T.includes(k)&&t.push(v));
   t.push(kind(w));return [...new Set(t)];}
 const pad=n=>String(n).padStart(2,"0");
-const vsrc=id=>/^https?:/.test(id)?id:"https://www-ccv.adobe.io/v1/player/ccv/"+id+"/embed?bgcolor=%230a0a0a&lazyLoading=true&api_key=BehancePro2View";
+const vsrc=id=>id.startsWith("yt:")?"https://www.youtube-nocookie.com/embed/"+id.slice(3)+"?rel=0&modestbranding=1&playsinline=1&color=white":/^https?:/.test(id)?id:"https://www-ccv.adobe.io/v1/player/ccv/"+id+"/embed?bgcolor=%230a0a0a&lazyLoading=true&api_key=BehancePro2View";
 
 /* counts */
 $("#nworks").textContent=W.length;$("#s-total").textContent=W.length;$("#s-video").textContent=W.filter(w=>w.vids.length).length;
