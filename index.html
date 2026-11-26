@@ -241,7 +241,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
 .cr-intro .big{font-weight:600;font-stretch:105%;font-size:clamp(24px,3vw,44px);line-height:1.06;letter-spacing:-.03em;max-width:22ch}
 .cr-intro .big em{font-family:var(--serif);font-style:italic;font-weight:400;font-stretch:100%;letter-spacing:-.01em;font-size:1.1em;color:var(--acc)}
 .cr-tot{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.cr-tot b{display:block;font-weight:800;font-stretch:125%;font-size:clamp(34px,4.6vw,68px);line-height:.9;letter-spacing:-.05em}
+.cr-tot b{display:block;white-space:nowrap;font-weight:800;font-stretch:120%;font-size:clamp(30px,3.6vw,54px);line-height:.9;letter-spacing:-.05em}
 @media(max-width:820px){.cr-intro{grid-template-columns:1fr}}
 .cr-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .cr-tabs button{border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-weight:700;font-stretch:110%;font-size:15px;transition:.25s}
@@ -260,8 +260,12 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
 .case.vert{grid-template-columns:minmax(0,360px) minmax(0,1fr)}
 .case.vert .vid{aspect-ratio:9/16}
 .case .vid video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.igb{margin-bottom:18px}
+.iglinks{display:flex;gap:16px;flex-wrap:wrap;margin:-6px 0 0}
+.p-ig{grid-column:1/-1;margin-top:28px;max-width:760px}
 .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 12px;margin-bottom:18px;border-bottom:1px solid var(--line);padding-bottom:18px}
-.metrics b{display:block;font-weight:800;font-stretch:120%;font-size:clamp(24px,2.4vw,34px);letter-spacing:-.04em;line-height:1}
+.metrics b{display:block;font-weight:800;font-stretch:115%;font-size:clamp(20px,1.9vw,28px);letter-spacing:-.04em;line-height:1;white-space:nowrap}
+.pc .metrics{grid-template-columns:1fr 1fr;gap:14px 10px}.pc .metrics b{font-size:20px}.pc .metrics span{font-size:10px}
 @media(max-width:900px){.case.vert{grid-template-columns:1fr}.case.vert .vid{max-width:360px}}
 .case{display:grid;grid-template-columns:minmax(0,8fr) minmax(260px,4fr);gap:clamp(18px,3vw,40px);align-items:start}
 .case .vid{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden;cursor:pointer}
@@ -588,14 +592,24 @@ function applyLang(){
 }
 const kind=w=>w.vids.length&&w.imgs.length?t("photoVideo"):w.vids.length?t("video"):t("photo");
 
+/* ---------- números do Instagram (insights) ---------- */
+const IG={DOKE8uqAJ81:[2971649,173119,259,555,333],DPUje8nksGy:[17122,484,44,51,41],DQphuMiAGTZ:[16035,878,74,65,67],DRfoRzokvm4:[16213,296,11,12,10],"DSC6eP-AK25":[20742,722,58,11,26],DUEjswtADPP:[28994,1001,108,72,74],Dav_8pigRUl:[16204,929,46,58,47],DbbwA08FoSw:[0,678,16,17,10],DclojnahACC:[12296,527,44,32,44],DcwlBTUFhqH:[10411,551,43,15,11],DdB9V2Lxt3W:[5988,353,30,20,9],DdmfOFqR0SY:[5407,291,30,22,19],Deh39kJTf4J:[51952,3542,179,252,219],DeuzYg3GZ4q:[21027,842,29,17,21,"fordbrasil"],DfetcL_lqsR:[55074,6808,77,345,254],DgI6B1_BTeu:[9573,625,65,26,17],DHtkDUHyFlK:[19348,817,102,19,45],DWUooT0klZK:[26647,1001,15,46,45,"eurobikeoficial"],DaB5ibZjMCc:[18952,840,92,16,25],DekJaUMlmtJ:[6466,364,10,8,4],DM82LIYMeWV:[66409,855,25,19,42,"pedrospina"],DNbmXtgyAQb:[47469,702,27,10,9],DTJnf75DCAB:[26854,412,39,11,12],DXkJwZxFqjL:[14655,770,60,21,15]};
+const IGP={"fia-wec-6-horas-de-sao-paulo-ford-1":["Dav_8pigRUl","DdmfOFqR0SY"],"fia-wec-6-horas-de-sao-paulo-ford":["DbbwA08FoSw","DeuzYg3GZ4q"],"expedicao-ford-bronco":["DPUje8nksGy"],"expedicao-ford-tremor":["DQphuMiAGTZ"],"fotografia-expedicao-ford-tremor":["DRfoRzokvm4"],"mustang-dark-horse-ford":["DOKE8uqAJ81"],"fotografia-mustang-dark-horse":["DSC6eP-AK25"],"ready-set-ford":["DUEjswtADPP"],"f1-w-ford":["DfetcL_lqsR"],"festival-interlagos-reels-ford":["DclojnahACC","DdB9V2Lxt3W"],"festival-interlagos-ford":["DcwlBTUFhqH"],"backstage-mustang-dark-horse-ford":["DNbmXtgyAQb","DM82LIYMeWV"],"mustang-dark-horse-natal-2025":["DTJnf75DCAB"],"lancamento-ferrari-12cilindri":["DHtkDUHyFlK"],"bmw-m2cs-eurobike-magazine":["DWUooT0klZK"],"cadillac-brasil":["DaB5ibZjMCc","DekJaUMlmtJ"]};
+const igUrl=c=>`https://www.instagram.com/${IG[c][5]?IG[c][5]+"/":""}p/${c}/`;
+const nfmt=n=>{const en=LANG==="en";if(n>=1e6)return (+(n/1e6).toFixed(2)).toString().replace(".",en?".":",")+(en?"M":" mi");if(n>=1e4)return (Math.round(n/100)/10).toString().replace(".",en?".":",")+(en?"K":" mil");return n.toLocaleString(en?"en-US":"pt-BR")};
+const igSum=codes=>{const t=[0,0,0,0,0];codes.forEach(c=>IG[c]&&IG[c].slice(0,5).forEach((v,i)=>t[i]+=v));return t};
+const MLBL=[{pt:"Visualizações",en:"Views"},{pt:"Curtidas",en:"Likes"},{pt:"Comentários",en:"Comments"},{pt:"Salvos",en:"Saves"},{pt:"Compartilhamentos",en:"Shares"}];
+function igBlock(codes){codes=[...new Set(codes)].filter(c=>IG[c]);if(!codes.length)return "";const t=igSum(codes);
+  return `<div class="igb"><span class="mono mute">${LANG==="en"?"On Instagram":"No Instagram"}${codes.length>1?(LANG==="en"?` · ${codes.length} posts`:` · ${codes.length} posts somados`):""}</span><div class="metrics" style="margin-top:10px">${t.map((v,i)=>v?`<div><b>${nfmt(v)}</b><span class="mono mute">${MLBL[i][LANG]}</span></div>`:"").join("")}</div><div class="iglinks mono">${codes.map((c,i)=>`<a class="open" href="${igUrl(c)}" target="_blank" rel="noopener">${codes.length>1?(LANG==="en"?"Post ":"Post ")+(i+1):(LANG==="en"?"See post":"Ver post")} ↗</a>`).join("")}</div></div>`}
 /* ---------- áreas ---------- */
 const AREAS=[
  ["auto","Automotivo","Automotive",/ford|mustang|bronco|tremor|porsche|911|gt3|gt2|bmw|audi|f1|byd|sealion|cadillac|abarth|subaru|wrx|honda|s2000|civic|veneron|jdm|drift|selfmeet|select-car|racing|velozes|wekfest|midnight|motorgrid|hb20|ferrari|cf-moto|wec|interlagos|split-customs|eclipse|soukoukai|carro-baixo|furiozza|mkstreet|autoconcept|tcr|classic-series|reuniao-off|piaz|ballas|macan|bexp/],
+ ["marcas","Grandes marcas","Major brands",/ford|mustang|bronco|tremor|cadillac|ferrari|bmw|audi|porsche|byd|nike|canon|campari|hellmans|kings|abarth|cf-moto|subaru|hb20/],
  ["moda","Moda","Fashion",/fashion|zafira|ballas|difee|desfile|luchiari|kings|nike|well-collective|fenzi|classic-series|poka-pala/],
  ["musica","Música","Music",/batalha|bda|cynthia|carla-sol|corazon|catherine|videoclipe|atividade|anjosbaratas|pocah|poka-pala|interestadual/],
  ["eventos","Eventos","Events",/aftermovie|jdm-culture|selfmeet|select-car|wekfest|midnight|velozes|festival|wec|racing-track|reuniao-off|bexp|lancamento|porsche-cup|copa-hb20|motorgrid|bda|batalha|interestadual|pocah|furiozza|travessia|kitesurf|desfile|gt-series|aniversario/],
  ["pub","Publicidade","Advertising",/ford|byd|cadillac|abarth|cf-moto|kings|nike|campari|hellmans|canon|bem-bolado|mimos|sao-gualter|brasedo|paito|veneron|eurobike|fenzi|classic-series|split-customs|zafira|subaru|teaser|publicidade|ferrari|audi|raio-x|macan/],
- ["backstage","Backstage","Backstage",/backstage|lembrancas|still-para-videoclipe/],
+ ["backstage","Backstage","Backstage",/backstage|lembrancas|still-para-videoclipe|natal-2025/],
  ["ensaio","Ensaios","Creative shoots",/after-a-break-up/],
  ["autoral","Autoral","Personal",/bariloche|semelhantes|demo-reel|postcards|best-of/]];
 const areasOf=w=>{const a=AREAS.filter(x=>x[3].test(w.slug)).map(x=>x[0]);return a.length?a:["autoral"]};
@@ -650,19 +664,20 @@ const BR=["Ford","BYD","Cadillac","Abarth","Porsche Cup","Ferrari","Audi","BMW",
 const WS=Object.fromEntries(W.map(w=>[w.slug,w]));
 const CR=[
  {b:"Ford",lbl:{pt:"Creator Ford",en:"Ford creator"},match:/ford|mustang|bronco|tremor/,cases:[
-  {s:"fia-wec-6-horas-de-sao-paulo-ford-1",m:{l:"291",c:"30"},ig:"https://www.instagram.com/reel/DdmfOFqR0SY/",ph:"fia-wec-6-horas-de-sao-paulo-ford",n:{pt:"FIA WEC · 6 Horas de São Paulo",en:"FIA WEC · 6 Hours of São Paulo"},pl:"Interlagos, SP",ro:{pt:"Captação, edição, entrevista com piloto e legendas",en:"Filming, editing, driver interview and captions"},d:[{pt:"filme da experiência",en:"experience film"},{pt:"entrevista com piloto",en:"driver interview"}]},
+  {s:"fia-wec-6-horas-de-sao-paulo-ford-1",ph:"fia-wec-6-horas-de-sao-paulo-ford",n:{pt:"FIA WEC · 6 Horas de São Paulo",en:"FIA WEC · 6 Hours of São Paulo"},pl:"Interlagos, SP",ro:{pt:"Captação, edição, entrevista com piloto e legendas",en:"Filming, editing, driver interview and captions"},d:[{pt:"filme da experiência",en:"experience film"},{pt:"entrevista com piloto",en:"driver interview"}]},
   {s:"expedicao-ford-bronco",ph:"fotografia-expedicao-ford-bronco",n:{pt:"Expedição Ford Bronco",en:"Ford Bronco Expedition"},pl:"Poços de Caldas, MG",ro:{pt:"Produção, direção e roteiro",en:"Production, direction and script"},d:[{pt:"filme da expedição",en:"expedition film"}]},
   {s:"expedicao-ford-tremor",ph:"fotografia-expedicao-ford-tremor",n:{pt:"Expedição Ford Tremor",en:"Ford Tremor Expedition"},ro:{pt:"Produção, direção, roteiro, edição e color",en:"Production, direction, script, editing and color"},d:[{pt:"filme da expedição",en:"expedition film"}]},
-  {s:"mustang-dark-horse-ford",ph:"backstage-mustang-dark-horse-ford",n:{pt:"Mustang Dark Horse",en:"Mustang Dark Horse"},ro:{pt:"Filme de lançamento e backstage",en:"Launch film and backstage"},d:[{pt:"filme de lançamento",en:"launch film"}]},
+  {s:"mustang-dark-horse-ford",ph:"fotografia-mustang-dark-horse",n:{pt:"Mustang Dark Horse",en:"Mustang Dark Horse"},ro:{pt:"Filme de lançamento e fotos",en:"Launch film and photos"},d:[{pt:"filme de lançamento",en:"launch film"}]},
   {s:"ready-set-ford",n:{pt:"Ready, Set, Ford!",en:"Ready, Set, Ford!"},ro:{pt:"Experiência em pista como creator",en:"On-track creator experience"},d:[{pt:"filme da experiência",en:"experience film"}]},
-  {s:"f1-w-ford",m:{l:"6,8 mil",c:"77"},ig:"https://www.instagram.com/p/DfetcL_lqsR/",pl:"Interlagos, SP",n:{pt:"F1 com a Ford",en:"F1 with Ford"},ro:{pt:"Fotografia da experiência",en:"Experience photography"},d:[]},
+  {s:"f1-w-ford",pl:"Interlagos, SP",n:{pt:"F1 com a Ford",en:"F1 with Ford"},ro:{pt:"Fotografia da experiência",en:"Experience photography"},d:[]},
   {s:"festival-interlagos-reels-ford",ph:"festival-interlagos-ford",xv:"festival-interlagos-frames-ford",n:{pt:"Festival Interlagos",en:"Interlagos Festival"},pl:"Interlagos, SP",ro:{pt:"Reels, frames verticais e fotos",en:"Reels, vertical frames and photos"},d:[]}]},
  {b:"CD Projekt Red",lbl:{pt:"CD Projekt Red",en:"CD Projekt Red"},cases:[
-  {mp4:"cyberpunk.mp4",m:{l:"3,5 mil",c:"179"},ig:"https://www.instagram.com/reel/Deh39kJTf4J/",poster:"imagens/creator/cyberpunk-capa.jpg",vert:1,n:{pt:"Cyberpunk: Edgerunners · 2ª temporada",en:"Cyberpunk: Edgerunners · Season 2"},y:"2026",pl:"São Paulo, SP",ro:{pt:"Direção e produção da ação de divulgação",en:"Direction and production of the launch content"},team:"Henry Majolo (DF) · Sorriso (câmera) · Mat (assist.)",d:[{pt:"vídeo vertical de divulgação",en:"vertical launch video"}]}]}];
+  {mp4:"cyberpunk.mp4",igc:["Deh39kJTf4J","DgI6B1_BTeu"],poster:"imagens/creator/cyberpunk-capa.jpg",vert:1,n:{pt:"Cyberpunk: Edgerunners · 2ª temporada",en:"Cyberpunk: Edgerunners · Season 2"},y:"2026",pl:"São Paulo, SP",ro:{pt:"Direção e produção da ação de divulgação",en:"Direction and production of the launch content"},team:"Henry Majolo (DF) · Sorriso (câmera) · Mat (assist.)",d:[{pt:"vídeo vertical de divulgação",en:"vertical launch video"},{pt:"reel de bastidores do processo criativo",en:"behind-the-scenes reel"}]}]}];
 let crB=0,crC=0;
 const L=o=>o?(o[LANG]||o.pt):"";
-function crTot(){const c=CR[crB];if(!c.match){$("#crtot").innerHTML="";return}const ws=W.filter(w=>c.match.test(w.slug));
-  $("#crtot").innerHTML=`<div><b>${ws.length}</b><span class="mono mute">${t("projects")} ${c.b}</span></div><div><b>${ws.reduce((a,w)=>a+w.imgs.length,0)}</b><span class="mono mute">${t("photos")}</span></div><div><b>${ws.reduce((a,w)=>a+w.vids.length,0)}</b><span class="mono mute">${t("videos")}</span></div>`}
+function crTot(){const c=CR[crB];const ws=c.match?W.filter(w=>c.match.test(w.slug)):[];
+  const codes=[...new Set(c.cases.flatMap(k=>k.igc||[k.s,k.ph,k.xv].filter(Boolean).flatMap(x=>IGP[x]||[])))],tt=igSum(codes);
+  $("#crtot").innerHTML=`${ws.length?`<div><b>${ws.length}</b><span class="mono mute">${t("projects")} ${c.b}</span></div>`:`<div><b>${codes.length}</b><span class="mono mute">posts</span></div>`}<div><b>${nfmt(tt[0])}</b><span class="mono mute">${LANG==="en"?"views on Instagram":"views no Instagram"}</span></div><div><b>${nfmt(tt[1])}</b><span class="mono mute">${LANG==="en"?"likes":"curtidas"}</span></div>`}
 function renderCreator(){
   $("#crtabs").innerHTML=CR.map((c,i)=>`<button type="button" data-cb="${i}" class="${i===crB?"on":""}">${L(c.lbl)}</button>`).join("");
   const cs=CR[crB].cases;$("#crcases").style.display=cs.length>1?"":"none";$("#crcases").innerHTML=cs.length>1?cs.map((k,i)=>{const w=WS[k.s];return `<button type="button" data-cc="${i}" class="${i===crC?"on":""}"><span class="th"><img loading="lazy" src="${w?w.thumb:k.poster}" alt=""></span><span class="cy">${pad(i+1)} · ${w?w.year:k.y}</span><span class="nm">${esc(L(k.n))}</span></button>`}).join(""):"";
@@ -670,8 +685,7 @@ function renderCreator(){
   const nPh=(w?w.imgs.length:0)+(ph?ph.imgs.length:0),nV=(w?w.vids.length:0)+(xv?xv.vids.length:0);
   const del=[];if(nV)del.push([nV,LANG==="en"?(nV>1?"videos delivered":"video delivered"):(nV>1?"vídeos entregues":"vídeo entregue")]);if(nPh)del.push([nPh,LANG==="en"?"photos":"fotos"]);(k.d||[]).forEach(x=>del.push(["·",L(x)]));
   const yt=w&&w.vids.find(v=>v.startsWith("yt:"));
-  const MET=[["v",{pt:"Views",en:"Views"}],["l",{pt:"Curtidas",en:"Likes"}],["c",{pt:"Comentários",en:"Comments"}],["sh",{pt:"Compartilhamentos",en:"Shares"}],["sv",{pt:"Salvos",en:"Saves"}],["r",{pt:"Alcance",en:"Reach"}]];
-  const met=k.m?`<span class="mono mute">${LANG==="en"?"On Instagram":"No Instagram"}</span><div class="metrics" style="margin-top:10px">${MET.filter(x=>k.m[x[0]]!=null).map(x=>`<div><b>${k.m[x[0]]}</b><span class="mono mute">${L(x[1])}</span></div>`).join("")}${k.ig?`<div style="align-self:end"><a class="open mono" href="${k.ig}" target="_blank" rel="noopener">${LANG==="en"?"See post ↗":"Ver post ↗"}</a></div>`:""}</div>`:"";
+  const met=igBlock(k.igc||[k.s,k.ph,k.xv].filter(Boolean).flatMap(x=>IGP[x]||[]));
   $("#crcase").classList.toggle("vert",!!k.vert);
   const vid=k.mp4?`<div class="vid"><video controls playsinline preload="none" poster="${k.poster}" controlslist="nodownload" src="${k.mp4}"></video></div>`:k.soon?`<div class="vid soon"><div><span class="mono todo">⚠ ${LANG==="en"?"Add video link":"Falta o link do vídeo"}</span><p class="mono mute" style="margin-top:8px">${t("soonV")} — CD Projekt Red</p></div></div>`
     :`<div class="vid" data-yt="${yt?yt.slice(3):""}" data-open="${w.slug}"><img src="${w.thumb}" alt="${esc(L(k.n))}"><span class="play mono">${yt?t("watch"):t("seePhotos")}</span></div>`;
@@ -751,6 +765,7 @@ function openProject(slug){
    ${gal.length?'<div class="pc">':''}<div class="p-head">
      ${gal.length?`<span class="mono mute">${kind(w)}</span>`:""}<h1>${esc(w.title.split(" | ")[0])}${clientOf(w)&&!w.title.toLowerCase().includes(clientOf(w).split(" ")[0].toLowerCase())?`<span class="p-client">${esc(clientOf(w))}</span>`:""}</h1>
      <div class="p-meta mono">${clientOf(w)?`<span class="mute">${t("client")}</span><span>${esc(clientOf(w))}</span>`:""}<span class="mute">${t("year")}</span><span>${w.year}</span><span class="mute">${t("area")}</span><span class="p-areas">${areasOf(w).map(a=>`<span>${areaName(a)}</span>`).join("")}</span><span class="mute">${t("type")}</span><span>${kind(w)}</span>${gal.length?`<span class="mute">${t("photos")}</span><span>${gal.length}</span>`:""}</div>
+     ${IGP[w.slug]?`<div class="p-ig">${igBlock(IGP[w.slug])}</div>`:""}
      <div class="p-desc">${(()=>{const sd=splitDesc(w.desc);return (sd.tx?esc(sd.tx):(sd.cr.length?"":`<span class="mute">${kind(w)} — ${w.year}</span>`))+(sd.cr.length?`<div class="mono mute" style="margin:${sd.tx?"18px":"0"} 0 10px">${t("credits")}</div><dl class="credits">${sd.cr.map(c=>`<dt>${esc(c[0])}</dt><dd>${esc(c[1])}</dd>`).join("")}</dl>`:"")})()}</div>
    </div>
    ${!w.vids.length&&!gal.length?`<div class="p-cover"><img src="${w.thumb}" alt=""></div>`:""}
