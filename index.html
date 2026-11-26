@@ -8,7 +8,7 @@
 <meta property="og:title" content="Ana Frontzek — Portfólio">
 <meta property="og:description" content="Direção, captação, edição, color grading e fotografia.">
 <meta property="og:image" content="https://anafrontzek.com/imagens/og.jpg">
-<script>(function(){var u=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(u)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),saf=/^((?!chrome|chromium|android|crios|fxios|edg|opr).)*safari/i.test(u),v=document.createElement("video"),vp9=!!(v.canPlayType&&v.canPlayType('video/webm; codecs="vp9"'));document.documentElement.classList.add(ios||saf||!vp9?"apple":"pc")})();</script>
+<script>(function(){var u=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(u)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),saf=/^((?!chrome|chromium|android|crios|fxios|edg|opr).)*safari/i.test(u),v=document.createElement("video"),vp9=!!(v.canPlayType&&v.canPlayType('video/webm; codecs="vp9"'));document.documentElement.classList.add(ios||saf||!vp9?"apple":"is-pc")})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -50,7 +50,8 @@ nav .links a::after{content:"";position:absolute;left:0;right:0;bottom:-3px;heig
 nav .links a:hover::after{transform:scaleX(1);transform-origin:left}
 .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3ddc6a;margin-right:8px;box-shadow:0 0 0 0 rgba(61,220,106,.6);animation:pulse 2s infinite}
 @keyframes pulse{70%{box-shadow:0 0 0 8px rgba(61,220,106,0)}100%{box-shadow:0 0 0 0 rgba(61,220,106,0)}}
-@media(max-width:720px){nav .avail{display:none} nav .links{gap:14px} nav .links a[data-go=indice]{display:none} .brand{white-space:nowrap;top:14px} nav .links{padding:10px 14px}}
+@media(max-width:1100px){nav .avail{display:none}}
+@media(max-width:720px){nav .avail{display:none} nav .links{gap:14px} nav .links a[data-go=indice],nav .links a[data-go=creator],nav .links a[data-go=videoaulas],nav .links a[data-go=sobre]{display:none} .brand{white-space:nowrap;top:14px} nav .links{padding:10px 14px}}
 
 /* ---------- hero ---------- */
 .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:120px 0 0;position:relative}
@@ -204,6 +205,112 @@ section{padding:clamp(80px,12vw,160px) var(--pad) 0}
 @media(max-width:900px){.cgrid{grid-template-columns:1fr}.wform{grid-template-columns:1fr}}
 footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:60px var(--pad) 24px;border-top:1px solid var(--line);margin-top:clamp(80px,10vw,140px)}
 
+/* ---------- idioma ---------- */
+.lang{display:inline-flex;border:1px solid rgba(255,255,255,.14);border-radius:999px;overflow:hidden}
+.lang button{padding:3px 9px;font:inherit;color:var(--mute);transition:.2s}
+.lang button.on{background:var(--fg);color:var(--bg)}
+.lang button:not(.on):hover{color:var(--fg)}
+
+/* ---------- índice por área ---------- */
+.fbar{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.filters .n{color:var(--mute);margin-left:5px}
+.filters button.on .n{color:inherit;opacity:.6}
+.filters.sub button{padding:5px 11px;font-size:11px}
+@media(max-width:720px){.sec-head:has(.fbar){flex-direction:column;align-items:flex-start}.fbar{align-items:flex-start}}
+
+/* ---------- logos de marcas ---------- */
+.logos{overflow:hidden;margin:0 calc(-1*var(--pad));border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:clamp(26px,4vw,44px) 0;-webkit-mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.logos .lt{display:flex;align-items:center;gap:clamp(44px,6vw,90px);width:max-content;animation:scroll 55s linear infinite}
+.logos .lt.rev{animation-direction:reverse;animation-duration:65s;margin-top:clamp(26px,3.5vw,40px)}
+.logos:hover .lt{animation-play-state:paused}
+.logos img{height:var(--h,30px);width:auto;filter:brightness(0) invert(1);opacity:.55;transition:opacity .3s}
+.logos .wm{font-weight:800;font-stretch:125%;font-size:calc(var(--h,30px)*.72);letter-spacing:-.03em;text-transform:uppercase;white-space:nowrap;opacity:.55;transition:opacity .3s,color .3s;line-height:1}
+.logos img.cor{filter:none;opacity:.85}
+.logos img:hover,.logos .wm:hover{opacity:1}
+.logos .wm:hover{color:var(--acc)}
+.brands-more{margin-top:18px;line-height:1.9}
+
+/* ---------- creator ---------- */
+.cr-intro{display:grid;grid-template-columns:7fr 5fr;gap:clamp(24px,4vw,60px);align-items:end;margin-bottom:clamp(30px,4vw,56px)}
+.cr-intro .big{font-weight:600;font-stretch:105%;font-size:clamp(24px,3vw,44px);line-height:1.06;letter-spacing:-.03em;max-width:22ch}
+.cr-intro .big em{font-style:normal;color:var(--acc)}
+.cr-tot{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cr-tot b{display:block;font-weight:800;font-stretch:125%;font-size:clamp(34px,4.6vw,68px);line-height:.9;letter-spacing:-.05em}
+@media(max-width:820px){.cr-intro{grid-template-columns:1fr}}
+.cr-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.cr-tabs button{border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-weight:700;font-stretch:110%;font-size:15px;transition:.25s}
+.cr-tabs button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.cr-tabs button:not(.on):hover{border-color:var(--fg)}
+.cr-cases{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin:6px 0 28px;border-top:1px solid var(--line);padding-top:18px}
+.cr-cases button{text-align:left;display:flex;flex-direction:column;gap:8px;opacity:.5;transition:opacity .3s}
+.cr-cases button:hover,.cr-cases button.on{opacity:1}
+.cr-cases .th{aspect-ratio:16/9;overflow:hidden;background:var(--bg2);position:relative;outline:2px solid transparent;outline-offset:-2px;transition:outline-color .3s}
+.cr-cases .th img{width:100%;height:100%;object-fit:cover;filter:grayscale(1);transition:filter .4s}
+.cr-cases button.on .th{outline-color:var(--acc)}
+.cr-cases button.on .th img,.cr-cases button:hover .th img{filter:none}
+.cr-cases .nm{font-weight:600;font-stretch:105%;font-size:14px;line-height:1.15;letter-spacing:-.01em}
+.cr-cases .cy{font-family:var(--mono);font-size:11px;color:var(--mute)}
+@media(max-width:900px){.cr-cases{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-left:calc(-1*var(--pad));margin-right:calc(-1*var(--pad));padding-left:var(--pad);padding-right:var(--pad)}.cr-cases::-webkit-scrollbar{display:none}.cr-cases button{flex:none;width:44vw;scroll-snap-align:start}}
+.case.vert{grid-template-columns:minmax(0,360px) minmax(0,1fr)}
+.case.vert .vid{aspect-ratio:9/16}
+.case .vid video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 12px;margin-bottom:18px;border-bottom:1px solid var(--line);padding-bottom:18px}
+.metrics b{display:block;font-weight:800;font-stretch:120%;font-size:clamp(24px,2.4vw,34px);letter-spacing:-.04em;line-height:1}
+@media(max-width:900px){.case.vert{grid-template-columns:1fr}.case.vert .vid{max-width:360px}}
+.case{display:grid;grid-template-columns:minmax(0,8fr) minmax(260px,4fr);gap:clamp(18px,3vw,40px);align-items:start}
+.case .vid{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden;cursor:pointer}
+.case .vid img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.1,1),opacity .4s;opacity:.85}
+.case .vid:hover img{transform:scale(1.03);opacity:1}
+.case .vid .play{position:absolute;left:18px;bottom:16px;background:var(--acc);color:#fff;padding:9px 15px;border-radius:999px}
+.case .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.case .vid.soon{display:flex;align-items:center;justify-content:center;border:1px dashed #3a3936;background:var(--bg2);cursor:default;text-align:center;padding:20px}
+.case .sheet{border-top:2px solid var(--acc);padding-top:16px}
+.case .sheet h3{font-weight:800;font-stretch:112%;font-size:clamp(24px,2.4vw,36px);line-height:.95;letter-spacing:-.035em;text-transform:uppercase;margin:6px 0 18px}
+.case dl{display:grid;grid-template-columns:auto 1fr;gap:9px 18px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:16px}
+.case dt{color:var(--mute)}
+.case .del{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.case .del li{display:flex;gap:10px;align-items:baseline;font-size:15px}
+.case .del li b{font-weight:800;font-stretch:115%;font-size:22px;letter-spacing:-.03em;min-width:2.2ch;color:var(--acc)}
+.case .open{display:inline-flex;gap:8px;border-bottom:1px solid currentColor;padding-bottom:3px}
+.case .open:hover{color:var(--acc)}
+.todo{color:#e0a100}
+@media(max-width:900px){.case{grid-template-columns:1fr}}
+
+/* ---------- videoaulas ---------- */
+.va{display:grid;grid-template-columns:5fr 7fr;gap:clamp(24px,4vw,60px);align-items:center}
+.va .big{font-weight:600;font-stretch:105%;font-size:clamp(24px,3vw,44px);line-height:1.06;letter-spacing:-.03em;max-width:18ch}
+.va .big em{font-style:normal;color:var(--acc)}
+.va .sub{color:#b9b6ae;margin-top:18px;max-width:44ch;font-size:clamp(15px,1.15vw,17px);line-height:1.6}
+.va-steps{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--line)}
+.va-steps div{padding:22px 20px 24px 0;border-bottom:1px solid var(--line)}
+.va-steps div:nth-child(odd){border-right:1px solid var(--line);margin-right:0}
+.va-steps div:nth-child(even){padding-left:20px}
+.va-steps b{display:block;font-weight:800;font-stretch:115%;font-size:20px;letter-spacing:-.02em;text-transform:uppercase;margin:8px 0 6px}
+.va-steps p{color:#b9b6ae;font-size:15px}
+.va-vid{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden}
+.va-vid video{width:100%;height:100%;display:block;object-fit:cover}
+.va-steps.wide{grid-template-columns:repeat(4,1fr);margin-top:clamp(40px,5vw,64px)}
+.va-steps.wide div{border-right:1px solid var(--line);padding:22px 20px 24px}
+.va-steps.wide div:first-child{padding-left:0}.va-steps.wide div:last-child{border-right:0}
+@media(max-width:900px){.va-steps.wide{grid-template-columns:1fr 1fr}.va-steps.wide div{padding:22px 16px 24px 0}.va-steps.wide div:nth-child(2n){border-right:0;padding-left:16px}}
+.va-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--fg);color:var(--bg);font-weight:700;border-radius:999px;padding:14px 22px;transition:background .25s,color .25s,transform .25s}
+.btn:hover{background:var(--acc);color:#fff;transform:translateY(-2px)}
+.btn.ghost{background:none;color:var(--fg);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--acc);background:none;color:var(--acc)}
+@media(max-width:900px){.va{grid-template-columns:1fr}}
+@media(max-width:560px){.va-steps{grid-template-columns:1fr}.va-steps div:nth-child(odd){border-right:0}.va-steps div:nth-child(even){padding-left:0}}
+
+/* ---------- página do trabalho: ficha ---------- */
+.p-client{display:block;font-weight:500;font-stretch:100%;font-size:.42em;letter-spacing:-.02em;text-transform:none;color:var(--mute);margin-top:.25em}
+.pc .p-client{font-size:15px;margin-top:6px}
+.p-areas{display:flex;flex-wrap:wrap;gap:6px}
+.p-areas span{border:1px solid var(--line);border-radius:999px;padding:3px 9px}
+.credits{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14px}
+.credits dt{color:var(--mute)}
+.p-cta{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin:clamp(40px,6vw,80px) var(--pad) 0;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--bg2)}
+.p-cta b{font-weight:800;font-stretch:115%;font-size:clamp(22px,2.4vw,34px);letter-spacing:-.03em;text-transform:uppercase;line-height:1}
+
 /* ---------- project view ---------- */
 /* correção: cards 3D do mostruário não podem passar por cima da página do trabalho (Safari/Mac, telas largas) */
 #home{position:relative;z-index:0}
@@ -296,112 +403,150 @@ img,video{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none}
 <a href="#/" class="brand" data-go="top" aria-label="Ana Frontzek — início"><img src="logo_1.png?v=1" alt="Frontzek" onerror="this.outerHTML='ANA FRONTZEK®'"></a>
 <nav>
   <div class="links mono">
-    <span class="avail"><span class="dot"></span>Disponível para projetos</span>
-    <a href="#/" data-go="trabalhos">Trabalhos</a>
-    <a href="#/" data-go="indice">Índice</a>
-    <a href="#/" data-go="sobre">Sobre</a>
-    <a href="#/" data-go="contato">Contato</a>
+    <span class="avail"><span class="dot"></span><span data-i18n="avail">Disponível para projetos</span></span>
+    <a href="#/" data-go="trabalhos" data-i18n="nav.works">Trabalhos</a>
+    <a href="#/" data-go="indice" data-i18n="nav.index">Índice</a>
+    <a href="#/" data-go="creator">Creator</a>
+    <a href="#/" data-go="videoaulas" data-i18n="nav.va">Videoaulas</a>
+    <a href="#/" data-go="sobre" data-i18n="nav.about">Sobre</a>
+    <a href="#/" data-go="contato" data-i18n="nav.contact">Contato</a>
+    <span class="lang" role="group" aria-label="Idioma"><button type="button" data-lang="pt" class="on">PT</button><button type="button" data-lang="en">EN</button></span>
   </div>
 </nav>
 
 <main id="home">
   <header class="hero" id="top">
     <div class="top mono">
-      <p><span class="mute">(01)</span><br>Direção, captação,<br>edição & color grading</p>
-      <p><span class="mute">(02)</span><br>Fotografia & vídeo<br>automotivo, moda e música</p>
-      <p><span class="mute">(03)</span><br><span id="nworks">99</span> trabalhos<br>2023 — 2026</p>
-      <p style="text-align:right"><span class="mute">Role</span><br>↓</p>
+      <p><span class="mute">(01)</span><br><span data-i18n="h1">Direção, captação,<br>edição & color grading</span></p>
+      <p><span class="mute">(02)</span><br><span data-i18n="h2">Fotografia & vídeo<br>automotivo, moda e música</span></p>
+      <p><span class="mute">(03)</span><br><span id="nworks">99</span> <span data-i18n="h3">trabalhos</span><br>2023 — 2026</p>
+      <p style="text-align:right"><span class="mute" data-i18n="scroll">Role</span><br>↓</p>
     </div>
     <h1><span class="line"><span>Ana</span></span><span class="line"><span>Frontzek<em>.</em></span></span></h1>
     <div class="marquee" id="marquee"></div>
   </header>
 
   <section id="servicos">
-    <div class="sec-head reveal"><h2>O que eu faço</h2><span class="mono mute">(Serviços)</span></div>
+    <div class="sec-head reveal"><h2 data-i18n="svc.t">O que eu faço</h2><span class="mono mute" data-i18n="svc.s">(Serviços)</span></div>
     <div class="services reveal">
-      <span>Direção</span><span>Roteiro</span><span>Captação</span><span>Edição</span><span>Color Grading</span><span>Fotografia</span><span>Aftermovies</span><span>Reels & Social</span><span>Fashion Film</span><span>Publicidade Automotiva</span><span>Backstage</span><span>Cobertura de Eventos</span>
+      <span data-i18n="sv1">Direção</span><span data-i18n="sv2">Roteiro</span><span data-i18n="sv3">Captação</span><span data-i18n="sv4">Edição</span><span>Color Grading</span><span data-i18n="sv5">Fotografia</span><span>Aftermovies</span><span>Reels & Social</span><span>Fashion Film</span><span data-i18n="sv6">Publicidade Automotiva</span><span>Backstage</span><span data-i18n="sv7">Cobertura de Eventos</span><span data-i18n="sv8">Conteúdo como Creator</span><span data-i18n="sv9">Videoaulas</span>
     </div>
   </section>
 
+  <section id="marcas">
+    <div class="sec-head reveal"><h2 data-i18n="br.t">Já assinei<br>projetos para</h2><span class="mono mute" data-i18n="br.s">(Clientes)</span></div>
+    <div class="logos reveal" id="logos"></div>
+  </section>
+
   <section id="trabalhos">
-    <div class="sec-head reveal"><h2>Trabalhos<br>em destaque</h2><span class="mono mute">(Seleção)</span></div>
-    <div class="stage" id="stage"><div class="deck" id="deck"></div></div><div class="fhint mono mute"><span>Passe o mouse pelo mostruário · clique abre o projeto</span><span id="fcount"></span></div>
+    <div class="sec-head reveal"><h2 data-i18n="ft.t">Trabalhos<br>em destaque</h2><span class="mono mute" data-i18n="ft.s">(Seleção)</span></div>
+    <div class="stage" id="stage"><div class="deck" id="deck"></div></div><div class="fhint mono mute"><span data-i18n="ft.h">Passe o mouse pelo mostruário · clique abre o projeto</span><span id="fcount"></span></div>
   </section>
 
   <section id="indice">
     <div class="sec-head reveal">
-      <h2>Índice</h2>
-      <div class="filters mono" id="filters">
-        <button class="on" data-f="all">Todos</button>
-        <button data-f="video">Vídeo</button>
-        <button data-f="foto">Fotografia</button>
+      <h2 data-i18n="nav.index">Índice</h2>
+      <div class="fbar">
+        <div class="filters mono" id="areas"></div>
+        <div class="filters sub mono" id="filters">
+          <button class="on" data-f="all" data-i18n="f.all2">Foto + vídeo</button>
+          <button data-f="video" data-i18n="f.video">Só vídeo</button>
+          <button data-f="foto" data-i18n="f.foto">Só fotografia</button>
+        </div>
       </div>
     </div>
     <div id="index"></div>
   </section>
 
-  <section id="sobre">
-    <div class="sec-head reveal"><h2>Sobre</h2><span class="mono mute">(Quem filma)</span></div>
-    <div class="about">
+  <section id="creator">
+    <div class="sec-head reveal"><h2>Creator<i style="font-style:normal;color:var(--acc)">.</i></h2><span class="mono mute" data-i18n="cr.s">(Conteúdo para marcas)</span></div>
+    <div class="cr-intro reveal">
+      <p class="big" data-i18n="cr.big">Conteúdo pensado para a rede, com <em>acabamento de cinema</em>. Eu vivo a experiência, filmo e entrego pronto para postar.</p>
+      <div class="cr-tot" id="crtot"></div>
+    </div>
+    <div class="cr-tabs reveal" id="crtabs"></div>
+    <div class="cr-cases reveal" id="crcases"></div>
+    <div class="case reveal" id="crcase"></div>
+  </section>
+
+  <section id="videoaulas">
+    <div class="sec-head reveal"><h2 data-i18n="nav.va">Videoaulas</h2><span class="mono mute" data-i18n="va.s">(Para cursos e especialistas)</span></div>
+    <div class="va">
       <div class="reveal">
-        <p class="big">Sou uma profissional criativa que transforma ideias em <em>projetos visuais com personalidade</em>.</p>
-        <div class="body">
-          <p>Gosto de explorar novas possibilidades, conectar conceito e forma e criar trabalhos que comuniquem com clareza e impacto.</p>
-          <p>Cada projeto é uma oportunidade de entender uma necessidade, encontrar um caminho próprio e dar vida a algo que faça sentido para quem está do outro lado.</p>
-        </div>
-        <div class="stats">
-          <div><b id="s-total">99</b><span class="mono mute">Projetos</span></div>
-          <div><b id="s-video">55</b><span class="mono mute">Com vídeo</span></div>
-          <div><b>4</b><span class="mono mute">Anos</span></div>
-        </div>
+        <p class="big" data-i18n="va.big">Seu curso com <em>cara de filme</em>, não de reunião gravada.</p>
+        <p class="sub" data-i18n="va.sub">Levo câmera, luz e áudio de cinema até o seu espaço e entrego as aulas editadas, prontas para a plataforma. Para profissionais de qualquer área, em pacotes mensais.</p>
+        <div class="va-cta"><a class="btn" href="#/" data-va="1"><span data-i18n="va.cta">Produzir minhas videoaulas</span> →</a></div>
       </div>
-      <figure class="portrait reveal"><img loading="lazy" src="sobre-ana.jpg?v=1" alt="Ana Frontzek no set"><figcaption class="mono">Ana Frontzek — no set</figcaption></figure>
+      <div class="va-vid reveal"><video controls playsinline preload="none" poster="videoaulas-thumb.jpg?v=1" controlslist="nodownload" src="videoaulas.mp4?v=1"></video></div>
+    </div>
+    <div class="va-steps wide reveal">
+      <div><span class="mono mute">01</span><b data-i18n="va.1t">Alinhamento</b><p data-i18n="va.1p">Temas, duração e ordem das aulas. Você manda roteiro e slides antes de cada sessão.</p></div>
+      <div><span class="mono mute">02</span><b data-i18n="va.2t">Captação</b><p data-i18n="va.2p">Set montado no seu espaço. Você e os slides alternados ao vivo.</p></div>
+      <div><span class="mono mute">03</span><b data-i18n="va.3t">Edição</b><p data-i18n="va.3p">Cortes, cor, áudio tratado e títulos. Motion na sua identidade, se quiser.</p></div>
+      <div><span class="mono mute">04</span><b data-i18n="va.4t">Entrega</b><p data-i18n="va.4p">Primeira versão em até 5 dias úteis e arquivo final pronto para subir.</p></div>
     </div>
   </section>
 
-  <section id="marcas">
-    <div class="slot reveal"><span class="lead">Já assinei projetos para</span><div class="win"><span class="arrow">→</span><span class="nm" id="bnm"></span><span class="ix" id="bix"></span></div></div>
-    <div class="bchips reveal" id="bchips"></div>
+  <section id="sobre">
+    <div class="sec-head reveal"><h2 data-i18n="nav.about">Sobre</h2><span class="mono mute" data-i18n="ab.s">(Quem filma)</span></div>
+    <div class="about">
+      <div class="reveal">
+        <p class="big" data-i18n="ab.big">Sou uma profissional criativa que transforma ideias em <em>projetos visuais com personalidade</em>.</p>
+        <div class="body">
+          <p data-i18n="ab.p1">Gosto de explorar novas possibilidades, conectar conceito e forma e criar trabalhos que comuniquem com clareza e impacto.</p>
+          <p data-i18n="ab.p2">Cada projeto é uma oportunidade de entender uma necessidade, encontrar um caminho próprio e dar vida a algo que faça sentido para quem está do outro lado.</p>
+        </div>
+        <div class="stats">
+          <div><b id="s-total">99</b><span class="mono mute" data-i18n="st.1">Projetos</span></div>
+          <div><b id="s-video">55</b><span class="mono mute" data-i18n="st.2">Com vídeo</span></div>
+          <div><b>4</b><span class="mono mute" data-i18n="st.3">Anos</span></div>
+        </div>
+      </div>
+      <figure class="portrait reveal"><img loading="lazy" src="sobre-ana.jpg?v=1" alt="Ana Frontzek no set"><figcaption class="mono" data-i18n="ab.cap">Ana Frontzek — no set</figcaption></figure>
+    </div>
   </section>
 
+
   <section id="directors-cut">
-    <div class="dc-head reveal"><h2>Director's<br>Cut<i>.</i></h2><span class="mono mute" style="text-align:right">(Melhores takes<br>2023 — 2026)</span></div>
+    <div class="dc-head reveal"><h2>Director's<br>Cut<i>.</i></h2><span class="mono mute" style="text-align:right" data-i18n="dc.s">(Melhores takes<br>2023 — 2026)</span></div>
     <div class="dc reveal"><video id="dcv" muted loop playsinline preload="metadata" controlslist="nodownload noplaybackrate" disablepictureinpicture disableremoteplayback oncontextmenu="return false" src="directors-cut.mp4?v=6"></video><span class="ui mono">● Director's cut — loop</span><button class="pp mono" id="dcpp">❚❚ Pausar</button></div>
   </section>
 
   <section id="contato" class="contact">
-    <p class="mono mute reveal" style="margin-bottom:14px">(Contato)</p>
+    <p class="mono mute reveal" style="margin-bottom:14px" data-i18n="ct.s">(Contato)</p>
     <div class="cgrid">
       <div class="reveal">
-        <h2 class="cta" id="cta">Vamos<br>criar <span class="star">✱</span> juntos</h2>
+        <h2 class="cta" id="cta" data-i18n="ct.t">Vamos<br>criar <span class="star">✱</span> juntos</h2>
         <div class="direct mono">
           <a href="https://wa.me/5511952412611" target="_blank" rel="noopener"><span>WhatsApp</span><span>+55 11 95241-2611 ↗</span></a>
-          <a href="mailto:contatoanafrontzek@gmail.com"><span>E-mail</span><span class="addr">contatoanafrontzek@gmail.com ↗</span></a>
+          <a href="mailto:contato@anafrontzek.com"><span>E-mail</span><span class="addr">contato@anafrontzek.com ↗</span></a>
           <a href="https://www.instagram.com/anafrontzek/" target="_blank" rel="noopener"><span>Instagram</span><span>@anafrontzek ↗</span></a>
         </div>
       </div>
       <form id="wform" class="wform reveal">
-        <label><span class="mono mute">Seu nome</span><input name="nome" placeholder="Como posso te chamar?"></label>
-        <label><span class="mono mute">Marca / artista</span><input name="marca" placeholder="Opcional"></label>
-        <div class="full"><span class="mono mute" style="display:block;margin-bottom:10px">Tipo de projeto</span>
-          <div class="types" id="types"><button type="button" class="on">Publicidade automotiva</button><button type="button">Aftermovie / evento</button><button type="button">Fashion film</button><button type="button">Videoclipe</button><button type="button">Reels / social</button><button type="button">Fotografia</button><button type="button">Outro</button></div></div>
-        <label class="full"><span class="mono mute">A ideia</span><textarea name="ideia" placeholder="O que é, quando e onde — pode ser bem por cima."></textarea></label>
+        <label><span class="mono mute" data-i18n="fm.name">Seu nome</span><input name="nome" data-i18n-ph="fm.nameph" placeholder="Como posso te chamar?"></label>
+        <label><span class="mono mute" data-i18n="fm.brand">Marca / empresa</span><input name="marca" data-i18n-ph="fm.opt" placeholder="Opcional"></label>
+        <div class="full"><span class="mono mute" style="display:block;margin-bottom:10px" data-i18n="fm.need">Do que você precisa?</span>
+          <div class="types" data-g="tipo"><button type="button" data-i18n="fm.t1">Vídeo</button><button type="button" data-i18n="fm.t2">Fotografia</button><button type="button" data-i18n="fm.t3">Foto + vídeo</button><button type="button" data-i18n="fm.t4">Conteúdo como creator</button><button type="button" data-i18n="fm.t5">Videoaulas</button><button type="button" class="on" data-i18n="fm.t6">Ainda não sei</button></div></div>
+        <div class="full"><span class="mono mute" style="display:block;margin-bottom:10px" data-i18n="fm.when">Pra quando?</span>
+          <div class="types" data-g="prazo"><button type="button" class="on" data-i18n="fm.w1">Sem data ainda</button><button type="button" data-i18n="fm.w2">Este mês</button><button type="button" data-i18n="fm.w3">Próximos meses</button></div></div>
+        <label class="full"><span class="mono mute" data-i18n="fm.idea">Conta um pouco (opcional)</span><textarea name="ideia" data-i18n-ph="fm.ideaph" placeholder="Pode ser só uma ideia solta. A gente lapida junto na conversa."></textarea></label>
         <div class="wpv full" id="wpv"></div>
-        <div class="send full"><button class="wa" type="submit"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg>Enviar pelo WhatsApp →</button><span class="mono mute">Abre o WhatsApp com a mensagem acima já escrita.</span></div>
+        <div class="send full"><button class="wa" type="submit"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg><span data-i18n="fm.send">Enviar pelo WhatsApp</span> →</button><a class="mono mute more-link" id="wmail" href="mailto:contato@anafrontzek.com"><span data-i18n="fm.mail">ou mandar por e-mail</span> ↗</a></div>
       </form>
     </div>
   </section>
 
   <footer class="mono mute">
-    <span>© 2026 Ana Frontzek — Todos os direitos reservados</span>
-    <a href="#/" data-go="top">Voltar ao topo ↑</a>
+    <span>© 2026 Ana Frontzek — <span data-i18n="ft.rights">Todos os direitos reservados</span> · CNPJ 59.774.033/0001-31 · São Paulo, SP</span>
+    <a href="#/" data-go="top"><span data-i18n="ft.top">Voltar ao topo</span> ↑</a>
   </footer>
 </main>
 
 <div id="project" aria-hidden="true"></div>
 <div id="lightbox"><img alt=""></div>
 
-<script src="data.js?v=14"></script>
+<script src="data.js?v=15"></script>
 <script src="aspect.js?v=12"></script>
 <script>
 (function(){
@@ -409,7 +554,47 @@ const W = window.WORKS.map((r,i)=>({slug:r[0],title:r[1],year:r[2],thumb:u(r[3])
 function u(s){return /^(https?:|imagens\/)/.test(s)?s:window.CDN+s}
 const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const kind=w=>w.vids.length&&w.imgs.length?"Foto + Vídeo":w.vids.length?"Vídeo":"Fotografia";
+/* ---------- idioma PT / EN ---------- */
+const EN={
+ "avail":"Available for projects","nav.works":"Work","nav.index":"Index","nav.va":"Video courses","nav.about":"About","nav.contact":"Contact",
+ "h1":"Direction, filming,<br>editing & color grading","h2":"Automotive, fashion<br>& music photo and video","h3":"projects","scroll":"Scroll",
+ "svc.t":"What I do","svc.s":"(Services)","sv1":"Direction","sv2":"Scriptwriting","sv3":"Filming","sv4":"Editing","sv5":"Photography","sv6":"Automotive Advertising","sv7":"Event Coverage","sv8":"Creator Content","sv9":"Video Courses",
+ "br.t":"Brands I've<br>worked with","br.s":"(Clients)","ft.t":"Featured<br>work","ft.s":"(Selection)","ft.h":"Hover the showcase · click to open a project",
+ "f.all2":"Photo + video","f.video":"Video only","f.foto":"Photo only",
+ "cr.s":"(Content for brands)","cr.big":"Content made for social, with a <em>cinematic finish</em>. I live the experience, film it and deliver it ready to post.",
+ "va.s":"(For courses and experts)","va.big":"Your course looking like <em>a film</em>, not a recorded call.","va.sub":"I bring cinema-grade camera, light and sound to your space and deliver edited lessons, ready for your platform. For professionals in any field, in monthly packages.","va.cta":"Produce my video courses",
+ "va.1t":"Planning","va.1p":"Topics, length and order of the lessons. You send script and slides before each session.","va.2t":"Filming","va.2p":"A set built in your space. You and your slides, switched live.","va.3t":"Editing","va.3p":"Cuts, color, clean audio and titles. Motion graphics in your brand identity, if you want.","va.4t":"Delivery","va.4p":"First cut within 5 business days and a final file ready to upload.","va.kit":"Sony A7 IV & FX30 · Sigma 35mm f/1.4 · 24-70mm f/2.8 · Sokani X100 · Colbor CL60 · Hollyland Lark M1",
+ "ab.s":"(Behind the camera)","ab.big":"I'm a creative professional who turns ideas into <em>visual projects with personality</em>.","ab.p1":"I like exploring new possibilities, connecting concept and form, and creating work that communicates with clarity and impact.","ab.p2":"Every project is a chance to understand a need, find a path of its own and bring to life something that makes sense to whoever is on the other side.","st.1":"Projects","st.2":"With video","st.3":"Years","ab.cap":"Ana Frontzek — on set","dc.s":"(Best takes<br>2023 — 2026)",
+ "ct.s":"(Contact)","ct.t":"Let's<br>create <span class=\"star\">✱</span> together",
+ "fm.name":"Your name","fm.nameph":"What should I call you?","fm.brand":"Brand / company","fm.opt":"Optional","fm.need":"What do you need?","fm.t1":"Video","fm.t2":"Photography","fm.t3":"Photo + video","fm.t4":"Creator content","fm.t5":"Video courses","fm.t6":"Not sure yet","fm.when":"When?","fm.w1":"No date yet","fm.w2":"This month","fm.w3":"Next few months","fm.idea":"Tell me a bit (optional)","fm.ideaph":"A loose idea is fine. We'll shape it together.","fm.send":"Send on WhatsApp","fm.mail":"or send by email",
+ "ft.rights":"All rights reserved","ft.top":"Back to top"
+};
+const T={pt:{photoVideo:"Foto + Vídeo",video:"Vídeo",photo:"Fotografia",works:"trabalhos",watch:"▶ Assistir",seePhotos:"Ver fotos",seeMore:"Ver mais",older:"Ver anos anteriores",hideOlder:"Ocultar anos anteriores",back:"← Voltar",year:"Ano",type:"Tipo",tags:"Tags",photos:"Fotos",client:"Cliente",area:"Área",credits:"Ficha técnica",next:"Próximo projeto →",all:"Todos",ctaQ:"Quer algo nessa linha?",ctaB:"Vamos conversar →",alsoBrands:"E também:",projects:"Projetos",videos:"Vídeos",place:"Local",role:"Função",delivered:"Entregas",openP:"Ver projeto completo →",soonV:"Vídeo do projeto",projOf:"projetos"},
+ en:{photoVideo:"Photo + Video",video:"Video",photo:"Photography",works:"projects",watch:"▶ Watch",seePhotos:"See photos",seeMore:"See more",older:"See previous years",hideOlder:"Hide previous years",back:"← Back",year:"Year",type:"Type",tags:"Tags",photos:"Photos",client:"Client",area:"Field",credits:"Credits",next:"Next project →",all:"All",ctaQ:"Want something like this?",ctaB:"Let's talk →",alsoBrands:"Also:",projects:"Projects",videos:"Videos",place:"Location",role:"Role",delivered:"Delivered",openP:"See full project →",soonV:"Project video",projOf:"projects"}};
+let LANG="pt";try{if(localStorage.getItem("af-lang")==="en")LANG="en"}catch(e){}
+const t=k=>T[LANG][k];
+function applyLang(){
+  document.documentElement.lang=LANG==="en"?"en":"pt-BR";
+  document.querySelectorAll("[data-i18n]").forEach(el=>{if(el.dataset.pt===undefined)el.dataset.pt=el.innerHTML;const k=el.dataset.i18n;el.innerHTML=LANG==="en"&&EN[k]?EN[k]:el.dataset.pt});
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{if(el.dataset.ppt===undefined)el.dataset.ppt=el.placeholder;const k=el.dataset.i18nPh;el.placeholder=LANG==="en"&&EN[k]?EN[k]:el.dataset.ppt});
+  document.querySelectorAll("[data-lang]").forEach(b=>b.classList.toggle("on",b.dataset.lang===LANG));
+  splitCta();
+}
+const kind=w=>w.vids.length&&w.imgs.length?t("photoVideo"):w.vids.length?t("video"):t("photo");
+
+/* ---------- áreas ---------- */
+const AREAS=[
+ ["auto","Automotivo","Automotive",/ford|mustang|bronco|tremor|porsche|911|gt3|gt2|bmw|audi|f1|byd|sealion|cadillac|abarth|subaru|wrx|honda|s2000|civic|veneron|jdm|drift|selfmeet|select-car|racing|velozes|wekfest|midnight|motorgrid|hb20|ferrari|cf-moto|wec|interlagos|split-customs|eclipse|soukoukai|carro-baixo|furiozza|mkstreet|autoconcept|tcr|classic-series|reuniao-off|piaz|ballas|macan|bexp/],
+ ["moda","Moda","Fashion",/fashion|zafira|ballas|difee|desfile|luchiari|kings|nike|well-collective|fenzi|classic-series|poka-pala/],
+ ["musica","Música","Music",/batalha|bda|cynthia|carla-sol|corazon|catherine|videoclipe|atividade|anjosbaratas|pocah|poka-pala|interestadual/],
+ ["eventos","Eventos","Events",/aftermovie|jdm-culture|selfmeet|select-car|wekfest|midnight|velozes|festival|wec|racing-track|reuniao-off|bexp|lancamento|porsche-cup|copa-hb20|motorgrid|bda|batalha|interestadual|pocah|furiozza|travessia|kitesurf|desfile|gt-series|aniversario/],
+ ["pub","Publicidade","Advertising",/ford|byd|cadillac|abarth|cf-moto|kings|nike|campari|hellmans|canon|bem-bolado|mimos|sao-gualter|brasedo|paito|veneron|eurobike|fenzi|classic-series|split-customs|zafira|subaru|teaser|publicidade|ferrari|audi|raio-x/],
+ ["autoral","Autoral","Personal",/bariloche|semelhantes|after-a-break-up|demo-reel|short-film|lembrancas|postcards|best-of/]];
+const areasOf=w=>{const a=AREAS.filter(x=>x[3].test(w.slug)).map(x=>x[0]);return a.length?a:["autoral"]};
+const areaName=k=>{const a=AREAS.find(x=>x[0]===k);return LANG==="en"?a[2]:a[1]};
+const CLIENTS=[[/ford|mustang|bronco|tremor/,"Ford"],[/byd/,"BYD"],[/cadillac/,"Cadillac"],[/abarth/,"Abarth · Fiat"],[/cf-moto/,"CF Moto"],[/kings/,"Kings Sneakers"],[/nike/,"Well Collective · Nike"],[/campari/,"Campari"],[/hellmans/,"Hellmann's · NBA · BDA"],[/canon/,"Canon"],[/eurobike/,"Eurobike Magazine"],[/paito/,"Paito Imports & Antunes Custom"],[/veneron/,"Veneron"],[/jdm/,"JDM Culture"],[/selfmeet/,"Selfmeet"],[/motorgrid/,"Motorgrid"],[/midnight/,"Midnight Club"],[/batalha|bda/,"Batalha da Aldeia"],[/porsche-cup/,"Porsche Cup Brasil"],[/hb20/,"Hyundai"],[/ferrari/,"Ferrari"],[/fenzi/,"Fenzi"],[/classic-series/,"Classic Series"],[/difee/,"Difee Cult"],[/bem-bolado/,"Bem Bolado"],[/mimos/,"Mimos"],[/sao-gualter/,"São Gualter"],[/brasedo/,"Brasero · WorldClass"],[/piaz/,"Valentina Piaz"],[/zafira/,"Záfira"],[/ballas/,"Ballas Club"],[/autoconcept/,"AutoConcept · Motakulture"],[/split-customs/,"Split Customs"],[/subaru/,"Subaru"],[/semelhantes/,"Semelhantes"]];
+const clientOf=w=>{const c=CLIENTS.find(x=>x[0].test(w.slug));return c?c[1]:""};
+const splitDesc=d=>{const cr=[],tx=[];(d||"").split("\n").forEach(l=>{const m=l.match(/^([^:]{2,48}):\s*(.+)$/);if(m&&!/https?$/i.test(m[1]))cr.push([m[1].trim(),m[2].trim()]);else if(l.trim())tx.push(l)});return {cr,tx:tx.join("\n")}};
 function tags(w){const t=[],T=w.title.toLowerCase();
   [["aftermovie","Aftermovie"],["reels","Reels"],["fashion film","Fashion Film"],["backstage","Backstage"],["publicidade","Publicidade"],["teaser","Teaser"],["short film","Short Film"],["postcards","Postcards"],["expedição","Expedição"]].forEach(([k,v])=>T.includes(k)&&t.push(v));
   t.push(kind(w));return [...new Set(t)];}
@@ -427,9 +612,10 @@ $("#marquee").innerHTML=strip(pool)+strip(pool2,true);
 /* featured: mostruário (destaques 1 + mais trabalhos 2) */
 const FW=W.filter(w=>w.feat===1).concat(W.filter(w=>w.feat===2)),deck=$("#deck"),stage=$("#stage");
 const short=w=>{const d=(w.desc||"").split("\n").find(l=>l.trim()&&!/@/.test(l))||"";return d.length>120?d.slice(0,118)+"…":d};
-deck.innerHTML=FW.map((w,i)=>`<div class="fcard" data-slug="${w.slug}"><img loading="lazy" src="${w.thumb}" alt="${esc(w.title)}"><span class="tag mono">${pad(i+1)}</span><div class="ov"><span class="mono mute">${w.year} · ${kind(w)}</span><h3>${esc(w.title)}</h3>${short(w)?`<p>${esc(short(w))}</p>`:""}<span class="go mono">${w.vids.length?"▶ Assistir":"Ver fotos"} →</span></div></div>`).join("");
-$("#fcount").textContent=FW.length+" trabalhos";
-const fcs=[...deck.children];let fact=0,fx=[];
+function renderDeck(){deck.innerHTML=FW.map((w,i)=>`<div class="fcard" data-slug="${w.slug}"><img loading="lazy" src="${w.thumb}" alt="${esc(w.title)}"><span class="tag mono">${pad(i+1)}</span><div class="ov"><span class="mono mute">${w.year} · ${areasOf(w).map(areaName).slice(0,2).join(" · ")}</span><h3>${esc(w.title)}</h3>${clientOf(w)?`<p>${esc(clientOf(w))}</p>`:short(w)?`<p>${esc(short(w))}</p>`:""}<span class="go mono">${w.vids.length?t("watch"):t("seePhotos")} →</span></div></div>`).join("");
+$("#fcount").textContent=FW.length+" "+t("works");}
+renderDeck();
+let fcs=[...deck.children];let fact=0,fx=[];
 const flat=()=>matchMedia("(max-width:820px),(hover:none)").matches;
 function layDeck(){if(flat()){fcs.forEach(c=>{c.style.transform="";c.style.zIndex="";c.classList.remove("act")});return}
   const W0=deck.clientWidth,cw=fcs[0].offsetWidth,n=fcs.length,step=(W0-cw)/(n-1);fx=[];
@@ -441,14 +627,53 @@ stage.addEventListener("mousemove",e=>{if(flat())return;const r=deck.getBounding
 stage.addEventListener("click",e=>{if(flat()||e.target.closest(".fcard"))return;location.hash="#/trabalho/"+FW[fact].slug});
 addEventListener("resize",layDeck);layDeck();
 
-/* marcas: placar giratório */
+/* marcas: faixa de logos */
+/* [arquivo, altura] = logo · [nome] = escrito na fonte do site · cor:1 mantém as cores originais */
+const LG=[{f:"ford.svg",h:44},{f:"nascar.svg",h:26},{w:"Kings"},{f:"byd.svg",h:20},{f:"cadillac.svg",h:52},{f:"porsche.svg",h:46},{f:"ferrari.svg",h:48},{w:"FIA WEC"},{f:"audi.svg",h:60},{f:"bmw.svg",h:42},{f:"canon.svg",h:22},{w:"Motakulture"},
+ {f:"cdpr.svg",h:28,cor:1},{f:"hyundai.svg",h:40},{f:"subaru.svg",h:44},{f:"nike.svg",h:34},{f:"nba.svg",h:46},{w:"Campari"},{f:"cfmoto.svg",h:20},{w:"Abarth"},{f:"fiat.svg",h:42},{w:"Hellmann's"},{w:"Fuelture"},{w:"JDM Culture"}];
+const lgi=x=>x.f?`<img src="imagens/marcas/${x.f}" alt="${x.f.replace(".svg","").toUpperCase()}" style="--h:${x.h}px"${x.cor?' class="cor"':""} loading="lazy">`:`<span class="wm" style="--h:30px">${esc(x.w)}</span>`;
+const half=12,L1=LG.slice(0,half).map(lgi).join(""),L2=LG.slice(half).map(lgi).join("");
+$("#logos").innerHTML=`<div class="lt">${L1}${L1}${L1}</div><div class="lt rev">${L2}${L2}${L2}</div>`;
 const BR=["Ford","BYD","Cadillac","Abarth","Porsche Cup","Ferrari","Audi","BMW","Hyundai","Subaru","Nike","Campari","Canon","Hellmann's","NBA","Kings","CF Moto","FIA WEC","CD Projekt Red","NASCAR Brasil","Eurobike","JDM Culture","Paito Imports","Veneron","Batalha da Aldeia","Midnight Club","Motorgrid","Selfmeet","WekFest","Classic Series","Fenzi","Brasero","Difee Cult","Bloco da Pocah"];
-const bnm=$("#bnm"),bix=$("#bix"),bch=$("#bchips");bch.innerHTML=BR.map((b,i)=>`<span data-i="${i}">${b}</span>`).join(" · ");
-const GL="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";let bcur=0,btimer;
-function bshow(i){bcur=i;const w=BR[i].toUpperCase();bix.textContent=pad(i+1)+" / "+BR.length;bch.querySelectorAll("span").forEach(s=>s.classList.toggle("on",+s.dataset.i===i));
-  let f=0;clearInterval(bnm._t);bnm._t=setInterval(()=>{f++;bnm.innerHTML=[...w].map((c,k)=>{const ok=f>12*k/w.length+3;return c===" "?" ":`<span class="${ok?"":"sc"}">${ok?esc(c):GL[Math.random()*GL.length|0]}</span>`}).join("");if(f>16)clearInterval(bnm._t)},45);}
-function bauto(){clearInterval(btimer);btimer=setInterval(()=>bshow((bcur+1)%BR.length),2200)}
-bshow(0);bauto();bch.addEventListener("mouseover",e=>{const s=e.target.closest("span[data-i]");if(s){bshow(+s.dataset.i);bauto()}});
+
+
+/* creator */
+const WS=Object.fromEntries(W.map(w=>[w.slug,w]));
+const CR=[
+ {b:"Ford",lbl:{pt:"Creator Ford",en:"Ford creator"},match:/ford|mustang|bronco|tremor/,cases:[
+  {s:"fia-wec-6-horas-de-sao-paulo-ford-1",ph:"fia-wec-6-horas-de-sao-paulo-ford",n:{pt:"FIA WEC · 6 Horas de São Paulo",en:"FIA WEC · 6 Hours of São Paulo"},pl:"Interlagos, SP",ro:{pt:"Captação, edição, entrevista com piloto e legendas",en:"Filming, editing, driver interview and captions"},d:[{pt:"filme da experiência",en:"experience film"},{pt:"entrevista com piloto",en:"driver interview"}]},
+  {s:"expedicao-ford-bronco",ph:"fotografia-expedicao-ford-bronco",n:{pt:"Expedição Ford Bronco",en:"Ford Bronco Expedition"},pl:"Poços de Caldas, MG",ro:{pt:"Produção, direção e roteiro",en:"Production, direction and script"},d:[{pt:"filme da expedição",en:"expedition film"}]},
+  {s:"expedicao-ford-tremor",ph:"fotografia-expedicao-ford-tremor",n:{pt:"Expedição Ford Tremor",en:"Ford Tremor Expedition"},ro:{pt:"Produção, direção, roteiro, edição e color",en:"Production, direction, script, editing and color"},d:[{pt:"filme da expedição",en:"expedition film"}]},
+  {s:"mustang-dark-horse-ford",ph:"backstage-mustang-dark-horse-ford",n:{pt:"Mustang Dark Horse",en:"Mustang Dark Horse"},ro:{pt:"Filme de lançamento e backstage",en:"Launch film and backstage"},d:[{pt:"filme de lançamento",en:"launch film"}]},
+  {s:"ready-set-ford",n:{pt:"Ready, Set, Ford!",en:"Ready, Set, Ford!"},ro:{pt:"Experiência em pista como creator",en:"On-track creator experience"},d:[{pt:"filme da experiência",en:"experience film"}]},
+  {s:"festival-interlagos-reels-ford",ph:"festival-interlagos-ford",xv:"festival-interlagos-frames-ford",n:{pt:"Festival Interlagos",en:"Interlagos Festival"},pl:"Interlagos, SP",ro:{pt:"Reels, frames verticais e fotos",en:"Reels, vertical frames and photos"},d:[]}]},
+ {b:"CD Projekt Red",lbl:{pt:"CD Projekt Red",en:"CD Projekt Red"},cases:[
+  {mp4:"cyberpunk.mp4",poster:"imagens/creator/cyberpunk-capa.jpg",vert:1,n:{pt:"Cyberpunk: Edgerunners · 2ª temporada",en:"Cyberpunk: Edgerunners · Season 2"},y:"2026",pl:"São Paulo, SP",ro:{pt:"Direção e produção da ação de divulgação",en:"Direction and production of the launch content"},team:"Henry Majolo (DF) · Sorriso (câmera) · Mat (assist.)",d:[{pt:"vídeo vertical de divulgação",en:"vertical launch video"}]}]}];
+let crB=0,crC=0;
+const L=o=>o?(o[LANG]||o.pt):"";
+function crTot(){const c=CR[crB];if(!c.match){$("#crtot").innerHTML="";return}const ws=W.filter(w=>c.match.test(w.slug));
+  $("#crtot").innerHTML=`<div><b>${ws.length}</b><span class="mono mute">${t("projects")} ${c.b}</span></div><div><b>${ws.reduce((a,w)=>a+w.imgs.length,0)}</b><span class="mono mute">${t("photos")}</span></div><div><b>${ws.reduce((a,w)=>a+w.vids.length,0)}</b><span class="mono mute">${t("videos")}</span></div>`}
+function renderCreator(){
+  $("#crtabs").innerHTML=CR.map((c,i)=>`<button type="button" data-cb="${i}" class="${i===crB?"on":""}">${L(c.lbl)}</button>`).join("");
+  const cs=CR[crB].cases;$("#crcases").style.display=cs.length>1?"":"none";$("#crcases").innerHTML=cs.length>1?cs.map((k,i)=>{const w=WS[k.s];return `<button type="button" data-cc="${i}" class="${i===crC?"on":""}"><span class="th"><img loading="lazy" src="${w?w.thumb:k.poster}" alt=""></span><span class="cy">${pad(i+1)} · ${w?w.year:k.y}</span><span class="nm">${esc(L(k.n))}</span></button>`}).join(""):"";
+  crTot();const k=cs[crC],w=k.s?WS[k.s]:null,ph=k.ph?WS[k.ph]:null,xv=k.xv?WS[k.xv]:null;
+  const nPh=(w?w.imgs.length:0)+(ph?ph.imgs.length:0),nV=(w?w.vids.length:0)+(xv?xv.vids.length:0);
+  const del=[];if(nV)del.push([nV,LANG==="en"?(nV>1?"videos delivered":"video delivered"):(nV>1?"vídeos entregues":"vídeo entregue")]);if(nPh)del.push([nPh,LANG==="en"?"photos":"fotos"]);(k.d||[]).forEach(x=>del.push(["·",L(x)]));
+  const yt=w&&w.vids.find(v=>v.startsWith("yt:"));
+  const MET=[["v",{pt:"Views",en:"Views"}],["l",{pt:"Curtidas",en:"Likes"}],["c",{pt:"Comentários",en:"Comments"}],["sh",{pt:"Compartilhamentos",en:"Shares"}],["sv",{pt:"Salvos",en:"Saves"}],["r",{pt:"Alcance",en:"Reach"}]];
+  const met=k.m?`<div class="metrics">${MET.filter(x=>k.m[x[0]]!=null).map(x=>`<div><b>${k.m[x[0]]}</b><span class="mono mute">${L(x[1])}</span></div>`).join("")}</div>`:"";
+  $("#crcase").classList.toggle("vert",!!k.vert);
+  const vid=k.mp4?`<div class="vid"><video controls playsinline preload="none" poster="${k.poster}" controlslist="nodownload" src="${k.mp4}"></video></div>`:k.soon?`<div class="vid soon"><div><span class="mono todo">⚠ ${LANG==="en"?"Add video link":"Falta o link do vídeo"}</span><p class="mono mute" style="margin-top:8px">${t("soonV")} — CD Projekt Red</p></div></div>`
+    :`<div class="vid" data-yt="${yt?yt.slice(3):""}" data-open="${w.slug}"><img src="${w.thumb}" alt="${esc(L(k.n))}"><span class="play mono">${yt?t("watch"):t("seePhotos")}</span></div>`;
+  $("#crcase").innerHTML=`${vid}<div class="sheet"><span class="mono mute">${CR[crB].b}${w?" · "+w.year:k.y?" · "+k.y:""}</span><h3>${esc(L(k.n))}</h3>
+   <dl class="mono"><dt>${t("client")}</dt><dd>${CR[crB].b}</dd>${k.pl?`<dt>${t("place")}</dt><dd>${k.pl}</dd>`:""}<dt>${t("role")}</dt><dd>${L(k.ro)}</dd>${k.team?`<dt>${LANG==="en"?"Team":"Equipe"}</dt><dd>${k.team}</dd>`:""}</dl>
+   ${met}<span class="mono mute">${t("delivered")}</span><ul class="del" style="margin-top:10px">${del.map(d=>`<li><b>${d[0]}</b><span>${d[1]}</span></li>`).join("")}</ul>
+   ${w?`<a class="open mono" href="#/trabalho/${w.slug}">${t("openP")}</a>`:""}</div>`;
+}
+renderCreator();
+$("#creator").addEventListener("click",e=>{const b=e.target.closest("[data-cb]");if(b){crB=+b.dataset.cb;crC=0;renderCreator();return}
+  const c=e.target.closest("[data-cc]");if(c){crC=+c.dataset.cc;renderCreator();return}
+  const v=e.target.closest(".vid[data-yt]");if(v){e.stopPropagation();if(v.dataset.yt){v.innerHTML=`<iframe allow="autoplay; fullscreen" allowfullscreen src="https://www.youtube-nocookie.com/embed/${v.dataset.yt}?autoplay=1&rel=0&modestbranding=1&playsinline=1"></iframe>`;v.removeAttribute("data-yt")}else if(v.dataset.open)location.hash="#/trabalho/"+v.dataset.open}},true);
 
 /* director's cut: toca só quando aparece na tela */
 const dcv=$("#dcv"),dcpp=$("#dcpp");let dcUser=false;
@@ -456,21 +681,25 @@ new IntersectionObserver(es=>es.forEach(x=>{if(dcUser)return;if(x.isIntersecting
 dcpp.addEventListener("click",()=>{dcUser=true;if(dcv.paused){dcv.play();dcpp.textContent="❚❚ Pausar"}else{dcv.pause();dcpp.textContent="▶ Play"}});
 
 /* vamos criar juntos: letras acendem no mouse */
-const cta=$("#cta");[...cta.childNodes].forEach(n=>{if(n.nodeType===3){const fr=document.createDocumentFragment();n.textContent.split(/(\s+)/).forEach(w=>{if(!w)return;if(/^\s+$/.test(w)){fr.append(" ");return}const wd=document.createElement("span");wd.style.whiteSpace="nowrap";[...w].forEach(c=>{const s=document.createElement("span");s.className="ch";s.textContent=c;wd.append(s)});fr.append(wd)});n.replaceWith(fr)}});
+function splitCta(){const cta=$("#cta");[...cta.childNodes].forEach(n=>{if(n.nodeType===3){const fr=document.createDocumentFragment();n.textContent.split(/(\s+)/).forEach(w=>{if(!w)return;if(/^\s+$/.test(w)){fr.append(" ");return}const wd=document.createElement("span");wd.style.whiteSpace="nowrap";[...w].forEach(c=>{const s=document.createElement("span");s.className="ch";s.textContent=c;wd.append(s)});fr.append(wd)});n.replaceWith(fr)}})}
+splitCta();const cta=$("#cta");
 cta.addEventListener("mouseover",e=>{const c=e.target.closest(".ch");if(!c)return;c.classList.add("on");clearTimeout(c._t);c._t=setTimeout(()=>c.classList.remove("on"),220)});
 
 /* index: carrossel por ano, 10 por vez */
-const STEP=10;let FILTER="all";
-const ok=w=>FILTER==="all"||(FILTER==="video"?w.vids.length:w.imgs.length);
+const STEP=10;let FILTER="all",AREA="all";
+const ok=w=>(AREA==="all"||areasOf(w).includes(AREA))&&(FILTER==="all"||(FILTER==="video"?w.vids.length:w.imgs.length));
+function renderAreas(){$("#areas").innerHTML=`<button data-a="all" class="${AREA==="all"?"on":""}">${t("all")}<span class="n">${W.length}</span></button>`+AREAS.map(a=>`<button data-a="${a[0]}" class="${AREA===a[0]?"on":""}">${areaName(a[0])}<span class="n">${W.filter(w=>areasOf(w).includes(a[0])).length}</span></button>`).join("")}
+renderAreas();
+$("#areas").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;AREA=b.dataset.a;renderAreas();years.forEach(y=>shown[y]=STEP);ALLY=AREA!=="all";renderIndex();});
 const years=[...new Set(W.map(w=>w.year))].sort((a,b)=>b-a);
 const shown={};years.forEach(y=>shown[y]=STEP);let ALLY=false;const NY=2;
-const card=w=>`<article class="card" data-slug="${w.slug}"><div class="im"><img loading="lazy" draggable="false" src="${w.thumb}" alt="${esc(w.title)}"><span class="badge mono">${kind(w)}</span></div><div class="cap"><span class="mono mute">${pad(W.indexOf(w)+1)}</span><span class="t">${esc(w.title)}</span></div></article>`;
+const card=w=>`<article class="card" data-slug="${w.slug}"><div class="im"><img loading="lazy" draggable="false" src="${w.thumb}" alt="${esc(w.title)}"><span class="badge mono">${areaName(areasOf(w)[0])}</span></div><div class="cap"><span class="mono mute">${pad(W.indexOf(w)+1)}</span><span class="t">${esc(w.title)}</span></div></article>`;
 function renderIndex(){
   const ys=ALLY?years:years.slice(0,NY),hid=years.slice(NY);
   $("#index").innerHTML=ys.map(y=>{const list=W.filter(w=>w.year===y&&ok(w));if(!list.length)return"";
     const vis=list.slice(0,shown[y]),rest=list.length-vis.length;
-    return `<div class="yr reveal in" data-y="${y}"><div class="yr-head"><span class="y">${y}</span><div class="meta"><span class="mono mute">${list.length} trabalhos</span><div class="arrows"><button data-dir="-1" aria-label="Anterior">←</button><button data-dir="1" aria-label="Próximo">→</button></div></div></div>
-     <div class="rail">${vis.map(card).join("")}${rest>0?`<button class="more" data-more="${y}"><b>+${Math.min(STEP,rest)}</b><span class="mono">Ver mais (${rest})</span></button>`:""}</div></div>`}).join("")+(hid.length?`<div class="older"><button class="oldbtn mono" data-older>${ALLY?"Ocultar anos anteriores ↑":"Ver anos anteriores ("+hid.join(" · ")+") ↓"}</button></div>`:"");
+    return `<div class="yr reveal in" data-y="${y}"><div class="yr-head"><span class="y">${y}</span><div class="meta"><span class="mono mute">${list.length} ${t("works")}</span><div class="arrows"><button data-dir="-1" aria-label="Anterior">←</button><button data-dir="1" aria-label="Próximo">→</button></div></div></div>
+     <div class="rail">${vis.map(card).join("")}${rest>0?`<button class="more" data-more="${y}"><b>+${Math.min(STEP,rest)}</b><span class="mono">${t("seeMore")} (${rest})</span></button>`:""}</div></div>`}).join("")+(hid.length?`<div class="older"><button class="oldbtn mono" data-older>${ALLY?t("hideOlder")+" ↑":t("older")+" ("+hid.join(" · ")+") ↓"}</button></div>`:"");
   document.querySelectorAll(".rail").forEach(setupRail);
 }
 function setupRail(r){
@@ -508,11 +737,11 @@ function openProject(slug){
   const hv=w.vids.filter(v=>!(window.ASPECT[v]>100)), vv=w.vids.filter(v=>window.ASPECT[v]>100);
   const box=v=>`<div class="vbox" style="padding-bottom:${window.ASPECT[v]||56.25}%"><iframe loading="lazy" allowfullscreen allow="autoplay; fullscreen" title="${esc(w.title)}" src="${vsrc(v)}"></iframe></div>`;
   P.innerHTML=`
-   <div class="bar mono"><a href="#/" class="close" data-close>← Voltar</a><span class="mute">${pad(i+1)} / ${W.length}</span></div>
+   <div class="bar mono"><a href="#/" class="close" data-close>${t("back")}</a><span class="mute">${pad(i+1)} / ${W.length}</span></div>
    ${gal.length?'<div class="pc">':''}<div class="p-head">
-     ${gal.length?`<span class="mono mute">${kind(w)}</span>`:""}<h1>${esc(w.title)}</h1>
-     <div class="p-meta mono"><span class="mute">Ano</span><span>${w.year}</span><span class="mute">Tipo</span><span>${kind(w)}</span><span class="mute">Tags</span><span>${tags(w).join(" · ")}</span>${gal.length?`<span class="mute">Fotos</span><span>${gal.length}</span>`:""}</div>
-     <div class="p-desc">${w.desc?esc(w.desc):`<span class="mute">${kind(w)} — ${w.year}</span>`}</div>
+     ${gal.length?`<span class="mono mute">${kind(w)}</span>`:""}<h1>${esc(w.title.split(" | ")[0])}${clientOf(w)&&!w.title.toLowerCase().includes(clientOf(w).split(" ")[0].toLowerCase())?`<span class="p-client">${esc(clientOf(w))}</span>`:""}</h1>
+     <div class="p-meta mono">${clientOf(w)?`<span class="mute">${t("client")}</span><span>${esc(clientOf(w))}</span>`:""}<span class="mute">${t("year")}</span><span>${w.year}</span><span class="mute">${t("area")}</span><span class="p-areas">${areasOf(w).map(a=>`<span>${areaName(a)}</span>`).join("")}</span><span class="mute">${t("type")}</span><span>${kind(w)}</span>${gal.length?`<span class="mute">${t("photos")}</span><span>${gal.length}</span>`:""}</div>
+     <div class="p-desc">${(()=>{const sd=splitDesc(w.desc);return (sd.tx?esc(sd.tx):(sd.cr.length?"":`<span class="mute">${kind(w)} — ${w.year}</span>`))+(sd.cr.length?`<div class="mono mute" style="margin:${sd.tx?"18px":"0"} 0 10px">${t("credits")}</div><dl class="credits">${sd.cr.map(c=>`<dt>${esc(c[0])}</dt><dd>${esc(c[1])}</dd>`).join("")}</dl>`:"")})()}</div>
    </div>
    ${!w.vids.length&&!gal.length?`<div class="p-cover"><img src="${w.thumb}" alt=""></div>`:""}
    <div class="p-body">
@@ -520,7 +749,8 @@ function openProject(slug){
      ${vv.length?`<div class="vids v">${vv.map(box).join("")}</div>`:""}
      ${gal.length?`<div class="gx" data-n="${gal.length}"><div class="gx-view"><div class="gx-track">${gal.map((s,k)=>`<div class="gx-s${k?"":" on"}"><img ${k<3?"":'loading="lazy" '}src="${s}" alt="${esc(w.title)} — foto ${k+1}"></div>`).join("")}</div><div class="gx-ov"><span class="mono mute">${pad(1)} — ${pad(gal.length)}</span><b>${esc(w.title)}</b></div></div><div class="gx-prog"><i style="width:${100/gal.length}%"></i></div><div class="gx-foot"><span class="gx-cnt mono">${pad(1)} / ${pad(gal.length)}</span><div class="gx-strip">${gal.map((s,k)=>`<img loading="lazy" src="${s}" alt="" data-k="${k}"${k?"":' class="on"'}>`).join("")}</div><div class="gx-nav"><button type="button" data-gx="-1" aria-label="Foto anterior">‹</button><button type="button" data-gx="1" aria-label="Próxima foto">›</button></div></div></div>`:""}
    </div>${gal.length?'</div>':''}
-   <a class="next" href="#/trabalho/${n.slug}"><span class="mono mute">Próximo projeto →</span><div class="t">${esc(n.title)}</div></a>`;
+   <div class="p-cta"><b>${t("ctaQ")}</b><a class="btn" href="#/" data-ctafrom="${w.slug}">${t("ctaB")}</a></div>
+   <a class="next" href="#/trabalho/${n.slug}"><span class="mono mute">${t("next")}</span><div class="t">${esc(n.title)}</div></a>`;
   gxInit();P.scrollTop=0;P.classList.add("open");P.setAttribute("aria-hidden","false");document.body.classList.add("lock");
   document.title=w.title+" — Ana Frontzek";
 }
@@ -541,12 +771,26 @@ P.addEventListener("click",e=>{
 $("#lightbox").addEventListener("click",()=>$("#lightbox").classList.remove("on"));
 document.addEventListener("keydown",e=>{if((e.key==="ArrowRight"||e.key==="ArrowLeft")&&P.classList.contains("open")&&!$("#lightbox").classList.contains("on")){const g=P.querySelector(".gx");if(g&&g._go){e.preventDefault();g._go(e.key==="ArrowRight"?1:-1)}}if(e.key==="Escape"){if($("#lightbox").classList.contains("on"))$("#lightbox").classList.remove("on");else if(P.classList.contains("open")){history.pushState(null,"","#/");route();}}});
 
-/* contato -> WhatsApp com mensagem pronta */
-const wf=$("#wform"),wpv=$("#wpv");let wtipo="Publicidade automotiva";
-$("#types").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;document.querySelectorAll("#types button").forEach(x=>x.classList.toggle("on",x===b));wtipo=b.textContent;wmsg()});
-function wmsg(){const d=new FormData(wf);const t=`Oi Ana! Vim pelo seu portfólio.\n\nNome: ${d.get("nome")||"—"}${d.get("marca")?"\nMarca/artista: "+d.get("marca"):""}\nTipo de projeto: ${wtipo}\n\n${d.get("ideia")||"(conte a ideia aqui)"}`;wpv.textContent=t;return t}
-wf.addEventListener("input",wmsg);wmsg();
+/* contato -> WhatsApp com mensagem pronta (simples: só nome é pedido) */
+const wf=$("#wform"),wpv=$("#wpv");
+const sel=g=>{const b=wf.querySelector(`[data-g="${g}"] button.on`);return b?b.textContent:""};
+wf.querySelectorAll(".types").forEach(gr=>gr.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;gr.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));wmsg()}));
+function pick(g,i){const bs=wf.querySelectorAll(`[data-g="${g}"] button`);bs.forEach((x,k)=>x.classList.toggle("on",k===i));wmsg()}
+function wmsg(ref){const d=new FormData(wf),en=LANG==="en";
+  if(ref)wmsg.ref=ref;const r=wmsg.ref;
+  const t0=en?`Hi Ana! I found you through your portfolio.\n\nName: ${d.get("nome")||"—"}${d.get("marca")?"\nBrand: "+d.get("marca"):""}\nI need: ${sel("tipo")}\nWhen: ${sel("prazo")}${r?"\nReference: "+r:""}\n\n${d.get("ideia")||""}`
+    :`Oi Ana! Vim pelo seu portfólio.\n\nNome: ${d.get("nome")||"—"}${d.get("marca")?"\nMarca: "+d.get("marca"):""}\nPreciso de: ${sel("tipo")}\nPra quando: ${sel("prazo")}${r?"\nReferência: "+r:""}\n\n${d.get("ideia")||""}`;
+  const txt=t0.trim();wpv.textContent=txt;$("#wmail").href="mailto:contato@anafrontzek.com?subject="+encodeURIComponent(en?"Project — via portfolio":"Projeto — via portfólio")+"&body="+encodeURIComponent(txt);return txt}
+wf.addEventListener("input",()=>wmsg());wmsg();
 wf.addEventListener("submit",e=>{e.preventDefault();const a=document.createElement("a");a.href="https://wa.me/5511952412611?text="+encodeURIComponent(wmsg());a.target="_blank";a.rel="noopener";document.body.append(a);a.click();a.remove();});
+const toContact=()=>{if(location.hash.startsWith("#/trabalho")){history.pushState(null,"","#/");route()}setTimeout(()=>$("#contato").scrollIntoView({behavior:"smooth"}),60)};
+document.addEventListener("click",e=>{const v=e.target.closest("[data-va]");if(v){e.preventDefault();pick("tipo",4);toContact();return}
+  const c=e.target.closest("[data-ctafrom]");if(c){e.preventDefault();const w=WS[c.dataset.ctafrom];wmsg(w.title);pick("tipo",w.vids.length&&w.imgs.length?2:w.vids.length?0:1);toContact()}});
+
+/* troca de idioma */
+document.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>{LANG=b.dataset.lang;try{localStorage.setItem("af-lang",LANG)}catch(e){}
+  applyLang();renderDeck();fcs=[...deck.children];layDeck();renderAreas();renderIndex();renderCreator();wmsg();fit();const m=location.hash.match(/^#\/trabalho\/(.+)$/);if(m)openProject(decodeURIComponent(m[1]));}));
+applyLang();if(LANG==="en"){renderDeck();fcs=[...deck.children];renderAreas();renderIndex();renderCreator();wmsg()}
 
 /* proteção: sem clique direito, arrastar, salvar página ou ver código pelo atalho */
 document.addEventListener("contextmenu",e=>{if(!e.target.closest("input,textarea"))e.preventDefault()});
