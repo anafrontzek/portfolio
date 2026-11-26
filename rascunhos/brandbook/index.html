@@ -7,12 +7,13 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0a0a0a; --bg2:#121212; --fg:#efece6; --mute:#8a877f; --soft:#b9b6ae; --line:#262624;
   --acc:#e10600; --ok:#3ddc6a; --mono:"IBM Plex Mono",ui-monospace,monospace;
   --sans:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Instrument Serif",Georgia,serif;
   --pad:clamp(16px,3vw,40px);
   --ease:cubic-bezier(.2,.7,.1,1); --ease-expo:cubic-bezier(.16,1,.3,1); --ease-curtain:cubic-bezier(.77,0,.18,1);
 }
@@ -27,6 +28,8 @@ img,video{display:block;max-width:100%}
 .mono{font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
 .mute{color:var(--mute)}
 .acc{color:var(--acc)}
+.ser{font-family:var(--serif);font-style:italic;font-weight:400;font-stretch:100%;text-transform:none;letter-spacing:-.025em}
+
 .xl{font-weight:900;font-stretch:125%;text-transform:uppercase;letter-spacing:-.055em;line-height:.84}
 
 /* marca + nav */
@@ -128,12 +131,19 @@ section{padding:clamp(90px,12vw,170px) var(--pad) 0}
 @media(max-width:1000px){.sw{grid-template-columns:repeat(2,1fr)}.s{min-height:180px}}
 
 /* 04 tipografia */
-.fonts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.fonts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .fonts .card{min-height:360px;display:flex;flex-direction:column;justify-content:space-between}
 .fonts .aa{font-size:clamp(90px,10vw,170px);line-height:.85;letter-spacing:-.05em}
 .f1 .aa{font-weight:900;font-stretch:125%}
 .f2 .aa{font-weight:500;font-stretch:100%;letter-spacing:-.03em}
 .f3 .aa{font-family:var(--mono);font-weight:400;letter-spacing:-.04em}
+.f4 .aa{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.02em;color:var(--acc)}
+.pair{margin-top:12px;display:grid;grid-template-columns:7fr 5fr;gap:clamp(20px,3vw,48px);align-items:end}
+.pair .demo{font-weight:900;font-stretch:125%;text-transform:uppercase;letter-spacing:-.055em;line-height:.86;font-size:clamp(44px,6.4vw,110px)}
+.pair ul{list-style:none;display:grid;gap:10px;color:var(--soft);font-size:15px}
+.pair li b{color:var(--fg);font-weight:600}
+@media(max-width:1100px){.fonts{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.pair{grid-template-columns:1fr}}
 .fonts h3{font-weight:700;font-size:20px;letter-spacing:-.01em}
 .fonts ul{list-style:none;color:var(--soft);font-size:14px;margin-top:8px;display:grid;gap:4px}
 .scale{margin-top:12px;border-top:1px solid var(--line)}
@@ -283,6 +293,15 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;z-index:95;background:var(--fg);color:var(--bg);border-radius:999px;padding:10px 18px;transition:.35s var(--ease);pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal,.line>span{opacity:1;transform:none}}
+@media print{
+ @page{size:A4 landscape;margin:0}
+ html,body{background:#0a0a0a!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .reveal,.line>span,.d-block i{opacity:1!important;transform:none!important}
+ nav,.nav,.toast,.tester,.copy,#copyCode,footer a{display:none!important}
+ section{break-before:page;padding-top:48px!important}
+ section.end{break-before:page}
+ *{animation:none!important;transition:none!important}
+}
 </style>
 </head>
 <body>
@@ -290,7 +309,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
 <a href="https://anafrontzek.com" class="brand" aria-label="Ana Frontzek"><img src="https://anafrontzek.com/logo_1.png?v=1" alt="Frontzek"></a>
 <nav>
   <div class="links mono" id="toc">
-    <span class="hide-m" style="color:var(--fg)"><span class="dot red"></span>Brand book v1.0</span>
+    <span class="hide-m" style="color:var(--fg)"><span class="dot red"></span>Brand book v1.1</span>
     <a href="#essencia" class="hide-m">Essência</a>
     <a href="#logo" class="hide-m">Logo</a>
     <a href="#cores" class="hide-m">Cores</a>
@@ -305,9 +324,9 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
 <header class="hero" id="top">
   <div class="top mono">
     <p><span class="mute">(Marca)</span><br>Ana Frontzek</p>
-    <p><span class="mute">(Versão)</span><br>1.0 — Novembro 2026</p>
+    <p><span class="mute">(Versão)</span><br>1.1 — Novembro 2026</p>
     <p><span class="mute">(Aplica em)</span><br>Portfólio, propostas,<br>entregas e redes</p>
-    <p><span class="mute">(Status)</span><br><span class="acc">Rascunho p/ aprovação</span></p>
+    <p><span class="mute">(Status)</span><br><span class="acc">Em revisão</span></p>
   </div>
   <h1 class="xl"><span class="line"><span>Brand</span></span><span class="line"><span>Book<em>.</em></span></span></h1>
   <div class="sub">
@@ -375,11 +394,21 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
     <div class="card f1"><span class="aa">Aa</span><div><span class="mono mute">Display</span><h3>Archivo Expanded Black</h3><ul><li>Peso 900 · largura 125%</li><li>Caixa-alta · entreletra −5,5%</li><li>Entrelinha 0,84</li></ul></div></div>
     <div class="card f2"><span class="aa">Aa</span><div><span class="mono mute">Texto</span><h3>Archivo</h3><ul><li>Pesos 400 · 500 · 600</li><li>Largura 100–115%</li><li>Entrelinha 1,45</li></ul></div></div>
     <div class="card f3"><span class="aa">Aa</span><div><span class="mono mute">Etiquetas</span><h3>IBM Plex Mono</h3><ul><li>Peso 400 · 12px</li><li>Caixa-alta · entreletra +4%</li><li>Rótulos, números, legendas</li></ul></div></div>
+    <div class="card f4"><span class="aa">Aa</span><div><span class="mono mute">Acento</span><h3>Instrument Serif Italic</h3><ul><li>Peso 400 · itálico</li><li>Caixa-baixa · entreletra −2,5%</li><li>Uma palavra por título ou frase</li></ul></div></div>
+  </div>
+  <div class="pair card reveal">
+    <div><span class="mono mute" style="display:block;margin-bottom:14px">Combinação — Archivo + Instrument Serif</span><div class="demo">Vamos criar<br><span class="ser acc">juntos</span></div></div>
+    <ul>
+      <li><b>Archivo pesada</b> carrega o título: caixa-alta, larga, direta.</li>
+      <li><b>Instrument Serif Italic</b> entra em uma palavra só, em caixa-baixa — o respiro elegante no meio do peso.</li>
+      <li><b>Nos títulos</b>, a palavra serifada fica no tom do texto. <b>Em frases de destaque</b>, ela fica vermelha.</li>
+      <li><b>Nunca</b> em parágrafos inteiros, botões ou etiquetas.</li>
+    </ul>
   </div>
   <div class="scale reveal">
     <div><span class="mono mute">H1 · Display<br>clamp 64→340px</span><span class="t1">Frontzek<span class="acc">.</span></span></div>
-    <div><span class="mono mute">H2 · Seção<br>clamp 38→96px</span><span class="t2">O que eu faço</span></div>
-    <div><span class="mono mute">Destaque<br>clamp 24→46px</span><span class="t3">Projetos visuais com <span class="acc">personalidade</span>.</span></div>
+    <div><span class="mono mute">H2 · Seção<br>clamp 38→96px</span><span class="t2">O que eu <span class="ser">faço</span></span></div>
+    <div><span class="mono mute">Destaque<br>clamp 24→46px<br>acento serifado</span><span class="t3">Projetos visuais com <span class="ser acc" style="font-size:1.1em">personalidade</span>.</span></div>
     <div><span class="mono mute">Texto<br>17→21px</span><span class="t4">Cada projeto é uma oportunidade de entender uma necessidade, encontrar um caminho próprio e dar vida a algo que faça sentido para <strong>quem está do outro lado</strong>.</span></div>
     <div><span class="mono mute">Etiqueta<br>12px mono</span><span class="mono">(01) Direção, captação, edição & color grading</span></div>
   </div>
@@ -498,6 +527,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
   <span class="c">/* tipo */</span>
   --sans:<span class="v">"Archivo"</span>, system-ui, sans-serif;
   --mono:<span class="v">"IBM Plex Mono"</span>, ui-monospace, monospace;
+  --serif:<span class="v">"Instrument Serif"</span>, Georgia, serif;
   <span class="c">/* espaço */</span>
   --pad:<span class="v">clamp(16px,3vw,40px)</span>;
   <span class="c">/* movimento */</span>
@@ -506,8 +536,9 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
   --ease-curtain:<span class="v">cubic-bezier(.77,0,.18,1)</span>;
 }
 <span class="k">.xl</span>{font-weight:<span class="v">900</span>;font-stretch:<span class="v">125%</span>;text-transform:<span class="v">uppercase</span>;letter-spacing:<span class="v">-.055em</span>;line-height:<span class="v">.84</span>}
+<span class="k">.ser</span>{font-family:var(--serif);font-style:<span class="v">italic</span>;font-weight:<span class="v">400</span>;text-transform:<span class="v">none</span>;letter-spacing:<span class="v">-.025em</span>}
 <span class="k">.mono</span>{font-family:var(--mono);font-size:<span class="v">12px</span>;letter-spacing:<span class="v">.04em</span>;text-transform:<span class="v">uppercase</span>}
-<span class="c">/* fontes: https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&amp;family=IBM+Plex+Mono:wght@400;500 */</span></pre>
+<span class="c">/* fontes: https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Instrument+Serif:ital@0;1 */</span></pre>
   <button class="tag mono copy" id="copyCode">Copiar tokens</button>
 </section>
 
@@ -518,7 +549,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
 
 <footer class="mono mute">
   <span>Ana Frontzek — Fotografia | Direção Criativa | Audiovisual</span>
-  <span>Brand book v1.0 — 2026</span>
+  <span>Brand book v1.1 — 2026</span>
   <a href="#top">Voltar ao topo ↑</a>
 </footer>
 <div class="toast mono" id="toast"></div>
