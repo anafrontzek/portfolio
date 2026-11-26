@@ -692,7 +692,7 @@ function renderCreator(){
   $("#crcase").innerHTML=`${vid}<div class="sheet"><span class="mono mute">${CR[crB].b}${w?" · "+w.year:k.y?" · "+k.y:""}</span><h3>${esc(L(k.n))}</h3>
    <dl class="mono"><dt>${t("client")}</dt><dd>${CR[crB].b}</dd>${k.pl?`<dt>${t("place")}</dt><dd>${k.pl}</dd>`:""}<dt>${t("role")}</dt><dd>${L(k.ro)}</dd>${k.team?`<dt>${LANG==="en"?"Team":"Equipe"}</dt><dd>${k.team}</dd>`:""}</dl>
    ${met}<span class="mono mute">${t("delivered")}</span><ul class="del" style="margin-top:10px">${del.map(d=>`<li><b>${d[0]}</b><span>${d[1]}</span></li>`).join("")}</ul>
-   <div style="display:flex;gap:22px;flex-wrap:wrap">${w?`<a class="open mono" href="#/trabalho/${w.slug}">${w.vids.length?(LANG==="en"?"Watch the film →":"Ver o filme →"):(LANG==="en"?"See photos →":"Ver as fotos →")}</a>`:""}${ph&&ph.imgs.length?`<a class="open mono" href="#/trabalho/${ph.slug}">${LANG==="en"?"See the "+ph.imgs.length+" photos →":"Ver as "+ph.imgs.length+" fotos →"}</a>`:""}${xv?`<a class="open mono" href="#/trabalho/${xv.slug}">${LANG==="en"?"See the "+xv.vids.length+" verticals →":"Ver os "+xv.vids.length+" verticais →"}</a>`:""}</div></div>`;
+   <div style="display:flex;gap:22px;flex-wrap:wrap">${w?`<a class="open mono" href="#/trabalho/${w.slug}">${w.vids.length?(LANG==="en"?"Watch the film →":"Ver o filme →"):(LANG==="en"?"See photos →":"Ver as fotos →")}</a>`:""}${ph&&ph.imgs.length?`<a class="open mono" href="#/trabalho/${ph.slug}">${LANG==="en"?"See photos →":"Ver fotos →"}</a>`:""}${xv?`<a class="open mono" href="#/trabalho/${xv.slug}">${LANG==="en"?"See verticals →":"Ver verticais →"}</a>`:""}</div></div>`;
 }
 renderCreator();
 $("#creator").addEventListener("click",e=>{const b=e.target.closest("[data-cb]");if(b){crB=+b.dataset.cb;crC=0;renderCreator();return}
@@ -723,7 +723,7 @@ function renderIndex(){
   $("#index").innerHTML=ys.map(y=>{const list=W.filter(w=>w.year===y&&ok(w));if(!list.length)return"";
     const vis=list.slice(0,shown[y]),rest=list.length-vis.length;
     return `<div class="yr reveal in" data-y="${y}"><div class="yr-head"><span class="y">${y}</span><div class="meta"><span class="mono mute">${list.length} ${t("works")}</span><div class="arrows"><button data-dir="-1" aria-label="Anterior">←</button><button data-dir="1" aria-label="Próximo">→</button></div></div></div>
-     <div class="rail">${vis.map(card).join("")}${rest>0?`<button class="more" data-more="${y}"><b>+${Math.min(STEP,rest)}</b><span class="mono">${t("seeMore")} (${rest})</span></button>`:""}</div></div>`}).join("")+(hid.length?`<div class="older"><button class="oldbtn mono" data-older>${ALLY?t("hideOlder")+" ↑":t("older")+" ("+hid.join(" · ")+") ↓"}</button></div>`:"");
+     <div class="rail">${vis.map(card).join("")}${rest>0?`<button class="more" data-more="${y}"><b>→</b><span class="mono">${t("seeMore")}</span></button>`:""}</div></div>`}).join("")+(hid.length?`<div class="older"><button class="oldbtn mono" data-older>${ALLY?t("hideOlder")+" ↑":t("older")+" ("+hid.join(" · ")+") ↓"}</button></div>`:"");
   document.querySelectorAll(".rail").forEach(setupRail);
 }
 function setupRail(r){
