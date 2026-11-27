@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tabela de valores | Ana Frontzek</title>
-<meta name="description" content="Serviços, valores e agenda de Ana Frontzek: direção, captação, edição, fotografia e drone em São Paulo.">
+<meta name="description" content="Serviços, valores e agenda de Ana Frontzek: direção, captação, edição e fotografia em São Paulo.">
 <meta name="robots" content="noindex, nofollow">
 <meta property="og:title" content="Tabela de valores | Ana Frontzek">
 <meta property="og:description" content="Serviços, valores e agenda. Direção, vídeo e fotografia em São Paulo.">
@@ -41,23 +41,19 @@ section{padding:clamp(64px,9vw,130px) var(--pad) 0}
 .head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:28px;flex-wrap:wrap}
 .head h2{font-size:clamp(36px,6vw,84px)}
 /* hero */
-.hero{padding-top:clamp(120px,16vw,180px)}
-.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:24px;align-items:start;margin-bottom:clamp(32px,5vw,60px)}
+.hero{padding-top:clamp(120px,14vw,170px)}
+#valores{padding-top:clamp(40px,5vw,72px)}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 .cols div{line-height:1.5}
-.hero h1{font-size:clamp(52px,11.4vw,178px)}
-.hero h1 i{display:inline-block;width:.24em;height:.24em;background:var(--acc);margin-left:.04em}
-.logo{width:clamp(150px,17vw,240px);aspect-ratio:800/388;margin-top:-14px}
-.logo video,.logo img{width:100%;height:100%;object-fit:contain}
-@media(max-width:720px){.cols{grid-template-columns:1fr;gap:14px}.logo{display:none}.head h2{line-height:1}}
+@media(max-width:720px){.cols{grid-template-columns:1fr;gap:14px}.head h2{line-height:1}}
 /* valores */
-.price{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
-.svc{padding:26px 24px 26px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;gap:28px;min-height:170px}
-.svc:not(:nth-child(3n+1)){padding-left:24px;border-left:1px solid var(--line)}
-.svc h3{font-size:clamp(18px,1.6vw,22px);font-weight:600}
-.svc .v{display:grid;gap:6px}
+.price{display:grid}
+.svc{padding:22px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 24px;transition:padding .3s}
+.svc:hover{padding-left:12px}
+.svc h3{font-size:clamp(20px,2.2vw,30px);font-weight:600;letter-spacing:-.01em}
+.svc .v{display:flex;align-items:baseline;gap:16px;justify-content:flex-end}
 .svc .v b{font-weight:800;font-stretch:125%;font-size:clamp(30px,3.4vw,46px);letter-spacing:-.03em;white-space:nowrap}
-@media(max-width:900px){.price{grid-template-columns:repeat(2,minmax(0,1fr))}.svc:not(:nth-child(3n+1)){padding-left:0;border-left:0}.svc:nth-child(2n){padding-left:20px;border-left:1px solid var(--line)}}
-@media(max-width:520px){.price{grid-template-columns:1fr}.svc:nth-child(2n){padding-left:0;border-left:0}.svc{min-height:0}}
+@media(max-width:600px){.svc{grid-template-columns:1fr}.svc .v{justify-content:flex-start}}
 .notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,4vw,64px);margin-top:40px}
 .notes ul{list-style:none;margin-top:14px}
 .notes li{padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
@@ -144,9 +140,7 @@ footer .row a:hover{color:var(--fg)}
     <div><span class="mute">(01)</span><br>Direção, captação,<br>edição &amp; color grading</div>
     <div><span class="mute">(02)</span><br>Fotografia &amp; vídeo<br>automotivo, moda e música</div>
     <div><span class="mute">(03)</span><br>Valores válidos<br>até 31.12.2026</div>
-    <div class="logo" id="logo"><img src="../logo_1.png?v=1" alt="Frontzek"></div>
   </div>
-  <h1 class="big">Tabela de<br>valores<i></i></h1>
 </section>
 
 <section id="valores">
@@ -222,8 +216,8 @@ const services=[
  {n:'Direção',v:'2.400'},
  {n:'Edição de vídeo até 1min30',v:'1.000',u:'por vídeo'},
  {n:'Fotografia + edição',v:'2.000'},
- {n:'Captação + edição de evento',v:'2.750'},
- {n:'Diária de drone',v:'1.500'}];
+ {n:'Captação + edição de evento',v:'2.750'}
+];
 const cats=['Automotivo','Grandes marcas','Moda','Música','Eventos','Creator','Making of','Aftermovies','Fotografia','Videoaulas'];
 const works=[
  {t:'F1 em Interlagos | Ford',c:'Automotivo',y:'2026',r:'Creator · dia de Qualy',img:'../imagens/f1-w-ford/capa.webp',u:'https://www.instagram.com/p/DfetcL_lqsR/'},
@@ -237,13 +231,6 @@ $('cats').innerHTML=cats.map(c=>`<span>${c}</span>`).join('');
 $('works').innerHTML=works.map((w,i)=>`<a class="work" href="${w.u}" target="_blank" rel="noopener"><div class="img"><img src="${w.img}" alt="${w.t}"><span class="tag mono">${w.c}</span></div><div class="meta"><span class="mono mute">0${i+1}</span><h3>${w.t}</h3></div><p class="mono mute">${w.y} · ${w.r}</p></a>`).join('')
  +`<a class="morew" href="/"><span class="mono mute">+97 trabalhos</span><b>Ver portfólio →</b></a>`;
 $('svc').innerHTML=services.map(s=>`<option>${s.n}</option>`).join('')+'<option>Pacote mensal de diárias</option><option>Ainda não sei, quero conversar</option>';
-
-/* logo animado (webm com transparência; Safari fica com o logo fixo) */
-const tv=document.createElement('video');
-if(tv.canPlayType('video/webm; codecs="vp9"')&&!/^((?!chrome|android).)*safari/i.test(navigator.userAgent)){
-  tv.muted=true;tv.playsInline=true;tv.autoplay=true;tv.src='logo.webm?v=1';tv.setAttribute('aria-label','Frontzek');
-  tv.addEventListener('canplay',()=>{$('logo').replaceChildren(tv);tv.play().catch(()=>{})},{once:true});tv.load();
-}
 
 /* director's cut */
 const dv=$('dcv'),pp=$('dcpp');
